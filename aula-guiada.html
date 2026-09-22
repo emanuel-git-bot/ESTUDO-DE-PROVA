@@ -1,0 +1,1294 @@
+<title>Aula Guiada Mobile</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#0a0e1a;
+  --surface:#121a2c;
+  --surface-2:#182238;
+  --surface-3:#1f2c47;
+  --border:#2a3958;
+  --border-soft:#1c2842;
+  --text:#eef2fb;
+  --text-dim:#9fb0cc;
+  --text-faint:#6b7a9c;
+  --accent:#45e0c4;
+  --accent-ink:#062b26;
+  --m1:#45e0c4;
+  --m2:#93d84f;
+  --m3:#f2b84b;
+  --m4:#b49bff;
+  --m5:#ffd166;
+  --danger:#ff6f76;
+  --success:#57d68d;
+  --font-display:'Sora',system-ui,sans-serif;
+  --font-body:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  position:relative;
+  overflow:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 0%, #000 40%, transparent 100%);
+}
+button{font-family:inherit}
+ul{margin:0;padding:0}
+.chev{width:20px;height:20px;color:var(--text-faint);flex-shrink:0;display:block}
+
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh}
+
+/* ---------- topbar ---------- */
+.topbar{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 18px;border-bottom:1px solid var(--border);
+  background:rgba(18,26,44,.9);backdrop-filter:blur(6px);
+  position:relative;z-index:40;flex-shrink:0;
+}
+.menu-btn{
+  display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--border);
+  background:var(--surface-2);color:var(--text);align-items:center;justify-content:center;cursor:pointer;
+}
+.brand{display:flex;flex-direction:column;gap:1px;line-height:1.1}
+.brand .name{font-family:var(--font-display);font-weight:700;font-size:1rem;letter-spacing:.2px}
+.brand .course{font-family:var(--font-mono);font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.09em}
+.topbar .spacer{flex:1}
+.progress-wrap{display:flex;align-items:center;gap:9px}
+.progress-track{width:120px;height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;flex-shrink:0}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--m4));border-radius:inherit;transition:width .5s ease}
+.progress-pct{font-family:var(--font-mono);font-size:.68rem;color:var(--text-dim);width:34px;text-align:right}
+.score-pill{
+  font-family:var(--font-mono);font-size:.68rem;padding:5px 10px;border-radius:99px;
+  border:1px solid var(--border);color:var(--text-dim);white-space:nowrap;
+}
+.icon-btn{
+  width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;
+}
+.icon-btn:hover{color:var(--text);border-color:var(--text-faint)}
+.icon-btn svg{width:18px;height:18px}
+
+.settings-pop{
+  position:absolute;top:52px;right:18px;width:270px;background:var(--surface-2);
+  border:1px solid var(--border);border-radius:12px;padding:16px;display:none;
+  box-shadow:0 20px 40px rgba(0,0,0,.4);z-index:60;
+}
+.settings-pop.open{display:block}
+.settings-pop h4{margin:0 0 10px;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:.82rem}
+.settings-row:last-of-type{border-bottom:none}
+.rate-btn{font-family:var(--font-mono);font-size:.76rem;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface-3);color:var(--text);cursor:pointer}
+select.voice-select{background:var(--surface-3);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:5px 6px;font-size:.74rem;max-width:140px}
+.switch{position:relative;width:38px;height:22px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .track{position:absolute;inset:0;background:var(--surface-3);border:1px solid var(--border);border-radius:99px;transition:.2s;cursor:pointer}
+.switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--text-faint);transition:.2s}
+.switch input:checked + .track{background:rgba(69,224,196,.25);border-color:var(--accent)}
+.switch input:checked + .track .knob{transform:translateX(16px);background:var(--accent)}
+.reset-btn{margin-top:12px;width:100%;font-family:var(--font-mono);font-size:.72rem;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-faint);cursor:pointer}
+.reset-btn:hover{color:var(--danger);border-color:var(--danger)}
+
+/* ---------- body row ---------- */
+.body-row{display:flex;flex:1;min-height:0;position:relative}
+.sidebar-backdrop{display:none}
+.sidebar{
+  width:302px;flex-shrink:0;border-right:1px solid var(--border);background:var(--surface);
+  overflow-y:auto;padding:12px 0 30px;
+}
+.mod-group{margin-bottom:4px}
+.mod-head{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none}
+.mod-head:hover{background:var(--surface-2)}
+.mod-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.mod-title{font-family:var(--font-display);font-weight:600;font-size:.85rem;flex:1;line-height:1.25}
+.mod-sub{display:block;font-family:var(--font-mono);font-size:.62rem;color:var(--text-faint);font-weight:400;margin-top:1px;text-transform:none;letter-spacing:0}
+.mod-count{font-family:var(--font-mono);font-size:.65rem;color:var(--text-dim);flex-shrink:0}
+.mod-caret{width:14px;height:14px;color:var(--text-faint);transition:transform .2s;flex-shrink:0}
+.mod-group.collapsed .mod-caret{transform:rotate(-90deg)}
+.mod-cards{display:flex;flex-direction:column;overflow:hidden}
+.mod-group.collapsed .mod-cards{display:none}
+.card-row{
+  display:flex;align-items:center;gap:9px;padding:7px 16px 7px 28px;font-size:.79rem;
+  color:var(--text-dim);cursor:pointer;border-left:2px solid transparent;line-height:1.3;
+}
+.card-row:hover{background:var(--surface-2)}
+.card-row.active{background:var(--surface-2);color:var(--text);font-weight:500}
+.idx-shape{width:15px;height:15px;flex-shrink:0;border-radius:4px;border:1px solid var(--border);display:grid;place-items:center;font-size:0}
+.card-row.active .idx-shape{border-color:currentColor}
+.card-row.visited .idx-shape{background:var(--surface-3)}
+.card-row.visited .idx-shape::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--success)}
+.card-row .row-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--text-faint);flex-shrink:0}
+
+/* ---------- stage ---------- */
+.stage-wrap{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0;position:relative}
+.stage{flex:1;overflow-y:auto;padding:34px 28px 50px}
+.stage-inner{max-width:900px;margin:0 auto}
+.stage-inner.anim{animation:cardIn .38s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.stage-inner.anim{animation:none}}
+
+.kicker-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.mod-badge{font-family:var(--font-mono);font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:6px;border:1px solid var(--card-accent);color:var(--card-accent)}
+.kicker-text{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.card-title{font-family:var(--font-display);font-size:clamp(1.5rem,3.1vw,2.05rem);font-weight:700;line-height:1.18;margin:0 0 22px;text-wrap:balance}
+
+.visual-box{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:24px;margin-bottom:22px;position:relative}
+.visual-box::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 6%, transparent), transparent 55%);pointer-events:none}
+
+/* viz: hero */
+.viz-hero{padding:6px 4px;text-align:center;position:relative}
+.hero-lead{font-family:var(--font-display);font-weight:700;font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.4;color:var(--text);max-width:660px;margin:0 auto 18px;padding:0 8px}
+.hero-lead::before{content:'\201C';color:var(--card-accent)}
+.hero-lead::after{content:'\201D';color:var(--card-accent)}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{font-family:var(--font-mono);font-size:.78rem;padding:6px 14px;border-radius:99px;border:1px solid var(--card-accent);color:var(--card-accent);background:color-mix(in srgb, var(--card-accent) 8%, transparent)}
+
+/* viz: stack */
+.viz-stack{display:flex;flex-direction:column;align-items:stretch}
+.stack-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2)}
+.stack-num{font-family:var(--font-mono);font-weight:600;font-size:.78rem;width:26px;height:26px;border-radius:50%;border:1px solid var(--card-accent);color:var(--card-accent);display:grid;place-items:center;flex-shrink:0}
+.stack-label{font-weight:600;font-size:.94rem}
+.stack-sub{font-size:.79rem;color:var(--text-dim);margin-top:2px}
+.stack-arrow{display:flex;justify-content:center;padding:1px 0}
+
+/* viz: flow */
+.viz-flow{display:flex;align-items:stretch;gap:4px;flex-wrap:wrap}
+.flow-step{flex:1;min-width:128px;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:14px;text-align:center;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.flow-num{font-family:var(--font-mono);font-weight:700;color:var(--card-accent);font-size:.86rem}
+.flow-label{font-weight:600;font-size:.85rem;line-height:1.3}
+.flow-sub{font-size:.73rem;color:var(--text-dim);line-height:1.3}
+.flow-arrow{display:flex;align-items:center;justify-content:center;min-width:22px}
+@media (max-width:760px){
+  .viz-flow{flex-direction:column}
+  .flow-arrow{min-height:22px}
+  .flow-arrow svg{transform:rotate(90deg)}
+}
+
+/* viz: compare */
+.viz-compare{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch}
+.cmp-col{border:1px solid var(--border);border-radius:12px;padding:16px 18px;background:var(--surface-2)}
+.cmp-col.winner{border-color:var(--card-accent);box-shadow:inset 0 0 0 1px var(--card-accent)}
+.cmp-head{font-family:var(--font-display);font-weight:700;font-size:.92rem;margin-bottom:10px;color:var(--text)}
+.cmp-col.winner .cmp-head{color:var(--card-accent)}
+.cmp-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.cmp-col li{font-size:.82rem;line-height:1.45;color:var(--text-dim);padding-left:14px;position:relative}
+.cmp-col li::before{content:'';position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--text-faint)}
+.cmp-col.winner li::before{background:var(--card-accent)}
+.cmp-vs{align-self:center;font-family:var(--font-mono);font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em}
+@media (max-width:660px){.viz-compare{grid-template-columns:1fr}.cmp-vs{text-align:center;padding:2px 0}}
+
+/* viz: grid cards */
+.viz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.grid-card{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:15px 16px}
+.grid-card-title{font-family:var(--font-display);font-weight:700;font-size:.9rem;color:var(--card-accent);margin-bottom:6px}
+.grid-card-desc{font-size:.79rem;color:var(--text-dim);line-height:1.45}
+.grid-card-list{margin:6px 0 0;padding-left:15px;font-size:.78rem;color:var(--text-dim);display:flex;flex-direction:column;gap:4px;list-style:disc}
+
+/* viz: swatches */
+.viz-swatch-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px}
+.swatch-color{width:100%;aspect-ratio:1.7;border-radius:10px;border:1px solid var(--border);margin-bottom:8px}
+.swatch-name{font-family:var(--font-mono);font-weight:600;font-size:.8rem}
+.swatch-use{font-size:.72rem;color:var(--text-dim);margin-top:2px;line-height:1.35}
+
+/* viz: typescale */
+.viz-typescale{display:flex;flex-direction:column}
+.type-row{display:flex;align-items:baseline;gap:18px;padding:9px 0;border-bottom:1px solid var(--border-soft)}
+.type-row:last-child{border-bottom:none}
+.type-sample{font-family:var(--font-display);font-weight:700;color:var(--card-accent);width:66px;flex-shrink:0;line-height:1}
+.type-meta{display:flex;flex-direction:column;gap:2px}
+.type-name{font-family:var(--font-mono);font-size:.78rem;font-weight:600}
+.type-use{font-size:.72rem;color:var(--text-dim)}
+
+/* viz: icons */
+.viz-icons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:6px 0}
+.icon-cell{width:60px;height:60px;border:1px dashed var(--border);border-radius:10px;display:grid;place-items:center;background:var(--surface-2)}
+.icon-glyph{width:30px;height:30px;color:var(--card-accent)}
+
+/* viz: code */
+.viz-code-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.code-block{background:#070b14;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.code-label{font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);padding:8px 12px;border-bottom:1px solid var(--border)}
+.code-pre{margin:0;padding:14px;font-family:var(--font-mono);font-size:.76rem;line-height:1.62;color:#bdf5e4;overflow-x:auto;white-space:pre}
+
+/* viz: custom svg */
+.viz-svg-wrap{display:flex;justify-content:center}
+.viz-svg-wrap svg{width:100%;max-width:560px;height:auto;color:var(--text-dim)}
+.svg-caption{text-align:center;font-size:.78rem;color:var(--text-dim);margin-top:10px}
+
+/* content grid: bullets + transcript */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:740px){.content-grid{grid-template-columns:1fr}}
+.panel{border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:var(--surface)}
+.panel h3{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin:0 0 13px}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:11px}
+.bullets li{display:flex;gap:10px;font-size:.9rem;line-height:1.5}
+.bullets li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--card-accent);margin-top:.5em;flex-shrink:0}
+
+.transcript{font-size:.9rem;line-height:1.75;color:var(--text-faint)}
+.transcript .sen{transition:color .15s,background-color .15s;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.transcript .sen.active{color:var(--text);background:color-mix(in srgb, var(--card-accent) 16%, transparent);font-weight:500;padding:1px 3px;margin:0 -3px}
+.no-voice-note{margin-top:10px;font-size:.72rem;color:var(--text-faint);font-style:italic}
+
+/* quiz */
+.quiz-question{font-family:var(--font-display);font-weight:600;font-size:1.02rem;line-height:1.45;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{
+  text-align:left;padding:11px 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text);font-size:.85rem;line-height:1.4;cursor:pointer;transition:.15s;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--card-accent)}
+.quiz-opt:disabled{cursor:default}
+.quiz-opt.correct{border-color:var(--success);background:color-mix(in srgb, var(--success) 14%, var(--surface-2));color:var(--text)}
+.quiz-opt.wrong{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 14%, var(--surface-2));color:var(--text)}
+.quiz-explain{margin-top:14px;padding:13px 15px;border-radius:10px;border:1px solid var(--border);font-size:.83rem;line-height:1.5}
+.quiz-explain.ok{border-color:var(--success);background:color-mix(in srgb, var(--success) 10%, transparent)}
+.quiz-explain.bad{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 10%, transparent)}
+
+/* start overlay */
+.start-overlay{position:absolute;inset:0;background:rgba(8,11,20,.96);display:flex;align-items:center;justify-content:center;z-index:25;padding:24px}
+.start-card{max-width:480px;text-align:center}
+.start-card .tag{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.start-card h2{font-family:var(--font-display);font-size:1.7rem;margin:10px 0 12px;line-height:1.25}
+.start-card p{color:var(--text-dim);font-size:.9rem;line-height:1.55;margin:0 0 22px}
+.start-btn{
+  font-family:var(--font-display);font-weight:700;font-size:.95rem;padding:13px 26px;border-radius:11px;border:none;
+  background:var(--accent);color:var(--accent-ink);cursor:pointer;
+}
+.start-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text-dim);margin-left:10px}
+.start-btn:hover{filter:brightness(1.08)}
+.start-note{margin-top:16px;font-size:.72rem;color:var(--text-faint)}
+
+/* transport */
+.transport{
+  flex-shrink:0;border-top:1px solid var(--border);background:rgba(18,26,44,.92);backdrop-filter:blur(6px);
+  padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.t-btn{
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text);display:grid;place-items:center;cursor:pointer;flex-shrink:0;
+}
+.t-btn:hover:not(:disabled){border-color:var(--text-faint)}
+.t-btn:disabled{opacity:.35;cursor:default}
+.t-btn svg{width:17px;height:17px}
+.play-btn{width:50px;height:50px;background:var(--accent);color:var(--accent-ink);border:none}
+.play-btn svg{width:20px;height:20px}
+.t-count{font-family:var(--font-mono);font-size:.75rem;color:var(--text-dim);white-space:nowrap}
+.t-spacer{flex:1}
+.t-toggle{display:none}
+@media (min-width:900px){.t-toggle{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--text-dim)}}
+
+@media (max-width:880px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);transition:transform .28s ease;z-index:70;box-shadow:20px 0 40px rgba(0,0,0,.4)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-backdrop.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:60}
+  .progress-track{width:74px}
+}
+@media (max-width:560px){
+  .stage{padding:22px 16px 40px}
+  .card-title{margin-bottom:16px}
+  .visual-box{padding:16px}
+  .transport{padding:9px 12px;gap:10px}
+  .brand .name{font-size:.9rem}
+}
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu de módulos">
+      <svg viewBox="0 0 24 24" width="18" height="18"><line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="brand">
+      <span class="name">Aula Guiada</span>
+      <span class="course">Dev. de Software para Dispositivos M&oacute;veis</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="score-pill" id="scorePill">Quizzes: 0/4</div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Configura&ccedil;&otilde;es de narra&ccedil;&atilde;o">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="settings-pop" id="settingsPop">
+      <h4>Narra&ccedil;&atilde;o</h4>
+      <div class="settings-row"><span>Velocidade</span><button class="rate-btn" id="rateBtn">1.0x</button></div>
+      <div class="settings-row" id="voiceRow" style="display:none"><span>Voz</span><select class="voice-select" id="voiceSelect"></select></div>
+      <div class="settings-row"><span>Narrar ao chegar no card</span><label class="switch"><input type="checkbox" id="autoplayToggle" checked><span class="track"><span class="knob"></span></span></label></div>
+      <div class="settings-row"><span>Avan&ccedil;ar sozinho</span><label class="switch"><input type="checkbox" id="autoadvanceToggle" checked><span class="track"><span class="knob"></span></span></label></div>
+      <button class="reset-btn" id="resetBtn">Reiniciar progresso salvo</button>
+    </div>
+  </div>
+
+  <div class="body-row">
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="stage-wrap">
+      <div class="stage" id="stage"><div class="stage-inner" id="stageInner"></div></div>
+
+      <div class="start-overlay" id="startOverlay">
+        <div class="start-card">
+          <span class="tag">Revis&atilde;o narrada &middot; PT-BR</span>
+          <h2>Pronto para revisar Dev Mobile?</h2>
+          <p>Quatro m&oacute;dulos com diagramas, exemplos pr&aacute;ticos e um professor narrando cada card em voz alta &mdash; como uma aula de verdade, no seu ritmo.</p>
+          <div>
+            <button class="start-btn" id="startBtn">Come&ccedil;ar a aula</button>
+            <button class="start-btn secondary" id="startFreshBtn" style="display:none">Come&ccedil;ar do zero</button>
+          </div>
+          <div class="start-note">Ative o som &mdash; a narra&ccedil;&atilde;o usa a voz do seu navegador.</div>
+        </div>
+      </div>
+
+      <div class="transport">
+        <button class="t-btn" id="prevBtn" aria-label="Card anterior">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="t-btn play-btn" id="playBtn" aria-label="Ouvir narra&ccedil;&atilde;o">
+          <svg id="playIcon" viewBox="0 0 24 24" fill="none"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg>
+        </button>
+        <button class="t-btn" id="nextBtn" aria-label="Pr&oacute;ximo card">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="t-count" id="tCount">Card 1 de 46</span>
+        <div class="t-spacer"></div>
+        <span class="t-toggle" id="tVoiceLabel">Voz: verificando&hellip;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+function chevronSVG(dir){
+  var pts = dir==='down' ? '6 9 12 15 18 9' : '9 6 15 12 9 18';
+  return '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ================= MODULE DATA ================= */
+var MODULES = [
+{
+  id:'m1', code:'M1', colorVar:'--m1', title:'UI &amp; UX para Mobile', sub:'Aula 02',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Fundamentos de UI/UX para Mobile',
+      narration:"Bem-vindo ao primeiro módulo da nossa revisão. Aqui vamos falar sobre UI e UX no desenvolvimento mobile: por que a interface não é só estética, mas parte da engenharia do sistema. Vou te mostrar como o cérebro do usuário processa uma tela, quais são os pilares de um bom design mobile, e onde mora a linha entre persuadir e manipular. Pega um café, porque esse é o módulo mais conceitual da prova — e também o mais fácil de esquecer se você só decorar. Bora entender de verdade.",
+      bullets:['UI = a aparência. UX = a experiência completa.','Para o usuário, a interface É o sistema.','Vamos ver psicologia, princípios visuais e ética do design.'],
+      visual:{kind:'hero', chips:['UI','UX','0,5s','Ética']}
+    },
+    { type:'content', kicker:'Conceito-chave', title:'Para o usuário, a interface é o sistema',
+      narration:"Guarda essa frase, porque ela resume o módulo inteiro: para quem usa o aplicativo, a interface É o sistema. Não importa se você tem o banco de dados mais rápido do mundo rodando por trás. Se a pessoa não consegue entender onde clicar, o sistema falhou — do ponto de vista dela. Por isso, na engenharia de software, o design não é 'enfeite', é requisito funcional, com a mesma prioridade que performance ou segurança.",
+      bullets:['Banco de dados rápido + interface confusa = sistema ruim.','Design não é estética, é requisito funcional.','Pergunta clássica de prova: “por que UX é requisito funcional?”'],
+      visual:{kind:'hero', lead:'Para o usuário final, a interface é o próprio sistema.'}
+    },
+    { type:'content', kicker:'UX Stack', title:'Os 4 andares da experiência do usuário',
+      narration:"Pensa na experiência do usuário como um prédio de quatro andares, que a gente constrói de baixo para cima. No térreo fica o Hardware: a psicologia e a cognição humana, como as pessoas realmente pensam. No primeiro andar, o Middleware: os princípios de UI e as restrições do mobile, como toque e tamanho de tela. No segundo andar, a Aplicação: as microinterações e o feedback que o app dá em cada ação. E no topo, a Governança: a ética do design e o cuidado para não cair em dark patterns. Se um andar de baixo está fraco, os de cima desabam.",
+      bullets:['1. Hardware → Psicologia e cognição humana','2. Middleware → Princípios de UI e restrições mobile','3. Aplicação → Microinterações e feedback','4. Governança → Ética e dark patterns'],
+      visual:{kind:'stack', layers:[
+        {label:'Hardware', sub:'Psicologia e cognição humana'},
+        {label:'Middleware', sub:'Princípios de UI e restrições mobile'},
+        {label:'Aplicação', sub:'Microinterações e feedback'},
+        {label:'Governança', sub:'Ética e dark patterns'}
+      ]}
+    },
+    { type:'content', kicker:'Percepção visual', title:'O cérebro decide em 0,5 segundo',
+      narration:"Um dado importante: o usuário processa visualmente uma tela em meio segundo, antes mesmo de começar a ler. Nesse tempo, o cérebro já decidiu, no instinto, se aquele app parece confiável ou arriscado. Depois disso, ele busca padrões para confirmar essa primeira impressão, usando duas regras da Gestalt. A Lei da Proximidade diz que elementos agrupados no espaço são lidos como se fossem uma coisa só — por isso ícone e legenda ficam colados. E a hierarquia visual diz que o olhar segue o contraste: o que tem mais destaque, o cérebro lê primeiro. Clareza visual gera confiança, porque reduz o esforço mental do usuário.",
+      bullets:['0,5s: tempo que o cérebro leva para “julgar” a tela.','Lei da Proximidade: o que está junto, parece relacionado.','Hierarquia visual: mais contraste = lido primeiro.'],
+      visual:{kind:'brain'}
+    },
+    { type:'content', kicker:'Framework de design', title:'Os 3 pilares de uma boa interface',
+      narration:"Para organizar tudo isso na hora de projetar uma tela, dá pra pensar em três pilares. Cognição, que facilita a decisão do usuário: usabilidade, consistência, feedback visual e psicologia das cores. Estrutura, que organiza os dados na tela: hierarquia visual, grid, tipografia legível e espaçamento. E Engenharia, que constrói pensando no contexto real: mobile-first, design responsivo, acessibilidade integrada e testes com usuários reais. Repara que só o último pilar fala de código — os outros dois são decisão de design, que você, como desenvolvedor, também precisa dominar.",
+      bullets:['Cognição → usabilidade, consistência, feedback, cores','Estrutura → hierarquia, grid, tipografia, espaçamento','Engenharia → mobile-first, responsivo, acessibilidade, testes'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Cognição', desc:'Facilita a decisão do usuário'},
+        {title:'Estrutura', desc:'Organiza os dados na tela'},
+        {title:'Engenharia', desc:'Constrói pensando no contexto'}
+      ]}
+    },
+    { type:'content', kicker:'Quebra de paradigma', title:'Desktop vs Mobile: o que muda de verdade',
+      narration:"Um erro clássico de quem começa em mobile é projetar como se fosse um site de desktop. No desktop, a navegação é por mouse, com hover e cliques precisos, em várias janelas ao mesmo tempo. No mobile, é tudo toque direto — gestos como arrastar e pinçar — numa janela única, com foco total no conteúdo. E como não existe cursor nem hover para dar feedback, o app mobile precisa de animações e transições sutis para confirmar que a ação do usuário realmente aconteceu.",
+      bullets:['Desktop: mouse, hover, múltiplas janelas.','Mobile: toque direto, gestos, janela única.','Sem hover, o feedback tem que ser visual e imediato.'],
+      visual:{kind:'compare', winner:'right', left:{title:'Desktop', items:['Mouse, hover, cliques precisos','Múltiplas janelas simultâneas','Atalhos de teclado','Cursores dinâmicos']}, right:{title:'Mobile', items:['Toque direto e gestos (swipe, pinch)','Janela única, foco total no conteúdo','Manipulação direta da tela','Precisa de animações/transições sutis']}}
+    },
+    { type:'content', kicker:'Manipulação direta', title:'A física do toque: 44 por 44 pontos',
+      narration:"Aqui vai um número que cai bastante em prova: a área mínima de toque recomendada é de 44 por 44 pontos. Por quê? Porque a tela do celular muda de tamanho de modelo pra modelo, mas a ponta do dedo humano, não. Se os botões forem menores ou ficarem muito próximos, o usuário erra o toque e se frustra. É por isso que, no mobile, você projeta pensando na manipulação direta: a pessoa não usa um ponteiro preciso, ela toca o objeto na tela com o próprio dedo, então a interface precisa ‘imitar’ um pouco as leis físicas do mundo real.",
+      bullets:['Área de toque mínima: 44 x 44 pontos.','O dedo humano não muda de tamanho — a tela sim.','Manipulação direta = a UI deve parecer “física” e responsiva.'],
+      visual:{kind:'target'}
+    },
+    { type:'content', kicker:'Feedback do sistema', title:'Microinterações: pequenas máquinas de estado',
+      narration:"Toda microinteração — aquele carregando, aquele check verde depois de salvar — pode ser vista como uma máquina de estado com quatro partes. Primeiro, o Gatilho: uma ação do usuário, como um clique, ou do sistema, como um erro de rede. Segundo, as Regras: a lógica que roda por trás, tipo uma validação ou uma requisição. Terceiro, o Feedback: como a interface comunica visualmente o que está acontecendo, com cores e barras de progresso, pra reduzir a incerteza do usuário. E quarto, o Loop: quanto tempo a interação dura ou como ela se repete. Pensa num botão de ‘Enviar’: ele é clicado, o app valida os dados, mostra um ‘carregando’, e termina com um ‘Enviado com sucesso’.",
+      bullets:['1. Gatilho → ação do usuário ou do sistema','2. Regras → lógica de backend/validação','3. Feedback → cor, ícone, barra de progresso','4. Loop → duração ou repetição da interação'],
+      visual:{kind:'flow', steps:[{label:'Gatilho',sub:'clique em Enviar'},{label:'Regras',sub:'validação / requisição'},{label:'Feedback',sub:'“carregando...”'},{label:'Loop',sub:'“enviado!”'}]}
+    },
+    { type:'content', kicker:'Ética no design', title:'Persuasão vs manipulação: até onde o design pode ir?',
+      narration:"Design nunca é neutro — e isso é pergunta certa de prova dissertativa. Quando o design ajuda o usuário a decidir com clareza, chamamos de UX persuasivo: reforçar segurança, reduzir incerteza, usar textos funcionais como ‘confirmar pagamento seguro’. Mas quando o design engana o usuário pra favorecer o negócio, isso vira UX manipulativo, os chamados dark patterns: criar ansiedade com contadores falsos, esconder o botão de cancelar assinatura, ou usar jargão confuso pra induzir um clique acidental. A diferença não está na tela bonita, está na intenção: você está facilitando a decisão do usuário, ou dificultando pra ele não escapar?",
+      bullets:['Persuasivo: reduz incerteza, reforça segurança.','Manipulativo (dark pattern): esconde saídas, cria pressão falsa.','A pergunta certa: isso ajuda ou engana o usuário?'],
+      visual:{kind:'compare', winner:'left', left:{title:'UX Persuasivo', items:['Reforça segurança em momentos críticos','Reduz incerteza com micro-feedback','Textos funcionais e claros']}, right:{title:'UX Manipulativo', items:['Cria ansiedade (escassez/tempo falso)','Oculta rotas de saída (ex: cancelar)','Jargão e confusão visual induzem erro']}}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 1',
+      narration:"Fechando o módulo 1, guarda essas ideias. A interface é o próprio sistema para quem usa. A experiência se constrói em camadas, da psicologia até a ética. O cérebro julga a tela em meio segundo e busca padrões visuais pra confirmar essa primeira impressão. No mobile, tudo passa pelo toque, por isso a área mínima de 44 por 44 pontos importa tanto. E, por fim, todo bom design equilibra três pilares: cognição, estrutura e engenharia — sem nunca esquecer da ética.",
+      bullets:['Interface = sistema, na cabeça do usuário.','0,5s para julgar + Gestalt para confirmar.','44x44pt é a régua do toque mobile.','Persuasão ajuda; dark pattern engana.'],
+      visual:{kind:'hero', chips:['Interface = sistema','0,5s','44x44pt','3 pilares']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 1',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Um app de e-commerce esconde o botão de “cancelar assinatura” em três telas de configurações diferentes, dificultando a saída do usuário. Isso é um exemplo de:",
+        options:['Hierarquia visual bem aplicada','Manipulação direta','Dark pattern (UX manipulativo)','Feedback tátil'],
+        correct:2,
+        explain:"Esconder rotas de saída para dificultar o cancelamento é um clássico dark pattern: o design deixa de ajudar o usuário a decidir e passa a manipulá-lo em favor do negócio."
+      }
+    }
+  ]
+},
+{
+  id:'m2', code:'M2', colorVar:'--m2', title:'Eventos &amp; Scroll no Android', sub:'Aula 03',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Eventos, Toques e Listas no Android',
+      narration:"Segundo módulo: interatividade no Android. Vamos ver como o sistema ‘escuta’ o que o usuário faz na tela, como um toque vira código, e por que quase todo app profissional usa RecyclerView em vez de uma lista simples. Esse é o módulo mais técnico até aqui, com bastante nome de classe — mas a lógica por trás é simples, e eu vou te mostrar com exemplos do dia a dia.",
+      bullets:['Ambiente: Android Studio. Linguagem: Kotlin.','Foco: eventos de toque e listas de alta performance.','Vem muita nomenclatura — mas a lógica é direta.'],
+      visual:{kind:'hero', chips:['Kotlin','Listeners','MotionEvent','RecyclerView']}
+    },
+    { type:'content', kicker:'Conceito-base', title:'O que é um evento, afinal?',
+      narration:"Um app mobile existe pra interagir com quem usa ele. Toda vez que você toca num botão, desliza a tela, seleciona um item ou digita num campo de texto, você está gerando um evento. O Android precisa de um jeito de ‘perceber’ isso e reagir — e é exatamente aí que entram os listeners, que vamos ver a seguir.",
+      bullets:['Evento = qualquer ação do usuário na interface.','Clique, toque, pressão longa, digitação, scroll...','O app precisa ‘escutar’ esses eventos para reagir.'],
+      visual:{kind:'hero', chips:['Clique','Toque','Pressão longa','Digitação','Scroll ↕','Scroll ↔']}
+    },
+    { type:'content', kicker:'Arquitetura de eventos', title:'Listeners e Handlers: quem escuta, quem reage',
+      narration:"No Android, existem dois jeitos de capturar um evento. Os Event Listeners são interfaces prontas, com métodos de callback que o próprio framework chama pra você — é o caminho mais comum, tipo ‘setOnClickListener’. Já os Event Handlers são métodos que você sobrescreve diretamente dentro de uma classe que estende ‘View’, como o ‘onTouchEvent’ — dá mais controle, mas exige criar uma view customizada. Na prática, no dia a dia você vai usar listeners na grande maioria das vezes.",
+      bullets:['Listener: interface pronta, callback do framework.','Handler: método sobrescrito numa View customizada.','Listener = mais comum. Handler = mais controle.'],
+      visual:{kind:'compare', left:{title:'Listeners', items:['Interface pronta','Callback chamado pelo framework','Ex: view.setOnClickListener {...}']}, right:{title:'Handlers', items:['Método sobrescrito na View','Mais controle, mais código','Ex: override fun onTouchEvent()']}}
+    },
+    { type:'content', kicker:'OnClickListener &amp; OnLongClickListener', title:'Clique rápido vs pressão longa',
+      narration:"Dois listeners que você vai usar toda hora. O OnClickListener dispara depois de um toque rápido seguido de soltar o dedo — em Kotlin, normalmente com uma lambda. Já o OnLongClickListener dispara quando o usuário mantém o dedo pressionado por mais de meio segundo, e ele retorna um booleano avisando se o evento foi ‘consumido’ ou não. E não esquece do feedback tátil: um efeito visual, como o Ripple Effect, ou uma vibração, avisa ao usuário que o toque dele foi reconhecido — sem isso, a pessoa fica na dúvida se apertou certo.",
+      bullets:['OnClickListener: toque rápido + soltar.','OnLongClickListener: pressão &gt; 500ms, retorna Boolean.','Feedback tátil (Ripple/vibração) confirma o toque.'],
+      visual:{kind:'compare', left:{title:'OnClickListener', items:['Toque rápido + soltar','Uso comum: lambda em Kotlin','view.setOnClickListener {}']}, right:{title:'OnLongClickListener', items:['Pressão mantida &gt; 500ms','Retorna Boolean (consumido?)','Sempre dê feedback tátil/visual']}}
+    },
+    { type:'content', kicker:'ACTION_DOWN, MOVE, UP, CANCEL', title:'A anatomia de um toque: MotionEvent',
+      narration:"Por baixo de qualquer gesto — um clique, um arraste, um swipe — existe um objeto chamado MotionEvent, que registra cada fase do toque. ACTION_DOWN é o instante em que o dedo encosta na tela. ACTION_MOVE é o dedo se deslocando pela superfície. ACTION_UP é quando o dedo é levantado, terminando o gesto. E ACTION_CANCEL acontece quando o gesto é interrompido no meio, por exemplo quando um container pai ‘rouba’ o scroll da view filha. Entender essas quatro fases é a base pra qualquer gesto customizado.",
+      bullets:['ACTION_DOWN → dedo toca a tela','ACTION_MOVE → dedo se move','ACTION_UP → dedo é levantado','ACTION_CANCEL → gesto interrompido'],
+      visual:{kind:'flow', steps:[{label:'ACTION_DOWN',sub:'dedo toca a tela'},{label:'ACTION_MOVE',sub:'dedo se desloca'},{label:'ACTION_UP',sub:'dedo é levantado'},{label:'ACTION_CANCEL',sub:'gesto interrompido'}]}
+    },
+    { type:'content', kicker:'Comparação direta', title:'ScrollView vs RecyclerView: a diferença que decide a prova',
+      narration:"Essa é provavelmente a comparação mais cobrada do módulo. O ScrollView é simples: ele rola verticalmente, mas só aceita um único filho direto, e — atenção — carrega todos os itens na memória de uma vez. Numa lista de 10 itens, tudo bem. Numa lista de mil produtos, isso derruba o FPS e trava o app. O RecyclerView resolve exatamente esse problema: em vez de manter tudo na memória, ele recicla as views que saem da tela e reaproveita pra mostrar os próximos itens. Por isso, a regra é: lista pequena e fixa, pode ser ScrollView; lista grande ou dinâmica, sempre RecyclerView.",
+      bullets:['ScrollView: 1 filho só, carrega tudo na memória.','RecyclerView: recicla views, ideal para listas grandes.','Regra de bolso: lista grande → sempre RecyclerView.'],
+      visual:{kind:'compare', winner:'right', left:{title:'ScrollView', items:['Aceita 1 filho direto apenas','Carrega TODOS os itens na memória','FPS cai em listas grandes','Bom para listas pequenas/fixas']}, right:{title:'RecyclerView', items:['Recicla views (sai/entra da tela)','Ideal para listas grandes/dinâmicas','Precisa de Adapter + ViewHolder','Alta performance de rolagem']}}
+    },
+    { type:'content', kicker:'Adapter &middot; ViewHolder &middot; LayoutManager', title:'As três peças do RecyclerView',
+      narration:"O RecyclerView funciona porque divide responsabilidades entre três componentes. O Adapter é a ponte entre os seus dados — por exemplo, uma lista de produtos — e as views que aparecem na tela. O ViewHolder guarda em cache as referências das views de um item, pra evitar ficar chamando ‘findViewById’ toda hora, o que é caro para a performance. E o LayoutManager decide como os itens são organizados: em lista, como o LinearLayoutManager, em grade, como o GridLayoutManager, ou em grade com alturas diferentes, como o StaggeredGridLayoutManager.",
+      bullets:['Adapter → conecta os dados às views','ViewHolder → cacheia referências, evita findViewById repetido','LayoutManager → organiza os itens (linear, grade, staggered)'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Adapter', desc:'Conecta os dados às views'},
+        {title:'ViewHolder', desc:'Cacheia referências de View'},
+        {title:'LayoutManager', desc:'Organiza os itens na tela'}
+      ]}
+    },
+    { type:'content', kicker:'4 métodos', title:'O ciclo de vida do Adapter, passo a passo',
+      narration:"Pra fazer uma lista funcionar, você implementa quatro passos no Adapter. Primeiro, declara o ViewHolder, uma classe que mapeia os IDs do layout XML. Segundo, implementa o ‘onCreateViewHolder’, que infla o layout do item e cria uma instância nova do ViewHolder — isso acontece só algumas vezes, não pra cada item. Terceiro, o ‘onBindViewHolder’, que pega os dados da posição atual — por exemplo, o nome do produto número 5 — e preenche a view. E quarto, o ‘getItemCount’, que avisa ao RecyclerView quantos itens existem no total, essencial pra ele calcular o scroll.",
+      bullets:['1. ViewHolder → mapeia os IDs do layout','2. onCreateViewHolder() → infla o layout, cria o ViewHolder','3. onBindViewHolder() → liga os dados à posição atual','4. getItemCount() → tamanho total da lista'],
+      visual:{kind:'flow', steps:[{label:'ViewHolder',sub:'mapeia os IDs'},{label:'onCreateViewHolder()',sub:'infla o layout'},{label:'onBindViewHolder()',sub:'liga os dados'},{label:'getItemCount()',sub:'tamanho total'}]}
+    },
+    { type:'content', kicker:'Nested Scrolling', title:'Cuidado com o scroll aninhado',
+      narration:"Às vezes você precisa de uma tela rolável dentro de outra tela rolável — por exemplo, uma toolbar que recolhe enquanto o conteúdo rola. Pra isso existe o Scrolling Aninhado: o NestedScrollView é uma versão do ScrollView preparada pra esse protocolo, e o CoordinatorLayout orquestra interações mais elaboradas entre eles. Mas existe uma armadilha clássica de prova: nunca coloque um RecyclerView dentro de um ScrollView comum. Isso quebra a reciclagem de memória do RecyclerView — ele volta a carregar tudo de uma vez — e ainda gera conflito de quem controla o scroll.",
+      bullets:['NestedScrollView: ScrollView preparado para scroll coordenado.','CoordinatorLayout: orquestra comportamentos (ex: toolbar).','Nunca: RecyclerView dentro de ScrollView comum.'],
+      visual:{kind:'compare', winner:'left', left:{title:'Recomendado', items:['NestedScrollView para scroll coordenado','CoordinatorLayout orquestra comportamentos','Toolbar que recolhe, por exemplo']}, right:{title:'Evite', items:['RecyclerView dentro de ScrollView comum','Quebra a reciclagem de memória','Gera conflito de quem controla o scroll']}}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 2',
+      narration:"Resumindo o módulo 2: todo toque do usuário é um evento, capturado por um listener ou tratado por um handler. O MotionEvent registra as quatro fases de um gesto: down, move, up e cancel. Para listas, o ScrollView é simples mas caro, carregando tudo na memória; o RecyclerView resolve isso reciclando views, com a ajuda do Adapter, do ViewHolder e do LayoutManager. E lembra da regra de ouro: nunca misture RecyclerView dentro de ScrollView comum.",
+      bullets:['Evento → Listener/Handler capturam a ação.','MotionEvent: DOWN, MOVE, UP, CANCEL.','RecyclerView recicla; ScrollView carrega tudo.','Nunca RecyclerView dentro de ScrollView comum.'],
+      visual:{kind:'hero', chips:['Evento→Listener','4 fases do toque','RecyclerView recicla','Sem aninhar em ScrollView']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 2',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"No desenvolvimento Android com RecyclerView, qual é o principal benefício do padrão ViewHolder?",
+        options:['Gerenciar automaticamente a conexão com bancos de dados remotos.','Evitar chamadas repetitivas ao método findViewById(), melhorando a performance de rolagem.','Permitir que a lista aceite diferentes tipos de dados simultaneamente.','Garantir que a lista sempre role na horizontal e vertical ao mesmo tempo.'],
+        correct:1,
+        explain:"O ViewHolder faz cache das referências de View de cada item, então o RecyclerView não precisa buscar essas views de novo (findViewById) toda vez que um item aparece na tela — isso é o que garante a fluidez da rolagem."
+      }
+    }
+  ]
+},
+{
+  id:'m3', code:'M3', colorVar:'--m3', title:'APIs &amp; Webhooks', sub:'Aula 04',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Conectividade: APIs e Webhooks no Android',
+      narration:"Terceiro módulo: como o seu app Android conversa com o mundo lá fora. Quase todo aplicativo moderno depende de um servidor — banco, delivery, rede social, previsão do tempo. Vamos entender a arquitetura cliente-servidor, como fazer requisições com Retrofit, e a diferença entre um app que fica perguntando ‘chegou novidade?’ toda hora, e um app que é avisado automaticamente quando algo muda. Essa segunda parte é o conceito de Webhook, e cai bastante em prova.",
+      bullets:['Seu app é o cliente; os dados ficam no servidor.','Vamos ver REST, JSON, Retrofit e Webhooks.','Foco especial em Polling vs Webhook.'],
+      visual:{kind:'hero', chips:['REST','JSON','Retrofit','Webhook']}
+    },
+    { type:'content', kicker:'Arquitetura cliente-servidor', title:'O app Android é o cliente',
+      narration:"A arquitetura por trás de praticamente todo app conectado segue o mesmo caminho. O aplicativo Android funciona como cliente: ele cuida só da interface. Ele conversa por HTTP ou HTTPS com uma API REST, que por sua vez fala com um servidor, onde ficam as regras de negócio — por exemplo, calcular o frete de uma entrega. E o servidor conversa com o banco de dados, onde os dados realmente moram. Separar essas camadas é o que permite atualizar o servidor sem precisar atualizar o app na loja.",
+      bullets:['App Android (cliente) → API REST → Servidor → Banco','O app cuida da UI; o servidor cuida da lógica e dos dados.','Separar camadas permite atualizar o backend sem mexer no app.'],
+      visual:{kind:'stack', layers:[
+        {label:'App Android', sub:'Cliente — cuida da interface (UI)'},
+        {label:'API REST', sub:'Contrato padronizado via HTTP/HTTPS'},
+        {label:'Servidor', sub:'Regras de negócio'},
+        {label:'Banco de Dados', sub:'Onde os dados realmente moram'}
+      ]}
+    },
+    { type:'content', kicker:'Application Programming Interface', title:'O que é uma API, na prática',
+      narration:"API é a sigla de Application Programming Interface — em português, Interface de Programação de Aplicações. É simplesmente uma forma padronizada de dois sistemas conversarem. Exemplo real: um app de loja precisa mostrar os produtos disponíveis. Ele faz uma requisição GET para ‘api.loja.com barra produtos’, e o servidor responde com uma lista de produtos, cada um com id, nome e preço. O app não precisa saber como o servidor guarda esses dados no banco — ele só precisa saber o ‘contrato’ da API.",
+      bullets:['API = forma padronizada de sistemas se comunicarem.','Exemplo: GET https://api.loja.com/produtos','O app não precisa saber como o servidor guarda os dados.'],
+      visual:{kind:'code', blocks:[
+        {label:'Requisição', code:'GET https://api.loja.com/produtos'},
+        {label:'Resposta (JSON)', code:'[\n  {\n    "id": 1,\n    "nome": "Notebook",\n    "preco": 3500.00\n  }\n]'}
+      ]}
+    },
+    { type:'content', kicker:'Intercâmbio de dados', title:'JSON: a caixa que carrega os dados',
+      narration:"O JSON, JavaScript Object Notation, é o formato padrão para transportar dados entre o app e a API, porque é leve e fácil de interpretar. Um usuário, por exemplo, pode chegar como um objeto com id, nome, curso e idade. No Android, esse JSON não fica solto: você o converte para um objeto Kotlin, geralmente uma ‘data class’, com os mesmos campos e tipos. Isso te dá segurança de tipo: o compilador te avisa se você tentar usar um campo que não existe.",
+      bullets:['JSON = formato leve para trocar dados entre sistemas.','No Android: JSON vira uma data class Kotlin.','Isso dá segurança de tipo em tempo de compilação.'],
+      visual:{kind:'code', blocks:[
+        {label:'JSON recebido', code:'{\n  "id": 10,\n  "nome": "João",\n  "curso": "Sistemas de Informação",\n  "idade": 21\n}'},
+        {label:'data class (Kotlin)', code:'data class Aluno(\n  val id: Int,\n  val nome: String,\n  val curso: String,\n  val idade: Int\n)'}
+      ]}
+    },
+    { type:'content', kicker:'GET, POST, PUT, DELETE, PATCH', title:'Os verbos HTTP: o que cada ação faz',
+      narration:"Toda comunicação REST usa verbos HTTP pra dizer qual ação você quer fazer. GET lê um recurso, sem alterar nada. POST cria um recurso novo no servidor. PUT substitui um recurso inteiro. DELETE remove um recurso específico. E PATCH atualiza só uma parte dele, sem reescrever tudo. Além do verbo, a resposta vem com um código de status, como 200 pra sucesso ou 404 pra ‘não encontrado’ — juntos, verbo e status contam a história completa da requisição.",
+      bullets:['GET → ler | POST → criar | PUT → substituir','DELETE → remover | PATCH → atualizar parcialmente','Código de status (200, 404...) conta o resultado.'],
+      visual:{kind:'gridcards', cols:5, items:[
+        {title:'GET', desc:'Lê um recurso'},
+        {title:'POST', desc:'Cria um recurso'},
+        {title:'PUT', desc:'Substitui um recurso'},
+        {title:'DELETE', desc:'Remove um recurso'},
+        {title:'PATCH', desc:'Atualiza parcialmente'}
+      ]}
+    },
+    { type:'content', kicker:'Como o app fala com a API', title:'Retrofit e OkHttp na arquitetura MVVM',
+      narration:"Na prática, o Android não faz requisições HTTP na mão — ele usa o Retrofit, uma biblioteca que transforma sua API REST numa interface Kotlin, cuidando de converter JSON em objetos automaticamente. Por baixo do Retrofit, roda o OkHttp, o motor de rede que gerencia conexões, cache e compressão, e permite interceptors para autenticação. E tudo isso se encaixa na arquitetura MVVM: a tela conversa com a ViewModel, a ViewModel pede os dados pro Repository, o Repository chama o Retrofit, que finalmente fala com a API REST no servidor.",
+      bullets:['Retrofit: transforma a API REST numa interface Kotlin.','OkHttp: motor de rede por trás do Retrofit (cache, interceptors).','Fluxo MVVM: View → ViewModel → Repository → Retrofit → API'],
+      visual:{kind:'stack', layers:[
+        {label:'View (tela)', sub:'Compose / XML'},
+        {label:'ViewModel', sub:'Estado da tela'},
+        {label:'Repository', sub:'Fonte única de dados'},
+        {label:'Retrofit + OkHttp', sub:'Interface HTTP type-safe'},
+        {label:'API REST', sub:'Servidor remoto'}
+      ]}
+    },
+    { type:'content', kicker:'Receita prática', title:'5 passos para integrar o Retrofit',
+      narration:"Se cair uma questão pedindo pra descrever a integração do Retrofit, são cinco passos. Um: adicionar as dependências do Retrofit e de um conversor JSON, como o Gson, no build.gradle. Dois: criar uma interface com os métodos da API, anotados com o verbo HTTP, tipo arroba GET ‘users barra id’. Três: configurar o cliente Retrofit, definindo a URL base e o conversor. Quatro: fazer a chamada de forma assíncrona, usando ‘suspend fun’ com Coroutines, pra não travar a tela enquanto espera a resposta. E cinco: tratar erros, com try/catch, cobrindo tanto falha de rede quanto resposta de erro da API.",
+      bullets:['1. Dependências (retrofit2 + gson) no build.gradle','2. Interface da API com anotações (@GET, @POST...)','3. Configurar baseUrl + ConverterFactory','4. Chamada assíncrona com suspend fun (Coroutines)','5. Tratar erros com try/catch'],
+      visual:{kind:'flow', steps:[{label:'Dependências',sub:'retrofit2 + gson'},{label:'Interface API',sub:'@GET, @POST'},{label:'Config. cliente',sub:'baseUrl + Converter'},{label:'Chamada assíncrona',sub:'suspend fun'},{label:'Tratar erros',sub:'try/catch'}]}
+    },
+    { type:'content', kicker:'Pull vs Push', title:'Polling vs Webhook: quem pergunta, quem avisa',
+      narration:"Essa é a grande sacada do módulo. No modelo Polling, ou Pull, o app fica perguntando pro servidor de tempos em tempos: ‘tem novidade? tem novidade?’ — por exemplo, a cada 30 segundos. Isso gasta bateria e gera atraso à toa, porque na maioria das vezes a resposta é ‘não mudou nada’. No modelo Webhook, ou Push, é o servidor que avisa o app assim que algo acontece — por exemplo, quando um pagamento é aprovado. Só que, como o celular não tem um endereço fixo na internet, o servidor não manda o webhook direto pra ele: ele manda pro Firebase Cloud Messaging, o FCM, que entrega uma notificação silenciosa pro app, que então aciona um Broadcast Receiver e um Service para processar o evento.",
+      bullets:['Polling (Pull): o app pergunta de tempos em tempos.','Webhook (Push): o servidor avisa quando o evento acontece.','No mobile: Servidor → FCM → Dispositivo → Receiver/Service'],
+      visual:{kind:'compare', winner:'right', left:{title:'Polling (Pull)', items:['O app pergunta em intervalos fixos','Gasta bateria à toa','Latency desnecessária']}, right:{title:'Webhook (Push)', items:['Servidor avisa quando o evento ocorre','Reação imediata, economiza bateria','No mobile chega via FCM']}}
+    },
+    { type:'content', kicker:'Boas práticas', title:'Segurança: não confie em qualquer requisição',
+      narration:"Pra fechar com segurança, quatro práticas que toda API Android deveria seguir. Sempre HTTPS, nunca texto puro, usando TLS pra proteger os dados em trânsito. Configure o Network Security Configuration, um XML que restringe quais domínios o app pode acessar, e pode aplicar Certificate Pinning contra ataques do tipo man-in-the-middle. Use um Interceptor de autenticação no OkHttp, pra injetar automaticamente o token JWT em toda requisição, sem repetir código. E, no caso de Webhooks, valide sempre a assinatura HMAC do payload recebido, pra ter certeza de que aquele evento realmente veio do servidor esperado, e não de um atacante forjando a chamada.",
+      bullets:['HTTPS sempre (TLS), nunca texto puro.','Network Security Config + Certificate Pinning.','Interceptor injeta token JWT automaticamente.','Webhook: validar assinatura HMAC do payload.'],
+      visual:{kind:'gridcards', cols:2, items:[
+        {title:'HTTPS sempre', desc:'TLS protege os dados em trânsito'},
+        {title:'Network Security Config', desc:'Restringe domínios + Certificate Pinning'},
+        {title:'Interceptor JWT', desc:'Injeta token automaticamente (OkHttp)'},
+        {title:'Validar HMAC', desc:'Confirma a origem legítima do Webhook'}
+      ]}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 3',
+      narration:"Fechando o módulo 3: o app Android é cliente, o servidor guarda dados e regras de negócio, e os dois conversam via API REST usando JSON. O Retrofit, apoiado no OkHttp, transforma essa API numa interface Kotlin fácil de chamar dentro da arquitetura MVVM. E a diferença mais cobrada: Polling é o app perguntando sem parar; Webhook é o servidor avisando na hora certa, chegando ao celular através do FCM. Sem esquecer: toda essa comunicação precisa de HTTPS e validação de origem.",
+      bullets:['Cliente (app) → API REST (JSON) → Servidor → Banco','Retrofit + OkHttp dentro da arquitetura MVVM','Polling pergunta; Webhook avisa (via FCM no mobile)','Segurança: HTTPS + validação sempre'],
+      visual:{kind:'hero', chips:['Cliente→Servidor','Retrofit+OkHttp','Polling vs Webhook','HTTPS sempre']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 3',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Qual alternativa descreve corretamente a principal diferença entre Polling e Webhooks?",
+        options:['Webhooks só funcionam em redes locais, enquanto Polling funciona na internet.','O Retrofit é a única biblioteca que permite implementar Webhooks em Android.','Polling é assíncrono e Webhooks são síncronos.','No Polling o cliente solicita atualizações; no Webhook o servidor envia atualizações quando eventos ocorrem.'],
+        correct:3,
+        explain:"Polling é o cliente puxando informação (pull) em intervalos; Webhook é o servidor empurrando (push) a informação assim que o evento acontece — essa inversão de quem inicia a comunicação é a diferença central."
+      }
+    }
+  ]
+},
+{
+  id:'m4', code:'M4', colorVar:'--m4', title:'Material Design 3', sub:'Aula 05',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Temas, Cores, Fontes e Ícones',
+      narration:"Último módulo: Material Design 3, o sistema de design oficial do Android. Vamos entender como o app se adapta ao gosto de cada usuário através das cores dinâmicas, como a tipografia é organizada numa escala consistente, e como os ícones seguem uma grade padrão. É um módulo mais visual, mas com termos técnicos específicos que costumam aparecer em prova de múltipla escolha — presta atenção nos nomes.",
+      bullets:['Material Design 3 = sistema de design do Android moderno.','Foco: cores dinâmicas, tipografia e ícones.','Muitos termos técnicos — vale grifar os nomes.'],
+      visual:{kind:'hero', chips:['Material You','Dynamic Color','HCT','Type Scale']}
+    },
+    { type:'content', kicker:'Personalização &middot; Expressão &middot; Adaptabilidade', title:'Os 3 pilares do Material Design 3',
+      narration:"O Material Design 3 se apoia em três pilares. Personalização, com o sistema ‘Material You’, que adapta a interface às preferências de cada usuário, de forma dinâmica. Expressão, que dá liberdade criativa com estilos de fonte e forma, permitindo identidades visuais únicas pra cada app. E Adaptabilidade, interfaces que se ajustam organicamente a diferentes tamanhos de tela e estados do sistema, como dobráveis e telas grandes. Repara que o nome ‘Material You’ já entrega o conceito: o Material adaptado a você.",
+      bullets:['Personalização → ‘Material You’, adapta-se ao usuário','Expressão → liberdade de fontes e formas','Adaptabilidade → se ajusta a telas e estados diferentes'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Personalização', desc:'‘Material You’ adapta-se ao usuário'},
+        {title:'Expressão', desc:'Liberdade de fontes e formas'},
+        {title:'Adaptabilidade', desc:'Ajusta-se a telas e estados'}
+      ]}
+    },
+    { type:'content', kicker:'Dynamic Color', title:'Cores dinâmicas: do papel de parede à paleta',
+      narration:"O recurso mais marcante do Material You é o Dynamic Color. O sistema extrai as cores dominantes do papel de parede do usuário e usa isso como uma ‘cor semente’. A partir dessa única cor semente, o Android gera automaticamente cinco paletas tonais: Primary, Secondary, Tertiary, Neutral e Neutral Variant. O resultado é que o seu app passa a combinar visualmente com o resto do sistema operacional daquele usuário específico, sem você precisar programar isso manualmente pra cada pessoa.",
+      bullets:['1 cor semente extraída do papel de parede','→ gera 5 paletas tonais automaticamente','Primary, Secondary, Tertiary, Neutral, Neutral Variant'],
+      visual:{kind:'flow', steps:[{label:'Papel de parede',sub:'cores extraídas'},{label:'Cor semente',sub:'1 cor base'},{label:'5 paletas tonais',sub:'Primary, Secondary...'},{label:'App tematizado',sub:'combina com o sistema'}]}
+    },
+    { type:'content', kicker:'Color Roles', title:'Cores têm papéis, não valores fixos',
+      narration:"No Material 3, uma cor não é definida por um valor hexadecimal fixo, tipo ‘esse azul aqui’ — ela é definida pelo papel que exerce na interface. Primary é a cor de maior destaque, usada em botões principais e estados ativos. Secondary é uma cor menos proeminente, pra elementos menos críticos. Tertiary funciona como um sotaque, dando contraste em relação à marca. Surface é o fundo de cartões e containers. E Error é reservada pra mensagens de alerta e falha. Pensar em ‘papéis’ em vez de ‘cores fixas’ é o que permite o tema mudar de claro pra escuro sem quebrar nada.",
+      bullets:['Primary → destaque (botões, estados ativos)','Secondary → elementos menos críticos','Tertiary → sotaque/contraste','Surface → fundo | Error → alertas'],
+      visual:{kind:'swatches', items:[
+        {name:'Primary', hex:'#8b6cf0', use:'Botões e estados ativos'},
+        {name:'Secondary', hex:'#7ea1c9', use:'Elementos menos críticos'},
+        {name:'Tertiary', hex:'#e0a3c2', use:'Sotaque / contraste'},
+        {name:'Surface', hex:'#342c52', use:'Fundo de cartões'},
+        {name:'Error', hex:'#ef5c6e', use:'Alertas e falhas'}
+      ]}
+    },
+    { type:'content', kicker:'Hue, Chroma, Tone', title:'Acessibilidade embutida: o modelo HCT',
+      narration:"A acessibilidade não é um extra no Material Design 3, ela nasce dentro do próprio sistema de cores, através do modelo HCT: Hue, ou matiz; Chroma, ou saturação; e Tone, a luminância. O contraste entre um texto e seu fundo não é calculado só pela cor em si, mas pela diferença de Tone entre elas. Assim, as combinações ‘on-color’ — por exemplo, o branco que fica em cima de um botão azul — são calculadas automaticamente pra atingir o contraste mínimo exigido pela WCAG, de 4,5 para 1 no texto normal, ou 3 para 1 em elementos maiores.",
+      bullets:['HCT = Hue (matiz), Chroma (saturação), Tone (luminância)','Contraste é calculado pela diferença de Tone.','Meta: WCAG 4.5:1 (texto) ou 3:1 (elementos grandes)'],
+      visual:{kind:'hero', lead:'Contraste mínimo de 4,5:1 (texto) ou 3:1 (elementos grandes) — padrão WCAG.', chips:['Hue','Chroma','Tone']}
+    },
+    { type:'content', kicker:'Type Scale', title:'A escala tipográfica: 15 estilos, 5 categorias',
+      narration:"Pra manter a tipografia consistente em todo o app, o Material Design define uma escala com quinze estilos de texto, organizados em cinco categorias. Display é usado para textos grandes e de impacto, como telas de abertura. Headline serve pra títulos de seções importantes. Title é pra subtítulos de componentes, como cartões e diálogos. Body é o texto corrido principal, o que a pessoa realmente lê. E Label é reservado pra textos pequenos, como botões e legendas. A dica de boas práticas: use no máximo duas ou três dessas categorias por tela, senão a hierarquia visual se perde.",
+      bullets:['Display → destaque máximo (telas de abertura)','Headline → títulos de seção','Title → subtítulos de componentes','Body → texto corrido | Label → botões, legendas'],
+      visual:{kind:'typescale', items:[
+        {name:'Display', size:'34px', use:'Telas de abertura, impacto'},
+        {name:'Headline', size:'26px', use:'Títulos de seção'},
+        {name:'Title', size:'20px', use:'Subtítulos de componentes'},
+        {name:'Body', size:'16px', use:'Texto corrido principal'},
+        {name:'Label', size:'13px', use:'Botões e legendas'}
+      ]}
+    },
+    { type:'content', kicker:'Font-family', title:'Fontes: Roboto e fontes variáveis',
+      narration:"A fonte padrão do Android é a Roboto, escolhida por equilibrar legibilidade com suporte a caracteres de várias línguas. O Material 3 incentiva o uso de fontes variáveis, que ajustam peso e largura num único arquivo, em vez de carregar um arquivo separado pra cada estilo — isso melhora a performance do app. E não esquece do ‘line height’, o espaçamento entre linhas: o valor padrão do Material 3 é calculado pra evitar que letras com haste, tipo ‘p’ e ‘j’, colidam entre uma linha e outra, garantindo uma leitura confortável.",
+      bullets:['Roboto: fonte padrão, foco em legibilidade.','Fontes variáveis: 1 arquivo, vários pesos/larguras.','Line height correto evita colisão entre linhas.'],
+      visual:{kind:'hero', chips:['Roboto','Fontes variáveis','Line-height ajustado']}
+    },
+    { type:'content', kicker:'Grid de 24dp', title:'Ícones seguem regra: Material Symbols',
+      narration:"Ícones não são só decoração, são símbolos funcionais que ajudam na navegação rápida. A geração atual, os Material Symbols, funciona como uma fonte variável, permitindo ajustar peso, preenchimento, grade e tamanho óptico programaticamente, sem trocar de arquivo. Todo ícone é desenhado dentro de uma grade, um grid, de 24 por 24dp, o que garante alinhamento visual e uma área de toque adequada. E existem três estilos possíveis — Outlined, Rounded e Sharp — mas o importante é escolher um só e manter consistência em todo o app.",
+      bullets:['Material Symbols = ícones como fonte variável.','Grid de construção: 24dp x 24dp.','Estilos: Outlined, Rounded, Sharp — mantenha 1 só.'],
+      visual:{kind:'icons'}
+    },
+    { type:'content', kicker:'Do código à tela', title:'Implementando o tema global, passo a passo',
+      narration:"Pra colocar tudo isso em prática no seu projeto, são quatro passos. Primeiro, defina o ColorScheme, criando um ‘lightColorScheme’ e um ‘darkColorScheme’ pra gerenciar os modos claro e escuro. Segundo, configure a Typography, mapeando cada estilo de texto — headline, body e assim por diante — pra fontes, tamanhos e pesos específicos. Terceiro, encapsule tudo numa função Composable, geralmente chamada ‘MyTheme’, que envolve o conteúdo do app com o MaterialTheme configurado. E quarto, se quiser aproveitar o Dynamic Color, verifique se o dispositivo é Android 12 ou mais recente, e, se for, injete as cores extraídas do papel de parede do sistema no seu ColorScheme.",
+      bullets:['1. ColorScheme (light/dark)','2. Typography (estilos de texto)','3. Composable ‘MyTheme’ → aplica o MaterialTheme','4. Dynamic Color (Android 12+) → injeta cores do wallpaper'],
+      visual:{kind:'flow', steps:[{label:'ColorScheme',sub:'light / dark'},{label:'Typography',sub:'estilos de texto'},{label:'Composable MyTheme',sub:'aplica MaterialTheme'},{label:'Dynamic Color',sub:'Android 12+'}]}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 4',
+      narration:"Fechando o módulo 4 e o curso: Material Design 3 se apoia em personalização, expressão e adaptabilidade. As cores são definidas por papéis, não por valores fixos, e podem ser geradas dinamicamente a partir do papel de parede do usuário, usando o modelo HCT pra garantir contraste acessível. A tipografia segue uma escala de quinze estilos, em cinco categorias, sempre usando a família Roboto. E os ícones, os Material Symbols, seguem uma grade de 24dp, com três estilos possíveis, mas sempre mantendo consistência.",
+      bullets:['3 pilares: Personalização, Expressão, Adaptabilidade','Cor = papel (role), não valor fixo. HCT garante contraste.','Tipografia: 15 estilos em 5 categorias (Roboto).','Ícones: Material Symbols, grid de 24dp.'],
+      visual:{kind:'hero', chips:['3 pilares','Cor = papel','HCT','Grid 24dp']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 4',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Qual é a principal inovação do sistema de cores do Material Design 3 em relação à acessibilidade e personalização?",
+        options:['O uso de cores hexadecimais fixas baseadas exclusivamente na marca da empresa.','A obrigatoriedade de usar apenas preto e branco para garantir contraste máximo.','A geração automática de paletas tonais a partir de uma cor semente, com contraste otimizado pelo modelo HCT.','A remoção total da tipografia customizada, focando apenas em ícones dinâmicos.'],
+        correct:2,
+        explain:"O Material 3 extrai uma cor semente (do papel de parede, por exemplo) e gera automaticamente paletas tonais completas, calculando contraste pelo modelo HCT — isso une personalização (cada usuário tem sua paleta) com acessibilidade (contraste garantido)."
+      }
+    }
+  ]
+},
+{
+  id:'m5', code:'REV', colorVar:'--m5', title:'Revisão Final', sub:'Antes da prova',
+  cards:[
+    { type:'summary', kicker:'Revisão geral', title:'Checklist final: os pontos que mais caem',
+      narration:"Vamos fazer uma revisão relâmpago dos quatro módulos, juntando só o que mais cai em prova. Em UI e UX: a interface é o sistema pra quem usa, o cérebro julga a tela em meio segundo, e a área mínima de toque é 44 por 44 pontos. Em Eventos e Scroll: RecyclerView recicla views com Adapter, ViewHolder e LayoutManager, e nunca deve ficar dentro de um ScrollView comum. Em APIs e Webhooks: o app é cliente, fala REST em JSON com o Retrofit, e a diferença chave é Polling, que pergunta, contra Webhook, que avisa, chegando ao celular pelo FCM. E em Material Design 3: cores são papéis, não valores fixos, geradas dinamicamente com o modelo HCT, e a tipografia segue uma escala de quinze estilos. Se você entendeu essas cinco ideias, já sai na frente na prova.",
+      bullets:['UI/UX: interface = sistema &middot; 0,5s &middot; toque 44x44pt','Eventos: RecyclerView recicla (Adapter+ViewHolder+LayoutManager)','APIs: Polling pergunta / Webhook avisa (via FCM)','M3: cor = papel (role) &middot; HCT garante contraste &middot; 15 estilos de texto'],
+      visual:{kind:'gridcards', cols:4, items:[
+        {title:'M1 &middot; UI/UX', list:['Interface = sistema','Julgamento em 0,5s','Toque mínimo 44x44pt']},
+        {title:'M2 &middot; Eventos', list:['Listener escuta a ação','RecyclerView recicla views','Nunca dentro de ScrollView']},
+        {title:'M3 &middot; APIs', list:['Cliente → REST → Servidor','Retrofit + OkHttp (MVVM)','Webhook avisa via FCM']},
+        {title:'M4 &middot; Material 3', list:['Cor = papel, não valor','HCT garante contraste','15 estilos tipográficos']}
+      ]}
+    },
+    { type:'summary', kicker:'Última palavra', title:'Você está pronto',
+      narration:"Chegamos ao fim da revisão. Você passou pelos quatro pilares do curso: como pensar a experiência do usuário, como o Android reage às interações, como seu app conversa com o mundo lá fora, e como deixar tudo isso bonito e consistente com o Material Design. Se ainda ficou alguma dúvida, volta nos cards do menu lateral e escuta de novo — a repetição é sua maior aliada antes da prova. Bora com tudo!",
+      bullets:['Revise os cards ainda não marcados como vistos.','Reescute a explicação dos quizzes que você errou.','Boa prova!'],
+      visual:{kind:'hero', lead:'A repetição é sua maior aliada antes da prova. Boa sorte!'}
+    }
+  ]
+}
+];
+
+/* ================= VISUAL RENDERERS ================= */
+function visualHTML(v){
+  switch(v.kind){
+    case 'hero': return renderHero(v);
+    case 'stack': return renderStack(v);
+    case 'flow': return renderFlow(v);
+    case 'compare': return renderCompare(v);
+    case 'gridcards': return renderGrid(v);
+    case 'swatches': return renderSwatches(v);
+    case 'typescale': return renderTypescale(v);
+    case 'icons': return renderIcons();
+    case 'code': return renderCode(v);
+    case 'target': return renderTarget();
+    case 'brain': return renderBrain();
+    default: return '';
+  }
+}
+function renderHero(v){
+  var lead = v.lead ? '<div class="hero-lead">'+v.lead+'</div>' : '';
+  var chips = v.chips ? '<div class="hero-chips">'+v.chips.map(function(c){return '<span class="chip">'+c+'</span>';}).join('')+'</div>' : '';
+  return '<div class="viz-hero">'+lead+chips+'</div>';
+}
+function renderStack(v){
+  var rows = v.layers.map(function(l,i){
+    var arrow = i < v.layers.length-1 ? '<div class="stack-arrow">'+chevronSVG('down')+'</div>' : '';
+    return '<div class="stack-row"><div class="stack-num">'+(i+1)+'</div><div class="stack-body"><div class="stack-label">'+l.label+'</div>'+(l.sub?'<div class="stack-sub">'+l.sub+'</div>':'')+'</div></div>'+arrow;
+  }).join('');
+  return '<div class="viz-stack">'+rows+'</div>';
+}
+function renderFlow(v){
+  var parts = v.steps.map(function(s,i){
+    var arrow = i < v.steps.length-1 ? '<div class="flow-arrow">'+chevronSVG('right')+'</div>' : '';
+    return '<div class="flow-step"><div class="flow-num">'+(i+1)+'</div><div class="flow-label">'+s.label+'</div>'+(s.sub?'<div class="flow-sub">'+s.sub+'</div>':'')+'</div>'+arrow;
+  }).join('');
+  return '<div class="viz-flow">'+parts+'</div>';
+}
+function renderCompare(v){
+  var lw = v.winner==='left' ? ' winner' : '';
+  var rw = v.winner==='right' ? ' winner' : '';
+  var L = v.left, R = v.right;
+  return '<div class="viz-compare">'+
+    '<div class="cmp-col'+lw+'"><div class="cmp-head">'+L.title+'</div><ul>'+L.items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div>'+
+    '<div class="cmp-vs">vs</div>'+
+    '<div class="cmp-col'+rw+'"><div class="cmp-head">'+R.title+'</div><ul>'+R.items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div>'+
+  '</div>';
+}
+function renderGrid(v){
+  var items = v.items.map(function(it){
+    var desc = it.desc ? '<div class="grid-card-desc">'+it.desc+'</div>' : '';
+    var list = it.list ? '<ul class="grid-card-list">'+it.list.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>' : '';
+    return '<div class="grid-card"><div class="grid-card-title">'+it.title+'</div>'+desc+list+'</div>';
+  }).join('');
+  return '<div class="viz-grid">'+items+'</div>';
+}
+function renderSwatches(v){
+  var items = v.items.map(function(it){
+    return '<div class="swatch"><div class="swatch-color" style="background:'+it.hex+'"></div><div class="swatch-name">'+it.name+'</div><div class="swatch-use">'+it.use+'</div></div>';
+  }).join('');
+  return '<div class="viz-swatch-row">'+items+'</div>';
+}
+function renderTypescale(v){
+  var rows = v.items.map(function(it){
+    return '<div class="type-row"><div class="type-sample" style="font-size:'+it.size+'">Aa</div><div class="type-meta"><span class="type-name">'+it.name+'</span><span class="type-use">'+it.use+'</span></div></div>';
+  }).join('');
+  return '<div class="viz-typescale">'+rows+'</div>';
+}
+function renderIcons(){
+  var glyphs = [
+    '<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/>',
+    '<circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2"/><line x1="14.2" y1="14.2" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    '<polyline points="4,11 12,4 20,11" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="6" y="11" width="12" height="9" fill="none" stroke="currentColor" stroke-width="2"/>',
+    '<rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/>',
+    '<polygon points="12,4 15,10 21,11 16.5,15 18,21 12,17.5 6,21 7.5,15 3,11 9,10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+  ];
+  var cells = glyphs.map(function(g){ return '<div class="icon-cell"><svg viewBox="0 0 24 24" class="icon-glyph" aria-hidden="true">'+g+'</svg></div>'; }).join('');
+  return '<div class="viz-icons">'+cells+'</div>';
+}
+function renderCode(v){
+  var blocks = v.blocks.map(function(b){
+    return '<div class="code-block"><div class="code-label">'+b.label+'</div><pre class="code-pre"><code>'+escapeHtml(b.code)+'</code></pre></div>';
+  }).join('');
+  return '<div class="viz-code-row">'+blocks+'</div>';
+}
+function renderTarget(){
+  return '<div class="viz-svg-wrap"><svg viewBox="0 0 400 250" role="img" aria-label="Um botão de 44 por 44 pontos com a área de toque de um dedo sobreposta, mostrando a área mínima de toque recomendada.">'+
+  '<rect x="150" y="70" width="140" height="140" rx="22" fill="var(--card-accent)" fill-opacity="0.14" stroke="currentColor" stroke-width="2"/>'+
+  '<ellipse cx="220" cy="140" rx="36" ry="42" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.6" stroke-dasharray="5 4"/>'+
+  '<line x1="150" y1="50" x2="290" y2="50" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="150" y1="44" x2="150" y2="56" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="290" y1="44" x2="290" y2="56" stroke="currentColor" stroke-width="1.4"/>'+
+  '<text x="220" y="36" text-anchor="middle" font-size="13" fill="currentColor" font-family="IBM Plex Mono, monospace">44pt</text>'+
+  '<line x1="130" y1="70" x2="130" y2="210" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="124" y1="70" x2="136" y2="70" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="124" y1="210" x2="136" y2="210" stroke="currentColor" stroke-width="1.4"/>'+
+  '<text x="112" y="144" text-anchor="end" font-size="13" fill="currentColor" font-family="IBM Plex Mono, monospace">44pt</text>'+
+  '<text x="220" y="230" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">botão &nbsp; + &nbsp; área de toque do dedo</text>'+
+  '</svg></div><div class="svg-caption">A área mínima recomendada de toque é 44&times;44 pontos — o dedo humano não encolhe de acordo com a tela.</div>';
+}
+function renderBrain(){
+  return '<div class="viz-svg-wrap"><svg viewBox="0 0 640 220" role="img" aria-label="Um olho à esquerda envia um estímulo visual, em meio segundo, até um agrupamento de círculos representando o cérebro à direita.">'+
+  '<ellipse cx="90" cy="112" rx="48" ry="28" fill="none" stroke="currentColor" stroke-width="2"/>'+
+  '<circle cx="90" cy="112" r="13" fill="currentColor"/>'+
+  '<text x="90" y="168" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">Estímulo visual</text>'+
+  '<line x1="150" y1="112" x2="420" y2="112" stroke="currentColor" stroke-width="2"/>'+
+  '<polygon points="420,112 408,106 408,118" fill="currentColor"/>'+
+  '<rect x="250" y="88" width="72" height="26" rx="13" fill="var(--card-accent)" fill-opacity="0.18" stroke="var(--card-accent)" stroke-width="1.4"/>'+
+  '<text x="286" y="105" text-anchor="middle" font-size="13" fill="var(--card-accent)" font-family="IBM Plex Mono, monospace">0,5s</text>'+
+  '<g fill="none" stroke="currentColor" stroke-width="1.6">'+
+  '<circle cx="500" cy="108" r="30"/><circle cx="535" cy="95" r="22"/><circle cx="540" cy="130" r="24"/><circle cx="505" cy="140" r="20"/><circle cx="470" cy="120" r="18"/>'+
+  '</g>'+
+  '<text x="510" y="168" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">Decisão instantânea</text>'+
+  '</svg></div><div class="svg-caption">O cérebro processa a tela e forma uma primeira impressão em cerca de 0,5 segundo, antes da leitura consciente começar.</div>';
+}
+
+/* ================= FLATTEN ================= */
+var FLAT = [];
+MODULES.forEach(function(mod){
+  mod.cards.forEach(function(card){ FLAT.push({module:mod, card:card}); });
+});
+var TOTAL_QUIZZES = FLAT.filter(function(f){ return f.card.type==='quiz'; }).length;
+
+/* ================= STATE ================= */
+var STORAGE_KEY = 'kdev_mobile_review_v2';
+var state = {
+  flatIndex: 0,
+  visited: {},
+  quizAnswers: {},
+  rate: 1,
+  autoplayNarration: true,
+  autoAdvance: true,
+  sentences: [],
+  playing: false,
+  speechToken: 0
+};
+
+function loadProgress(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+function saveProgress(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      visited: state.visited,
+      quizAnswers: state.quizAnswers,
+      lastIndex: state.flatIndex,
+      rate: state.rate,
+      autoplayNarration: state.autoplayNarration,
+      autoAdvance: state.autoAdvance
+    }));
+  }catch(e){}
+}
+
+/* ================= SPEECH ================= */
+var voices = [];
+function refreshVoices(){
+  if(!('speechSynthesis' in window)) return;
+  voices = window.speechSynthesis.getVoices() || [];
+  populateVoiceSelect();
+  updateVoiceLabel();
+}
+var chosenVoiceURI = null;
+function ptVoices(){
+  return voices.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf('pt') === 0; });
+}
+function pickVoice(){
+  var pt = ptVoices();
+  if(!pt.length) return null;
+  if(chosenVoiceURI){
+    var m = pt.filter(function(v){ return v.voiceURI === chosenVoiceURI; });
+    if(m.length) return m[0];
+  }
+  var br = pt.filter(function(v){ return v.lang.toLowerCase()==='pt-br'; });
+  return br[0] || pt[0];
+}
+function populateVoiceSelect(){
+  var pt = ptVoices();
+  var row = document.getElementById('voiceRow');
+  var sel = document.getElementById('voiceSelect');
+  if(pt.length > 1){
+    row.style.display = 'flex';
+    sel.innerHTML = pt.map(function(v){ return '<option value="'+v.voiceURI+'">'+v.name+'</option>'; }).join('');
+    if(chosenVoiceURI) sel.value = chosenVoiceURI;
+  } else {
+    row.style.display = 'none';
+  }
+}
+function updateVoiceLabel(){
+  var label = document.getElementById('tVoiceLabel');
+  if(!('speechSynthesis' in window)){
+    label.textContent = 'Narração indisponível neste navegador';
+    return;
+  }
+  var v = pickVoice();
+  label.textContent = v ? ('Voz: ' + v.name) : 'Nenhuma voz em PT encontrada';
+}
+if('speechSynthesis' in window){
+  refreshVoices();
+  window.speechSynthesis.onvoiceschanged = refreshVoices;
+}
+
+function splitSentences(text){
+  if(!text) return [];
+  var parts = text.match(/[^.!?]+[.!?]+(\s+|$)/g);
+  if(!parts) return [text];
+  return parts.map(function(s){ return s.trim(); }).filter(Boolean);
+}
+
+function speakQueue(sentences, onSentence, onDone){
+  var myToken = ++state.speechToken;
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if(!('speechSynthesis' in window) || !sentences.length){
+    onDone && onDone();
+    return;
+  }
+  var i = 0;
+  function step(){
+    if(myToken !== state.speechToken) return;
+    if(i >= sentences.length){ onDone && onDone(); return; }
+    onSentence && onSentence(i);
+    var u = new SpeechSynthesisUtterance(sentences[i]);
+    u.lang = 'pt-BR';
+    var v = pickVoice();
+    if(v) u.voice = v;
+    u.rate = state.rate;
+    u.pitch = 1;
+    u.onend = function(){ if(myToken===state.speechToken){ i++; step(); } };
+    u.onerror = function(){ if(myToken===state.speechToken){ i++; step(); } };
+    window.speechSynthesis.speak(u);
+  }
+  step();
+}
+function cancelSpeech(){
+  state.speechToken++;
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  state.playing = false;
+  updatePlayBtn();
+}
+
+/* ================= RENDER: SIDEBAR ================= */
+var sidebarEl = document.getElementById('sidebar');
+function buildSidebar(){
+  var html = '';
+  var counter = 0;
+  MODULES.forEach(function(mod, mi){
+    var startIdx = counter;
+    var rows = mod.cards.map(function(card, ci){
+      var flatIdx = counter++;
+      var typeLabel = card.type==='quiz' ? 'Quiz' : card.type==='summary' ? 'Resumo' : card.type==='intro' ? 'Início' : '';
+      return '<div class="card-row" data-idx="'+flatIdx+'" id="row-'+flatIdx+'"><span class="idx-shape"></span><span class="row-label">'+card.title+'</span>'+(typeLabel?'<span class="row-tag">'+typeLabel+'</span>':'')+'</div>';
+    }).join('');
+    html += '<div class="mod-group" id="mgroup-'+mi+'">'+
+      '<div class="mod-head" data-mi="'+mi+'">'+
+        '<span class="mod-dot" style="background:var('+mod.colorVar+')"></span>'+
+        '<span class="mod-title">'+mod.title+'<span class="mod-sub">'+mod.sub+'</span></span>'+
+        '<span class="mod-count" id="mcount-'+mi+'">0/'+mod.cards.length+'</span>'+
+        chevronSVG('down').replace('class="chev"','class="chev mod-caret"')+
+      '</div>'+
+      '<div class="mod-cards">'+rows+'</div>'+
+    '</div>';
+  });
+  sidebarEl.innerHTML = html;
+
+  sidebarEl.querySelectorAll('.card-row').forEach(function(row){
+    row.addEventListener('click', function(){
+      goTo(parseInt(row.getAttribute('data-idx'),10));
+      closeSidebarMobile();
+    });
+  });
+  sidebarEl.querySelectorAll('.mod-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var mi = head.getAttribute('data-mi');
+      document.getElementById('mgroup-'+mi).classList.toggle('collapsed');
+    });
+  });
+}
+function updateSidebarActiveAndProgress(){
+  sidebarEl.querySelectorAll('.card-row').forEach(function(row){
+    var idx = parseInt(row.getAttribute('data-idx'),10);
+    row.classList.toggle('active', idx===state.flatIndex);
+    row.classList.toggle('visited', !!state.visited[idx]);
+  });
+  var counter = 0;
+  MODULES.forEach(function(mod, mi){
+    var visitedCount = 0;
+    mod.cards.forEach(function(){ if(state.visited[counter]) visitedCount++; counter++; });
+    var el = document.getElementById('mcount-'+mi);
+    if(el) el.textContent = visitedCount+'/'+mod.cards.length;
+  });
+}
+
+/* ================= RENDER: TOP PROGRESS + SCORE ================= */
+function updateTopBar(){
+  var visitedCount = Object.keys(state.visited).length;
+  var pct = Math.round(visitedCount / FLAT.length * 100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressPct').textContent = pct+'%';
+  var correct = 0, answered = 0;
+  Object.keys(state.quizAnswers).forEach(function(k){
+    answered++;
+    var f = FLAT[parseInt(k,10)];
+    if(f && f.card.quiz && state.quizAnswers[k] === f.card.quiz.correct) correct++;
+  });
+  document.getElementById('scorePill').textContent = 'Quizzes: '+correct+'/'+TOTAL_QUIZZES;
+}
+
+/* ================= RENDER: STAGE ================= */
+var stageEl = document.getElementById('stage');
+var stageInnerEl = document.getElementById('stageInner');
+
+function renderStage(){
+  var entry = FLAT[state.flatIndex];
+  var card = entry.card, mod = entry.module;
+  var accentVar = 'var('+mod.colorVar+')';
+
+  var visualHtml = card.type==='quiz' ? '' : '<div class="visual-box">'+visualHTML(card.visual)+'</div>';
+  var leftPanel = card.type==='quiz'
+    ? '<div class="panel"><h3>Sua resposta</h3><div id="quizPanel"></div></div>'
+    : '<div class="panel"><h3>Pontos-chave</h3><ul class="bullets">'+card.bullets.map(function(b){return '<li>'+b+'</li>';}).join('')+'</ul></div>';
+  var rightPanel = '<div class="panel"><h3>O que o professor está dizendo</h3><div class="transcript" id="transcript"></div>'+
+    (('speechSynthesis' in window) ? '' : '<div class="no-voice-note">Seu navegador não suporta narração por voz — mas você pode ler a transcrição acima.</div>')+
+    '</div>';
+
+  stageInnerEl.style.setProperty('--card-accent', accentVar);
+  stageInnerEl.innerHTML =
+    '<div class="kicker-row"><span class="mod-badge">'+mod.code+'</span><span class="kicker-text">'+card.kicker+'</span></div>'+
+    '<h1 class="card-title">'+card.title+'</h1>'+
+    visualHtml+
+    '<div class="content-grid">'+leftPanel+rightPanel+'</div>';
+
+  stageInnerEl.classList.remove('anim');
+  void stageInnerEl.offsetWidth;
+  stageInnerEl.classList.add('anim');
+
+  if(card.type==='quiz') renderQuizPanel(card, state.flatIndex);
+
+  state.sentences = splitSentences(card.narration);
+  renderTranscript();
+  stageEl.scrollTop = 0;
+}
+
+function renderTranscript(){
+  var t = document.getElementById('transcript');
+  if(!t) return;
+  t.innerHTML = state.sentences.map(function(s,i){
+    return '<span class="sen" data-i="'+i+'">'+s+' </span>';
+  }).join('');
+}
+function highlightSentence(i){
+  var t = document.getElementById('transcript');
+  if(!t) return;
+  t.querySelectorAll('.sen').forEach(function(el){
+    el.classList.toggle('active', parseInt(el.getAttribute('data-i'),10)===i);
+  });
+}
+
+function renderQuizPanel(card, flatIdx){
+  var panel = document.getElementById('quizPanel');
+  if(!panel) return;
+  var answered = state.quizAnswers[flatIdx];
+  var opts = card.quiz.options.map(function(opt, i){
+    var cls = 'quiz-opt';
+    var dis = '';
+    if(answered !== undefined){
+      cls += ' disabled';
+      dis = 'disabled';
+      if(i === card.quiz.correct) cls += ' correct';
+      else if(i === answered) cls += ' wrong';
+    }
+    return '<button class="'+cls+'" data-i="'+i+'" '+dis+'>'+String.fromCharCode(65+i)+'. '+opt+'</button>';
+  }).join('');
+  var explain = '';
+  if(answered !== undefined){
+    var ok = answered === card.quiz.correct;
+    explain = '<div class="quiz-explain '+(ok?'ok':'bad')+'">'+(ok ? 'Certo! ' : 'Quase — a correta é a '+String.fromCharCode(65+card.quiz.correct)+'. ')+card.quiz.explain+'</div>';
+  }
+  panel.innerHTML = '<div class="quiz-question">'+card.quiz.question+'</div><div class="quiz-options">'+opts+'</div>'+explain;
+
+  if(answered === undefined){
+    panel.querySelectorAll('.quiz-opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        selectQuizOption(flatIdx, parseInt(btn.getAttribute('data-i'),10));
+      });
+    });
+  }
+}
+
+function selectQuizOption(flatIdx, i){
+  if(flatIdx !== state.flatIndex) return;
+  state.quizAnswers[flatIdx] = i;
+  saveProgress();
+  updateTopBar();
+  var card = FLAT[flatIdx].card;
+  renderQuizPanel(card, flatIdx);
+
+  var ok = i === card.quiz.correct;
+  var feedback = [ok ? 'Isso mesmo!' : ('Quase. A correta é a '+String.fromCharCode(65+card.quiz.correct)+'.'), card.quiz.explain];
+  state.playing = true; updatePlayBtn();
+  speakQueue(feedback, null, function(){
+    state.playing = false; updatePlayBtn();
+    if(state.autoAdvance) scheduleAutoAdvance();
+  });
+}
+
+/* ================= NAV & PLAYBACK ================= */
+function goTo(idx, opts){
+  opts = opts || {};
+  idx = Math.max(0, Math.min(FLAT.length-1, idx));
+  cancelSpeech();
+  state.flatIndex = idx;
+  state.visited[idx] = true;
+  saveProgress();
+  renderStage();
+  updateSidebarActiveAndProgress();
+  updateTopBar();
+  updateTransport();
+  if(opts.autoplay !== false && state.autoplayNarration && userStarted){
+    setTimeout(function(){ playNarration(); }, 220);
+  }
+}
+function next(){ if(state.flatIndex < FLAT.length-1) goTo(state.flatIndex+1); }
+function prev(){ if(state.flatIndex > 0) goTo(state.flatIndex-1); }
+
+function playNarration(){
+  var card = FLAT[state.flatIndex].card;
+  state.playing = true;
+  updatePlayBtn();
+  speakQueue(state.sentences, function(i){ highlightSentence(i); }, function(){
+    state.playing = false;
+    updatePlayBtn();
+    highlightSentence(-1);
+    if(card.type === 'quiz'){
+      return; // wait for the user to answer
+    }
+    if(state.autoAdvance) scheduleAutoAdvance();
+  });
+}
+function toggleNarration(){
+  if(state.playing){ cancelSpeech(); }
+  else { playNarration(); }
+}
+function scheduleAutoAdvance(){
+  if(state.flatIndex >= FLAT.length-1) return;
+  setTimeout(function(){
+    if(!state.playing) next();
+  }, 1000);
+}
+
+function updatePlayBtn(){
+  var icon = document.getElementById('playIcon');
+  icon.innerHTML = state.playing
+    ? '<rect x="6" y="5" width="4.5" height="14" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="4.5" height="14" rx="1" fill="currentColor"/>'
+    : '<path d="M8 5l12 7-12 7V5z" fill="currentColor"/>';
+}
+function updateTransport(){
+  document.getElementById('tCount').textContent = 'Card '+(state.flatIndex+1)+' de '+FLAT.length;
+  document.getElementById('prevBtn').disabled = state.flatIndex===0;
+  document.getElementById('nextBtn').disabled = state.flatIndex===FLAT.length-1;
+}
+
+/* ================= SIDEBAR MOBILE ================= */
+var sidebarBackdrop = document.getElementById('sidebarBackdrop');
+function openSidebarMobile(){
+  document.getElementById('sidebar').classList.add('open');
+  sidebarBackdrop.classList.add('open');
+}
+function closeSidebarMobile(){
+  document.getElementById('sidebar').classList.remove('open');
+  sidebarBackdrop.classList.remove('open');
+}
+document.getElementById('menuBtn').addEventListener('click', openSidebarMobile);
+sidebarBackdrop.addEventListener('click', closeSidebarMobile);
+
+/* ================= SETTINGS POPOVER ================= */
+var settingsBtn = document.getElementById('settingsBtn');
+var settingsPop = document.getElementById('settingsPop');
+settingsBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  settingsPop.classList.toggle('open');
+});
+document.addEventListener('click', function(e){
+  if(!settingsPop.contains(e.target) && e.target !== settingsBtn){
+    settingsPop.classList.remove('open');
+  }
+});
+var RATES = [0.85, 1, 1.15];
+document.getElementById('rateBtn').addEventListener('click', function(){
+  var i = RATES.indexOf(state.rate);
+  state.rate = RATES[(i+1) % RATES.length];
+  this.textContent = state.rate.toFixed(2).replace(/0$/,'') + 'x';
+  saveProgress();
+});
+document.getElementById('voiceSelect').addEventListener('change', function(){
+  chosenVoiceURI = this.value;
+  updateVoiceLabel();
+});
+document.getElementById('autoplayToggle').addEventListener('change', function(){
+  state.autoplayNarration = this.checked;
+  saveProgress();
+});
+document.getElementById('autoadvanceToggle').addEventListener('change', function(){
+  state.autoAdvance = this.checked;
+  saveProgress();
+});
+document.getElementById('resetBtn').addEventListener('click', function(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  state.visited = {}; state.quizAnswers = {};
+  updateSidebarActiveAndProgress();
+  updateTopBar();
+  renderStage();
+});
+
+/* ================= TRANSPORT BUTTONS ================= */
+document.getElementById('prevBtn').addEventListener('click', prev);
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('playBtn').addEventListener('click', toggleNarration);
+
+/* ================= KEYBOARD ================= */
+document.addEventListener('keydown', function(e){
+  if(document.activeElement && document.activeElement !== document.body) return;
+  if(e.code === 'Space'){ e.preventDefault(); toggleNarration(); }
+  else if(e.key === 'ArrowRight'){ next(); }
+  else if(e.key === 'ArrowLeft'){ prev(); }
+});
+
+/* ================= START OVERLAY ================= */
+var userStarted = false;
+var startOverlay = document.getElementById('startOverlay');
+var startBtn = document.getElementById('startBtn');
+var startFreshBtn = document.getElementById('startFreshBtn');
+var saved = loadProgress();
+var resumeIndex = 0;
+if(saved){
+  state.visited = saved.visited || {};
+  state.quizAnswers = saved.quizAnswers || {};
+  if(typeof saved.rate === 'number') state.rate = saved.rate;
+  if(typeof saved.autoplayNarration === 'boolean') state.autoplayNarration = saved.autoplayNarration;
+  if(typeof saved.autoAdvance === 'boolean') state.autoAdvance = saved.autoAdvance;
+  if(typeof saved.lastIndex === 'number' && saved.lastIndex > 0){
+    resumeIndex = saved.lastIndex;
+    startBtn.textContent = 'Continuar (Card '+(resumeIndex+1)+')';
+    startFreshBtn.style.display = 'inline-block';
+  }
+}
+document.getElementById('rateBtn').textContent = state.rate.toFixed(2).replace(/0$/,'') + 'x';
+document.getElementById('autoplayToggle').checked = state.autoplayNarration;
+document.getElementById('autoadvanceToggle').checked = state.autoAdvance;
+
+function launch(idx){
+  userStarted = true;
+  startOverlay.style.display = 'none';
+  goTo(idx);
+}
+startBtn.addEventListener('click', function(){ launch(resumeIndex); });
+startFreshBtn.addEventListener('click', function(){ launch(0); });
+
+/* ================= INIT ================= */
+buildSidebar();
+state.flatIndex = resumeIndex;
+renderStage();
+updateSidebarActiveAndProgress();
+updateTopBar();
+updateTransport();
+updateVoiceLabel();
+
+})();
+</script>
