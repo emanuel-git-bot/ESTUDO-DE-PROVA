@@ -94,6 +94,11 @@ ul{margin:0;padding:0}
 .settings-row:last-of-type{border-bottom:none}
 .rate-btn{font-family:var(--font-mono);font-size:.76rem;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface-3);color:var(--text);cursor:pointer}
 select.voice-select{background:var(--surface-3);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:5px 6px;font-size:.74rem;max-width:140px}
+.voice-inline{display:flex;align-items:center;gap:6px}
+.voice-test-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--surface-3);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0}
+.voice-test-btn svg{width:11px;height:11px;margin-left:1px}
+.voice-test-btn:hover:not(:disabled){border-color:var(--accent)}
+.voice-test-btn:disabled{opacity:.35;cursor:default}
 .switch{position:relative;width:38px;height:22px;flex-shrink:0}
 .switch input{opacity:0;width:0;height:0}
 .switch .track{position:absolute;inset:0;background:var(--surface-3);border:1px solid var(--border);border-radius:99px;transition:.2s;cursor:pointer}
@@ -265,6 +270,13 @@ select.voice-select{background:var(--surface-3);color:var(--text);border:1px sol
 .start-card .tag{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
 .start-card h2{font-family:var(--font-display);font-size:1.7rem;margin:10px 0 12px;line-height:1.25}
 .start-card p{color:var(--text-dim);font-size:.9rem;line-height:1.55;margin:0 0 22px}
+.voice-picker{text-align:left;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:0 0 20px}
+.voice-picker label{display:block;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);margin-bottom:8px}
+.voice-picker-row{display:flex;align-items:center;gap:8px}
+.voice-picker select.voice-select{flex:1;max-width:none;width:100%;font-size:.82rem;padding:8px 10px}
+.voice-picker .voice-test-btn{width:34px;height:34px}
+.voice-picker .voice-test-btn svg{width:13px;height:13px}
+.voice-note{margin-top:8px;font-size:.7rem;color:var(--text-faint);line-height:1.4;min-height:1em}
 .start-btn{
   font-family:var(--font-display);font-weight:700;font-size:.95rem;padding:13px 26px;border-radius:11px;border:none;
   background:var(--accent);color:var(--accent-ink);cursor:pointer;
@@ -329,7 +341,7 @@ select.voice-select{background:var(--surface-3);color:var(--text);border:1px sol
     <div class="settings-pop" id="settingsPop">
       <h4>Narra&ccedil;&atilde;o</h4>
       <div class="settings-row"><span>Velocidade</span><button class="rate-btn" id="rateBtn">1.0x</button></div>
-      <div class="settings-row" id="voiceRow" style="display:none"><span>Voz</span><select class="voice-select" id="voiceSelect"></select></div>
+      <div class="settings-row" id="voiceRow"><span>Voz</span><div class="voice-inline"><select class="voice-select" id="voiceSelect"></select><button class="voice-test-btn" id="voiceTestBtnSettings" type="button" aria-label="Testar voz"><svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg></button></div></div>
       <div class="settings-row"><span>Narrar ao chegar no card</span><label class="switch"><input type="checkbox" id="autoplayToggle" checked><span class="track"><span class="knob"></span></span></label></div>
       <div class="settings-row"><span>Avan&ccedil;ar sozinho</span><label class="switch"><input type="checkbox" id="autoadvanceToggle" checked><span class="track"><span class="knob"></span></span></label></div>
       <button class="reset-btn" id="resetBtn">Reiniciar progresso salvo</button>
@@ -348,6 +360,16 @@ select.voice-select{background:var(--surface-3);color:var(--text);border:1px sol
           <span class="tag">Revis&atilde;o narrada &middot; PT-BR</span>
           <h2>Pronto para revisar Dev Mobile?</h2>
           <p>Quatro m&oacute;dulos com diagramas, exemplos pr&aacute;ticos e um professor narrando cada card em voz alta &mdash; como uma aula de verdade, no seu ritmo.</p>
+          <div class="voice-picker">
+            <label for="voiceSelectStart">Escolha a voz do professor</label>
+            <div class="voice-picker-row">
+              <select class="voice-select" id="voiceSelectStart"></select>
+              <button class="voice-test-btn" id="voiceTestBtnStart" type="button" aria-label="Testar voz">
+                <svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg>
+              </button>
+            </div>
+            <div class="voice-note" id="voiceNoteStart"></div>
+          </div>
           <div>
             <button class="start-btn" id="startBtn">Come&ccedil;ar a aula</button>
             <button class="start-btn secondary" id="startFreshBtn" style="display:none">Come&ccedil;ar do zero</button>
@@ -873,57 +895,109 @@ function saveProgress(){
       lastIndex: state.flatIndex,
       rate: state.rate,
       autoplayNarration: state.autoplayNarration,
-      autoAdvance: state.autoAdvance
+      autoAdvance: state.autoAdvance,
+      voiceURI: chosenVoiceURI
     }));
   }catch(e){}
 }
 
+var chosenVoiceURI = null;
+var saved = loadProgress();
+if(saved){
+  state.visited = saved.visited || {};
+  state.quizAnswers = saved.quizAnswers || {};
+  if(typeof saved.rate === 'number') state.rate = saved.rate;
+  if(typeof saved.autoplayNarration === 'boolean') state.autoplayNarration = saved.autoplayNarration;
+  if(typeof saved.autoAdvance === 'boolean') state.autoAdvance = saved.autoAdvance;
+  if(saved.voiceURI) chosenVoiceURI = saved.voiceURI;
+}
+
 /* ================= SPEECH ================= */
 var voices = [];
-function refreshVoices(){
-  if(!('speechSynthesis' in window)) return;
-  voices = window.speechSynthesis.getVoices() || [];
-  populateVoiceSelect();
-  updateVoiceLabel();
-}
-var chosenVoiceURI = null;
+var HAS_SPEECH = 'speechSynthesis' in window;
+
 function ptVoices(){
   return voices.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf('pt') === 0; });
 }
 function pickVoice(){
-  var pt = ptVoices();
-  if(!pt.length) return null;
   if(chosenVoiceURI){
-    var m = pt.filter(function(v){ return v.voiceURI === chosenVoiceURI; });
+    var m = voices.filter(function(v){ return v.voiceURI === chosenVoiceURI; });
     if(m.length) return m[0];
   }
-  var br = pt.filter(function(v){ return v.lang.toLowerCase()==='pt-br'; });
-  return br[0] || pt[0];
+  var pt = ptVoices();
+  if(pt.length){
+    var br = pt.filter(function(v){ return v.lang.toLowerCase()==='pt-br'; });
+    return br[0] || pt[0];
+  }
+  return voices[0] || null;
 }
 function populateVoiceSelect(){
   var pt = ptVoices();
-  var row = document.getElementById('voiceRow');
-  var sel = document.getElementById('voiceSelect');
-  if(pt.length > 1){
-    row.style.display = 'flex';
-    sel.innerHTML = pt.map(function(v){ return '<option value="'+v.voiceURI+'">'+v.name+'</option>'; }).join('');
-    if(chosenVoiceURI) sel.value = chosenVoiceURI;
-  } else {
-    row.style.display = 'none';
+  var list = pt.length ? pt : voices;
+  var noteText = '';
+  if(!HAS_SPEECH){
+    noteText = 'Seu navegador não suporta narração por voz — mas você ainda pode ler as legendas.';
+  } else if(!list.length){
+    noteText = 'Carregando vozes do navegador…';
+  } else if(!pt.length){
+    noteText = 'Nenhuma voz em português foi encontrada — mostrando todas as vozes do navegador.';
   }
+  if(list.length){
+    chosenVoiceURI = (chosenVoiceURI && list.some(function(v){ return v.voiceURI===chosenVoiceURI; }))
+      ? chosenVoiceURI : list[0].voiceURI;
+  }
+  document.querySelectorAll('.voice-select').forEach(function(sel){
+    if(!list.length){
+      sel.innerHTML = '<option value="">'+(HAS_SPEECH ? 'Carregando…' : 'Indisponível')+'</option>';
+      sel.disabled = true;
+      return;
+    }
+    sel.disabled = false;
+    sel.innerHTML = list.map(function(v){
+      return '<option value="'+v.voiceURI+'">'+v.name+' ('+v.lang+')</option>';
+    }).join('');
+    sel.value = chosenVoiceURI;
+  });
+  document.querySelectorAll('.voice-test-btn').forEach(function(btn){ btn.disabled = !list.length; });
+  document.querySelectorAll('.voice-note').forEach(function(n){ n.textContent = noteText; });
+  updateVoiceLabel();
 }
 function updateVoiceLabel(){
   var label = document.getElementById('tVoiceLabel');
-  if(!('speechSynthesis' in window)){
+  if(!HAS_SPEECH){
     label.textContent = 'Narração indisponível neste navegador';
     return;
   }
   var v = pickVoice();
-  label.textContent = v ? ('Voz: ' + v.name) : 'Nenhuma voz em PT encontrada';
+  label.textContent = v ? ('Voz: ' + v.name) : 'Nenhuma voz encontrada';
 }
-if('speechSynthesis' in window){
+function refreshVoices(){
+  if(!HAS_SPEECH){ populateVoiceSelect(); return; }
+  voices = window.speechSynthesis.getVoices() || [];
+  populateVoiceSelect();
+}
+function onVoiceSelectChange(e){
+  chosenVoiceURI = e.target.value;
+  document.querySelectorAll('.voice-select').forEach(function(sel){ if(sel !== e.target) sel.value = chosenVoiceURI; });
+  updateVoiceLabel();
+  saveProgress();
+}
+function testVoice(){
+  if(!HAS_SPEECH || !chosenVoiceURI) return;
+  window.speechSynthesis.cancel();
+  var v = voices.filter(function(x){ return x.voiceURI === chosenVoiceURI; })[0];
+  var u = new SpeechSynthesisUtterance('Olá! Esta é a voz que vou usar para narrar a aula.');
+  if(v) u.voice = v;
+  u.lang = v ? v.lang : 'pt-BR';
+  u.rate = state.rate;
+  window.speechSynthesis.speak(u);
+}
+if(HAS_SPEECH){
   refreshVoices();
   window.speechSynthesis.onvoiceschanged = refreshVoices;
+  [300, 900, 2000].forEach(function(ms){ setTimeout(refreshVoices, ms); });
+} else {
+  populateVoiceSelect();
 }
 
 function splitSentences(text){
@@ -1217,9 +1291,11 @@ document.getElementById('rateBtn').addEventListener('click', function(){
   this.textContent = state.rate.toFixed(2).replace(/0$/,'') + 'x';
   saveProgress();
 });
-document.getElementById('voiceSelect').addEventListener('change', function(){
-  chosenVoiceURI = this.value;
-  updateVoiceLabel();
+document.querySelectorAll('.voice-select').forEach(function(sel){
+  sel.addEventListener('change', onVoiceSelectChange);
+});
+document.querySelectorAll('.voice-test-btn').forEach(function(btn){
+  btn.addEventListener('click', testVoice);
 });
 document.getElementById('autoplayToggle').addEventListener('change', function(){
   state.autoplayNarration = this.checked;
@@ -1255,19 +1331,11 @@ var userStarted = false;
 var startOverlay = document.getElementById('startOverlay');
 var startBtn = document.getElementById('startBtn');
 var startFreshBtn = document.getElementById('startFreshBtn');
-var saved = loadProgress();
 var resumeIndex = 0;
-if(saved){
-  state.visited = saved.visited || {};
-  state.quizAnswers = saved.quizAnswers || {};
-  if(typeof saved.rate === 'number') state.rate = saved.rate;
-  if(typeof saved.autoplayNarration === 'boolean') state.autoplayNarration = saved.autoplayNarration;
-  if(typeof saved.autoAdvance === 'boolean') state.autoAdvance = saved.autoAdvance;
-  if(typeof saved.lastIndex === 'number' && saved.lastIndex > 0){
-    resumeIndex = saved.lastIndex;
-    startBtn.textContent = 'Continuar (Card '+(resumeIndex+1)+')';
-    startFreshBtn.style.display = 'inline-block';
-  }
+if(saved && typeof saved.lastIndex === 'number' && saved.lastIndex > 0){
+  resumeIndex = saved.lastIndex;
+  startBtn.textContent = 'Continuar (Card '+(resumeIndex+1)+')';
+  startFreshBtn.style.display = 'inline-block';
 }
 document.getElementById('rateBtn').textContent = state.rate.toFixed(2).replace(/0$/,'') + 'x';
 document.getElementById('autoplayToggle').checked = state.autoplayNarration;
