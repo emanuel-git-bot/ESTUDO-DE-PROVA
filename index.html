@@ -18,6 +18,8 @@
   --m3:#f2b84b;
   --m4:#b49bff;
   --m5:#ffd166;
+  --examA:#ef5350;
+  --examB:#ff8a5c;
   --danger:#ff6f76;
   --success:#57d68d;
   --font-display:'Sora',system-ui,sans-serif;
@@ -263,6 +265,22 @@ select.voice-select{background:var(--surface-3);color:var(--text);border:1px sol
 .quiz-explain{margin-top:14px;padding:13px 15px;border-radius:10px;border:1px solid var(--border);font-size:.83rem;line-height:1.5}
 .quiz-explain.ok{border-color:var(--success);background:color-mix(in srgb, var(--success) 10%, transparent)}
 .quiz-explain.bad{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 10%, transparent)}
+
+/* exam result */
+.viz-score{padding:8px 0;text-align:center}
+.score-ring{width:132px;height:132px;border-radius:50%;margin:0 auto 14px;position:relative;background:conic-gradient(var(--card-accent) calc(var(--pct)*1%), var(--surface-3) 0)}
+.score-ring::before{content:'';position:absolute;inset:9px;border-radius:50%;background:var(--surface)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:1.4rem}
+.score-detail{font-size:.88rem;color:var(--text-dim)}
+.score-detail strong{color:var(--text);font-family:var(--font-mono)}
+.score-pending{margin-top:8px;font-size:.78rem;color:var(--examA)}
+.breakdown-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 11px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:.8rem;cursor:pointer;margin-bottom:7px}
+.breakdown-row:hover{border-color:var(--text-faint)}
+.breakdown-row.ok{border-color:var(--success)}
+.breakdown-row.bad{border-color:var(--danger)}
+.breakdown-row.pending{opacity:.65}
+.bd-num{font-family:var(--font-mono);font-weight:700;color:var(--card-accent);width:34px;flex-shrink:0}
+.bd-label{flex:1;font-size:.76rem;color:var(--text-dim);line-height:1.35}
 
 /* start overlay */
 .start-overlay{position:absolute;inset:0;background:rgba(8,11,20,.96);display:flex;align-items:center;justify-content:center;z-index:25;padding:24px}
@@ -742,6 +760,208 @@ var MODULES = [
       visual:{kind:'hero', lead:'A repetição é sua maior aliada antes da prova. Boa sorte!'}
     }
   ]
+},
+{
+  id:'examA', code:'P-A', colorVar:'--examA', title:'Prova A — ENADE (Objetiva)', sub:'Simulado · Aulas 03 e 04',
+  cards:[
+    { type:'intro', kicker:'Simulado • Aulas 03 e 04', title:'Prova Objetiva — Modelo ENADE',
+      narration:"Chegou a hora de aplicar o que você revisou numa prova de verdade, no formato ENADE. São doze questões objetivas, cobrindo o conteúdo da Aula 03, Eventos e Técnicas de Scroll, e da Aula 04, Webhooks e APIs para Conectividade — as mesmas questões da prova que o professor preparou. Cada questão vale 0,5 ponto, totalizando 6 pontos. Responda com calma, uma de cada vez, e no final eu te mostro sua nota estimada e quais questões vale a pena revisar.",
+      bullets:['12 questões objetivas • 0,5 ponto cada • total 6,0 pontos','Conteúdo: Aula 03 (Eventos e Scroll) e Aula 04 (APIs e Webhooks)','Cada questão tem 5 alternativas — só uma é correta'],
+      visual:{kind:'hero', chips:['12 questões','6,0 pontos','ENADE']}
+    },
+    { type:'quiz', kicker:'Prova A • Questão 1 de 12', title:'Questão 1',
+      narration:"Questão um. Primeira afirmação: em uma arquitetura REST, cada requisição enviada pelo aplicativo Android ao servidor deve conter todas as informações necessárias para que seja processada. Agora, porque: a restrição stateless determina que o servidor não mantenha o estado da sessão do cliente entre requisições sucessivas. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Em uma arquitetura REST, cada requisição enviada pelo aplicativo Android ao servidor deve conter todas as informações necessárias para que seja processada.<br><br><strong>PORQUE</strong><br><br>II. A restrição <em>stateless</em> determina que o servidor não mantenha o estado da sessão do cliente entre requisições sucessivas.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:0.5,
+        explain:"Correto: no REST, o servidor não guarda estado entre requisições (stateless) — por isso cada chamada precisa vir completa, com tudo que o servidor precisa para processar. A II explica exatamente por que a I é verdadeira."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 2 de 12', title:'Questão 2',
+      narration:"Questão dois. Uma equipe modela o recurso barra usuarios barra id de uma API REST consumida por um aplicativo Android. No cenário um, a tela de edição de perfil envia todos os campos do usuário, substituindo integralmente o recurso existente no servidor. No cenário dois, o usuário apenas aciona um seletor que altera o campo notificaçõesAtivas, sem modificar os demais dados do cadastro. Assinale a alternativa que associa corretamente os verbos HTTP aos dois cenários.",
+      quiz:{
+        question:"Uma equipe modela o recurso <code>/usuarios/{id}</code> de uma API REST consumida por um aplicativo Android. No cenário I, a tela de edição de perfil envia todos os campos do usuário, substituindo integralmente o recurso existente no servidor. No cenário II, o usuário apenas aciona um seletor que altera o campo <code>notificacoesAtivas</code>, sem modificar os demais dados do cadastro.<br><br>Assinale a alternativa que associa corretamente os verbos HTTP aos cenários I e II, respectivamente, segundo a semântica definida pela arquitetura REST.",
+        options:['POST e PUT.','PUT e PATCH.','PATCH e PUT.','GET e PATCH.','PUT e DELETE.'],
+        correct:1, weight:0.5,
+        explain:"PUT substitui o recurso inteiro (cenário I, todos os campos são reenviados); PATCH atualiza só uma parte dele (cenário II, apenas o campo notificacoesAtivas muda)."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 3 de 12', title:'Questão 3',
+      narration:"Questão três. Durante a depuração de um componente customizado que estende View, um desenvolvedor observa que, ao arrastar o dedo sobre o componente posicionado dentro de um container rolável, a sequência de eventos do MotionEvent termina com ACTION_CANCEL, e não com ACTION_UP. O que isso indica?",
+      quiz:{
+        question:"Durante a depuração de um componente customizado que estende <code>View</code>, um desenvolvedor observa que, ao arrastar o dedo sobre o componente posicionado dentro de um container rolável, a sequência de eventos do <code>MotionEvent</code> termina com <code>ACTION_CANCEL</code>, e não com <code>ACTION_UP</code>.<br><br>A ocorrência descrita indica que:",
+        options:['o usuário levantou o dedo fora dos limites do componente, o que encerra normalmente o gesto.','o gesto foi interrompido porque outro elemento da hierarquia de views, como o container pai rolável, assumiu o tratamento do toque.','o dispositivo utilizado nos testes não oferece suporte a multitoque.','o componente não declarou o evento inicial, razão pela qual o sistema descarta toda a sequência antes de iniciá-la.','houve falha do digitalizador da tela, sendo necessário reiniciar o emulador.'],
+        correct:1, weight:0.5,
+        explain:"Quando um container pai (como um ScrollView ou RecyclerView) assume o controle do gesto de rolagem, o sistema envia ACTION_CANCEL para a view filha, encerrando a sequência sem um ACTION_UP normal."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 4 de 12', title:'Questão 4',
+      narration:"Questão quatro. No desenvolvimento Android com RecyclerView, qual é o principal benefício do padrão ViewHolder?",
+      quiz:{
+        question:"No desenvolvimento Android com RecyclerView, o principal benefício do padrão ViewHolder é:",
+        options:['evitar chamadas repetitivas ao método findViewById(), reduzindo o custo de busca na hierarquia de views durante a rolagem.','gerenciar automaticamente a conexão do aplicativo com bancos de dados remotos.','permitir que a lista aceite diferentes tipos de dados simultaneamente, dispensando o uso de um Adapter.','definir a disposição visual dos itens, escolhendo entre listas lineares, grades ou grades escalonadas.','aplicar as animações padrão de inserção, remoção e reordenação de itens na lista.'],
+        correct:0, weight:0.5,
+        explain:"O ViewHolder cacheia as referências das views de cada item, evitando chamar findViewById() repetidamente durante a rolagem — isso é o que garante a fluidez."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 5 de 12', title:'Questão 5',
+      narration:"Questão cinco. Analise quatro afirmações sobre os componentes do RecyclerView e assinale a alternativa com as que estão corretas.",
+      quiz:{
+        question:"Analise as afirmações a seguir, relativas aos componentes do RecyclerView:<br><br>I. O LayoutManager determina a organização visual dos itens, podendo dispô-los de forma linear, em grade ou em grade escalonada.<br>II. O ItemDecoration atua na camada de desenho, permitindo divisores, margens e offsets entre os itens sem alterar o layout individual de cada item.<br>III. O método getItemCount() é responsável por inflar o arquivo XML de cada item e por criar novas instâncias de ViewHolder.<br>IV. O método onBindViewHolder() associa os dados da fonte às views do ViewHolder, considerando a posição atual do item na lista.<br><br>É correto apenas o que se afirma em:",
+        options:['I e III.','II e III.','I, II e IV.','I, III e IV.','II, III e IV.'],
+        correct:2, weight:0.5,
+        explain:"III está errada: quem infla o XML e cria o ViewHolder é o onCreateViewHolder(), não o getItemCount() (que só informa o total de itens). I, II e IV descrevem corretamente o LayoutManager, o ItemDecoration e o onBindViewHolder()."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 6 de 12', title:'Questão 6',
+      narration:"Questão seis. Sobre a relação entre as bibliotecas Retrofit e OkHttp em aplicações Android, qual afirmação está correta?",
+      quiz:{
+        question:"Sobre a relação entre as bibliotecas Retrofit e OkHttp em aplicações Android, é correto afirmar que:",
+        options:['o Retrofit oferece uma abstração type-safe que mapeia endpoints REST em interfaces Kotlin, enquanto o OkHttp atua como motor de rede subjacente, gerenciando conexões, cache, compressão e interceptors.','o OkHttp é uma camada de apresentação que substitui o Retrofit em projetos que utilizam o padrão MVVM.','ambas as bibliotecas são utilizadas exclusivamente para receber webhooks diretamente no dispositivo móvel, sem intermediários.','o Retrofit executa as requisições na Main Thread por padrão, o que dispensa o uso de corrotinas ou de threads secundárias.','o OkHttp é responsável por converter automaticamente JSON em data classes, tornando desnecessária a configuração de um ConverterFactory.'],
+        correct:0, weight:0.5,
+        explain:"Retrofit mapeia a API REST em uma interface Kotlin type-safe; o OkHttp é o motor de rede por baixo dele, cuidando de conexões, cache, compressão e interceptors."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 7 de 12', title:'Questão 7',
+      narration:"Questão sete. Em uma arquitetura MVVM, as chamadas de rede feitas pelo Retrofit são declaradas como suspend functions e executadas dentro de escopos de corrotina, como o viewModelScope. Qual é o principal motivo técnico para essa abordagem?",
+      quiz:{
+        question:"Em uma arquitetura MVVM, as chamadas de rede realizadas por meio do Retrofit são declaradas como <code>suspend functions</code> e executadas dentro de escopos de corrotina, como o <code>viewModelScope</code>.<br><br>O principal motivo técnico para essa abordagem é:",
+        options:['permitir que a requisição seja processada na Main Thread sem bloqueio, já que o Android não admite threads secundárias.','evitar o bloqueio da Main Thread (UI Thread), mantendo a interface responsiva enquanto a operação de rede é concluída.','dispensar o tratamento de erros, pois as corrotinas capturam e resolvem automaticamente as exceções de rede.','garantir a criptografia TLS da requisição, função que não é oferecida pelo protocolo HTTPS.','eliminar a etapa de conversão de dados, uma vez que suspend functions retornam objetos Kotlin sem necessidade de desserialização.'],
+        correct:1, weight:0.5,
+        explain:"Suspend functions com coroutines rodam a chamada de rede fora da Main Thread, evitando bloquear a UI enquanto se espera a resposta do servidor."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 8 de 12', title:'Questão 8',
+      narration:"Questão oito. Na instanciação do objeto Retrofit, define-se a baseUrl da API e um ConverterFactory, por exemplo GsonConverterFactory ponto create. Qual é a função do ConverterFactory nessa configuração?",
+      quiz:{
+        question:"Na instanciação do objeto Retrofit, define-se a <code>baseUrl</code> da API e um <code>ConverterFactory</code> — por exemplo, <code>GsonConverterFactory.create()</code>.<br><br>A função do ConverterFactory nessa configuração é:",
+        options:['definir a política de timeout de conexão, leitura e escrita das requisições.','realizar a serialização e a desserialização entre o JSON trafegado na rede e os objetos Kotlin (data classes) utilizados pela aplicação.','injetar automaticamente tokens de autenticação nos cabeçalhos de todas as requisições.','armazenar localmente as respostas do servidor, decidindo o que pode ou não ser mantido em cache.','mapear os verbos HTTP para os métodos declarados na interface de serviço da API.'],
+        correct:1, weight:0.5,
+        explain:"O ConverterFactory (como o Gson) é quem faz a conversão entre o JSON da rede e os objetos Kotlin (data classes) usados no app."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 9 de 12', title:'Questão 9',
+      narration:"Questão nove. Primeira afirmação: antes de processar o payload recebido por meio de um webhook, a aplicação deve validar a assinatura HMAC e verificar a integridade do conteúdo recebido. Agora, porque: a validação da assinatura confirma a origem legítima da requisição e reduz o risco de que comandos forjados por um atacante sejam executados pela aplicação. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Antes de processar o payload recebido por meio de um webhook, a aplicação deve validar a assinatura HMAC e verificar a integridade do conteúdo recebido.<br><br><strong>PORQUE</strong><br><br>II. A validação da assinatura confirma a origem legítima da requisição e reduz o risco de que comandos forjados por um atacante sejam executados pela aplicação.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:0.5,
+        explain:"Validar a assinatura HMAC confirma que o webhook realmente veio do servidor esperado — é exatamente por isso (II) que essa validação (I) é necessária antes de processar o payload."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 10 de 12', title:'Questão 10',
+      narration:"Questão dez. Uma equipe precisa incluir o token JWT no cabeçalho Authorization de todas as requisições enviadas por um aplicativo Android a uma API REST protegida. Segundo as boas práticas de conectividade em Android, qual é a solução mais adequada?",
+      quiz:{
+        question:"Uma equipe precisa incluir o token JWT no cabeçalho <code>Authorization</code> de todas as requisições enviadas por um aplicativo Android a uma API REST protegida.<br><br>Segundo as boas práticas de conectividade em Android, a solução mais adequada é:",
+        options:['repetir manualmente o parâmetro de cabeçalho em cada método declarado na interface da API.','registrar um Interceptor no cliente OkHttp, de modo que o cabeçalho seja injetado automaticamente em todas as requisições.','concatenar o token à baseUrl configurada no objeto Retrofit.','enviar o token como parâmetro de consulta na URL, pois cabeçalhos HTTP não aceitam credenciais.','realizar polling periódico ao endpoint de autenticação para manter a sessão ativa no servidor.'],
+        correct:1, weight:0.5,
+        explain:"Um Interceptor no OkHttp injeta o cabeçalho Authorization automaticamente em toda requisição, centralizando a lógica em um só lugar, sem repetir código."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 11 de 12', title:'Questão 11',
+      narration:"Questão onze. Sobre os containers de rolagem no Android, qual alternativa está correta?",
+      quiz:{
+        question:"Sobre os containers de rolagem no Android, assinale a alternativa correta.",
+        options:['O ScrollView admite apenas um filho direto, sendo usual agrupar os elementos em um LinearLayout ou ConstraintLayout.','O ScrollView é recomendado para listas extensas e dinâmicas, pois carrega os itens sob demanda conforme a rolagem avança.','O NestedScrollView não implementa o protocolo de rolagem aninhada, sendo equivalente ao HorizontalScrollView.','Inserir um RecyclerView dentro de um ScrollView comum é a prática recomendada, pois amplia a eficiência da reciclagem de memória.','O CoordinatorLayout é responsável por converter respostas JSON em objetos Kotlin durante a rolagem da lista.'],
+        correct:0, weight:0.5,
+        explain:"O ScrollView só aceita um filho direto — por isso agrupamos os elementos dentro de um LinearLayout ou ConstraintLayout único."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 12 de 12', title:'Questão 12',
+      narration:"Questão doze, a última da Prova A. Em um aplicativo de anotações, manter o dedo pressionado sobre um item da lista por mais de meio segundo exibe um menu de contexto com opções de edição e exclusão. Sobre o tratamento desse evento e o retorno de informação ao usuário, qual afirmação está correta?",
+      quiz:{
+        question:"Em um aplicativo de anotações, manter o dedo pressionado sobre um item da lista por mais de meio segundo exibe um menu de contexto com as opções de edição e exclusão.<br><br>Sobre o tratamento desse evento e o retorno de informação ao usuário, é correto afirmar que:",
+        options:['o OnLongClickListener é acionado imediatamente após o toque, não havendo tempo mínimo de pressão.','o retorno booleano do OnLongClickListener indica se o evento foi consumido, e o feedback visual (ripple effect) ou háptico reforça a percepção da interação pelo usuário.','o retorno booleano do OnLongClickListener define a duração mínima da pressão exigida pelo sistema.','o feedback visual deve ser evitado em aplicações móveis, pois compromete a acessibilidade da interface.','eventos de clique só podem ser tratados por classes anônimas, não sendo possível utilizar expressões lambda em Kotlin.'],
+        correct:1, weight:0.5,
+        explain:"O retorno booleano do OnLongClickListener indica se o evento foi consumido; o feedback visual (ripple) ou háptico é o que confirma ao usuário que o toque foi reconhecido."
+      }
+    },
+    { type:'examresult', kicker:'Resultado', title:'Resultado — Prova A', narration:'' }
+  ]
+},
+{
+  id:'examB', code:'P-B', colorVar:'--examB', title:'Prova B — ENADE (opcional)', sub:'Rodada extra · Aulas 03 e 04',
+  cards:[
+    { type:'intro', kicker:'Simulado extra • Aulas 03 e 04', title:'Prova B — Rodada Extra (opcional)',
+      narration:"Se você quiser mais treino antes da prova, essa é a Prova B: uma segunda rodada, opcional, com oito questões objetivas sobre o mesmo conteúdo das Aulas 03 e 04. Cada questão vale 1 ponto, totalizando 8 pontos. Não é obrigatório fazer essa parte agora — mas se você quer garantir que fixou o conteúdo, vale muito a pena.",
+      bullets:['Opcional: uma segunda rodada de prática, só se você quiser','8 questões objetivas • 1,0 ponto cada • total 8,0 pontos','Mesmo conteúdo da Prova A, questões diferentes'],
+      visual:{kind:'hero', chips:['Opcional','8 questões','8,0 pontos']}
+    },
+    { type:'quiz', kicker:'Prova B • Questão 1 de 8', title:'Questão 1',
+      narration:"Questão um. Uma API REST retorna os dados de um aluno em formato JSON, com id, nome, curso e idade. Sobre o uso desse formato na comunicação entre um aplicativo Android e a API, qual afirmação está correta?",
+      quiz:{
+        question:"Uma API REST retorna os dados de um aluno no seguinte formato:<br><br><code>{ \"id\": 10, \"nome\": \"João\", \"curso\": \"Sistemas de Informação\", \"idade\": 21 }</code><br><br>A respeito do uso desse formato na comunicação entre um aplicativo Android e a API, é correto afirmar que:",
+        options:['o JSON só pode ser consumido por aplicações escritas em JavaScript, exigindo conversão prévia para XML no servidor.','a data class Kotlin deve declarar propriedades compatíveis com os campos e com os tipos do JSON, cabendo a um conversor — como o Gson — realizar a desserialização em objetos.','a desserialização do JSON é atribuição do LayoutManager, que converte os campos recebidos em componentes visuais.','o JSON é adotado por ser um formato binário compactado, portanto mais leve do que qualquer formato textual.','os tipos declarados na data class são irrelevantes, pois o Retrofit converte todos os campos recebidos em String.'],
+        correct:1, weight:1,
+        explain:"O Retrofit com Gson faz a ponte entre o JSON e a data class — por isso os campos e tipos da data class precisam ser compatíveis com os do JSON recebido."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 2 de 8', title:'Questão 2',
+      narration:"Questão dois. Um aplicativo Android de biblioteca consome uma API REST. No cenário um, a tela inicial precisa recuperar a lista de todos os livros disponíveis. No cenário dois, o usuário cancela uma reserva específica, que deve ser removida do servidor. Qual alternativa associa corretamente os verbos HTTP aos dois cenários?",
+      quiz:{
+        question:"Um aplicativo Android de biblioteca consome uma API REST. No <strong>cenário I</strong>, a tela inicial precisa recuperar a lista de todos os livros disponíveis. No <strong>cenário II</strong>, o usuário cancela uma reserva específica, que deve ser removida do servidor.<br><br>Assinale a alternativa que associa corretamente os verbos HTTP aos cenários I e II, respectivamente.",
+        options:['POST e DELETE.','GET e PATCH.','PUT e DELETE.','GET e DELETE.','DELETE e GET.'],
+        correct:3, weight:1,
+        explain:"GET busca a lista de livros (leitura, sem alterar nada); DELETE remove a reserva específica do servidor."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 3 de 8', title:'Questão 3',
+      narration:"Questão três. Primeira afirmação: em integrações com gateways de pagamento, o uso de webhooks é preferível ao polling para notificar o aplicativo sobre a aprovação de uma transação. Agora, porque: no modelo push, o servidor envia uma requisição HTTP ao endpoint previamente configurado assim que o evento ocorre, dispensando consultas repetitivas por parte do cliente. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Em integrações com gateways de pagamento, o uso de webhooks é preferível ao polling para notificar o aplicativo sobre a aprovação de uma transação.<br><br><strong>PORQUE</strong><br><br>II. No modelo push, o servidor envia uma requisição HTTP ao endpoint previamente configurado assim que o evento ocorre, dispensando consultas repetitivas por parte do cliente.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:1,
+        explain:"Webhooks eliminam a necessidade de polling porque o próprio servidor avisa o app quando o evento (pagamento aprovado) acontece — a II justifica corretamente a I."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 4 de 8', title:'Questão 4',
+      narration:"Questão quatro. Em aplicações Android, o recebimento de eventos disparados por webhooks depende de um serviço intermediário de mensageria. Sobre esse mecanismo, qual alternativa está correta?",
+      quiz:{
+        question:"Em aplicações Android, o recebimento de eventos disparados por webhooks depende de um serviço intermediário de mensageria. Sobre esse mecanismo, assinale a alternativa correta.",
+        options:['O Firebase Cloud Messaging substitui o servidor de aplicação, passando a hospedar as regras de negócio do sistema.','O aplicativo precisa manter um endereço IP público e uma porta aberta para receber diretamente a requisição enviada pelo servidor.','O Firebase Cloud Messaging entrega uma silent notification ao aplicativo, que pode processar o evento em segundo plano — por meio de um Broadcast Receiver e de um Service — sem exibir notificação ao usuário.','O uso do Firebase Cloud Messaging converte o modelo push em polling, pois o dispositivo passa a consultar o serviço em intervalos fixos.','O Firebase Cloud Messaging dispensa a validação da assinatura do payload, uma vez que toda mensagem por ele entregue é considerada confiável por padrão.'],
+        correct:2, weight:1,
+        explain:"O FCM entrega uma silent notification, permitindo que o app processe o evento em segundo plano (via Broadcast Receiver + Service) sem precisar de IP público nem notificar o usuário."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 5 de 8', title:'Questão 5',
+      narration:"Questão cinco. Analise três afirmações sobre segurança na comunicação entre um aplicativo Android e uma API remota, e assinale a alternativa com as que estão corretas.",
+      quiz:{
+        question:"Analise as afirmações a seguir, relativas à segurança na comunicação entre um aplicativo Android e uma API remota:<br><br>I. O tráfego deve ocorrer sobre HTTPS, com uso de TLS/SSL, evitando-se a transmissão de dados em texto claro.<br>II. A Network Security Configuration permite restringir os domínios autorizados e aplicar certificate pinning.<br>III. A definição de timeouts de conexão, leitura e escrita é dispensável quando se utiliza HTTPS, pois o protocolo garante a conclusão da requisição.<br><br>É correto apenas o que se afirma em:",
+        options:['I.','III.','I e II.','II e III.','I, II e III.'],
+        correct:2, weight:1,
+        explain:"III está errada: mesmo com HTTPS, é preciso configurar timeouts, pois o protocolo não garante que toda requisição será concluída (a rede pode cair, o servidor pode não responder)."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 6 de 8', title:'Questão 6',
+      narration:"Questão seis. Uma tela de aplicativo exibe o texto extenso dos termos de uso, seguido de dois botões de ação, e o conteúdo excede a altura da tela do dispositivo. Sobre a implementação adequada dessa tela, qual alternativa está correta?",
+      quiz:{
+        question:"Uma tela de aplicativo exibe o texto extenso dos termos de uso, seguido de dois botões de ação. O conteúdo excede a altura da tela do dispositivo.<br><br>Sobre a implementação adequada dessa tela, assinale a alternativa correta.",
+        options:['O ScrollView pode ser utilizado, desde que os elementos sejam agrupados em um único filho direto, como um LinearLayout ou um ConstraintLayout.','O ScrollView aceita múltiplos filhos diretos, o que dispensa qualquer container intermediário.','A tela exige obrigatoriamente um RecyclerView, pois o ScrollView não oferece suporte a rolagem vertical.','O HorizontalScrollView é o container indicado para a rolagem vertical de textos longos.','O uso de ScrollView nesse caso compromete a performance de forma equivalente a uma lista de milhares de itens, pois a quantidade de views é irrelevante para o consumo de memória.'],
+        correct:0, weight:1,
+        explain:"O ScrollView pode ser usado desde que os elementos fiquem agrupados dentro de um único filho direto, como um LinearLayout ou ConstraintLayout."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 7 de 8', title:'Questão 7',
+      narration:"Questão sete. Ao implementar um Adapter de RecyclerView, o desenvolvedor sobrescreve os métodos onCreateViewHolder, onBindViewHolder e getItemCount. Qual alternativa descreve corretamente a responsabilidade de cada um desses métodos?",
+      quiz:{
+        question:"Ao implementar um Adapter de RecyclerView, o desenvolvedor sobrescreve os métodos <code>onCreateViewHolder()</code>, <code>onBindViewHolder()</code> e <code>getItemCount()</code>.<br><br>Assinale a alternativa que descreve corretamente a responsabilidade de cada um desses métodos.",
+        options:['onCreateViewHolder() associa os dados às views; onBindViewHolder() infla o arquivo XML do item; e getItemCount() define o gerenciador de layout da lista.','Os três métodos são executados uma única vez, no momento da criação da lista, independentemente da quantidade de itens da fonte de dados.','onBindViewHolder() é chamado apenas para o primeiro item da lista, cabendo aos demais a reutilização automática do conteúdo anterior.','onCreateViewHolder() infla o arquivo XML do item e cria a instância do ViewHolder; onBindViewHolder() associa os dados da posição atual às views; e getItemCount() informa o total de itens da fonte de dados.','getItemCount() é opcional, pois o RecyclerView calcula automaticamente a quantidade de itens a partir da fonte de dados vinculada ao Adapter.'],
+        correct:3, weight:1,
+        explain:"onCreateViewHolder() infla o layout e cria o ViewHolder; onBindViewHolder() liga os dados da posição atual às views; getItemCount() informa o total de itens da lista."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 8 de 8', title:'Questão 8',
+      narration:"Questão oito, a última da Prova B. Um componente de interface precisa distinguir um toque rápido de uma pressão longa e, além disso, acompanhar o deslocamento do dedo sobre a tela. Sobre os mecanismos de manipulação de eventos no Android, qual afirmação está correta?",
+      quiz:{
+        question:"Um componente de interface precisa distinguir um toque rápido de uma pressão longa e, além disso, acompanhar o deslocamento do dedo sobre a tela.<br><br>Sobre os mecanismos de manipulação de eventos no Android, é correto afirmar que:",
+        options:['o MotionEvent registra apenas o instante final do gesto, sendo incapaz de informar o deslocamento do dedo pela superfície da tela.','o OnClickListener e o OnLongClickListener não podem coexistir no mesmo componente, pois disputam o mesmo canal de eventos.','em Kotlin, o tratamento de eventos exige obrigatoriamente a criação de classes anônimas, não sendo admitidas expressões lambda.','o ACTION_MOVE é emitido uma única vez por gesto, imediatamente antes do ACTION_UP.','os listeners são interfaces com métodos de callback acionados pelo framework quando a ação ocorre, e o MotionEvent detalha o estado do toque por meio de ações como ACTION_DOWN (início), ACTION_MOVE (deslocamento) e ACTION_UP (encerramento).'],
+        correct:4, weight:1,
+        explain:"Listeners são callbacks acionados pelo framework; o MotionEvent registra cada fase do toque (DOWN, MOVE, UP), permitindo distinguir clique, pressão longa e arraste."
+      }
+    },
+    { type:'examresult', kicker:'Resultado', title:'Resultado — Prova B', narration:'' }
+  ]
 }
 ];
 
@@ -864,7 +1084,8 @@ var FLAT = [];
 MODULES.forEach(function(mod){
   mod.cards.forEach(function(card){ FLAT.push({module:mod, card:card}); });
 });
-var TOTAL_QUIZZES = FLAT.filter(function(f){ return f.card.type==='quiz'; }).length;
+var SELFCHECK_MODULES = ['m1','m2','m3','m4'];
+var TOTAL_QUIZZES = FLAT.filter(function(f){ return f.card.type==='quiz' && SELFCHECK_MODULES.indexOf(f.module.id)!==-1; }).length;
 
 /* ================= STATE ================= */
 var STORAGE_KEY = 'kdev_mobile_review_v2';
@@ -1047,7 +1268,7 @@ function buildSidebar(){
     var startIdx = counter;
     var rows = mod.cards.map(function(card, ci){
       var flatIdx = counter++;
-      var typeLabel = card.type==='quiz' ? 'Quiz' : card.type==='summary' ? 'Resumo' : card.type==='intro' ? 'Início' : '';
+      var typeLabel = card.type==='quiz' ? 'Quiz' : card.type==='examresult' ? 'Resultado' : card.type==='summary' ? 'Resumo' : card.type==='intro' ? 'Início' : '';
       return '<div class="card-row" data-idx="'+flatIdx+'" id="row-'+flatIdx+'"><span class="idx-shape"></span><span class="row-label">'+card.title+'</span>'+(typeLabel?'<span class="row-tag">'+typeLabel+'</span>':'')+'</div>';
     }).join('');
     html += '<div class="mod-group" id="mgroup-'+mi+'">'+
@@ -1098,9 +1319,10 @@ function updateTopBar(){
   document.getElementById('progressPct').textContent = pct+'%';
   var correct = 0, answered = 0;
   Object.keys(state.quizAnswers).forEach(function(k){
-    answered++;
     var f = FLAT[parseInt(k,10)];
-    if(f && f.card.quiz && state.quizAnswers[k] === f.card.quiz.correct) correct++;
+    if(!f || f.card.type!=='quiz' || SELFCHECK_MODULES.indexOf(f.module.id)===-1) return;
+    answered++;
+    if(state.quizAnswers[k] === f.card.quiz.correct) correct++;
   });
   document.getElementById('scorePill').textContent = 'Quizzes: '+correct+'/'+TOTAL_QUIZZES;
 }
@@ -1114,10 +1336,30 @@ function renderStage(){
   var card = entry.card, mod = entry.module;
   var accentVar = 'var('+mod.colorVar+')';
 
-  var visualHtml = card.type==='quiz' ? '' : '<div class="visual-box">'+visualHTML(card.visual)+'</div>';
-  var leftPanel = card.type==='quiz'
-    ? '<div class="panel"><h3>Sua resposta</h3><div id="quizPanel"></div></div>'
-    : '<div class="panel"><h3>Pontos-chave</h3><ul class="bullets">'+card.bullets.map(function(b){return '<li>'+b+'</li>';}).join('')+'</ul></div>';
+  var examStats = null;
+  if(card.type==='examresult'){
+    examStats = computeExamStats(mod.id);
+    var examLabel = mod.id==='examA' ? ' a Prova A' : ' a Prova B';
+    card.narration = buildExamNarration(examStats, examLabel);
+  }
+
+  var visualHtml;
+  if(card.type==='quiz'){
+    visualHtml = '';
+  } else if(card.type==='examresult'){
+    visualHtml = '<div class="visual-box">'+renderScoreVisual(examStats)+'</div>';
+  } else {
+    visualHtml = '<div class="visual-box">'+visualHTML(card.visual)+'</div>';
+  }
+
+  var leftPanel;
+  if(card.type==='quiz'){
+    leftPanel = '<div class="panel"><h3>Sua resposta</h3><div id="quizPanel"></div></div>';
+  } else if(card.type==='examresult'){
+    leftPanel = '<div class="panel"><h3>Questão por questão</h3><div id="examBreakdown"></div></div>';
+  } else {
+    leftPanel = '<div class="panel"><h3>Pontos-chave</h3><ul class="bullets">'+card.bullets.map(function(b){return '<li>'+b+'</li>';}).join('')+'</ul></div>';
+  }
   var rightPanel = '<div class="panel"><h3>O que o professor está dizendo</h3><div class="transcript" id="transcript"></div>'+
     (('speechSynthesis' in window) ? '' : '<div class="no-voice-note">Seu navegador não suporta narração por voz — mas você pode ler a transcrição acima.</div>')+
     '</div>';
@@ -1134,6 +1376,7 @@ function renderStage(){
   stageInnerEl.classList.add('anim');
 
   if(card.type==='quiz') renderQuizPanel(card, state.flatIndex);
+  if(card.type==='examresult') renderExamBreakdown(document.getElementById('examBreakdown'), mod.id);
 
   state.sentences = splitSentences(card.narration);
   renderTranscript();
@@ -1155,6 +1398,58 @@ function highlightSentence(i){
   });
 }
 
+function computeExamStats(moduleId){
+  var items = [];
+  FLAT.forEach(function(f, idx){ if(f.module.id===moduleId && f.card.type==='quiz') items.push({f:f, idx:idx}); });
+  var total = items.length, answered = 0, correct = 0, weightTotal = 0, weightScore = 0;
+  var wrongNums = [], pendingNums = [];
+  items.forEach(function(it, i){
+    var w = it.f.card.quiz.weight || 1;
+    weightTotal += w;
+    var ans = state.quizAnswers[it.idx];
+    if(ans === undefined){ pendingNums.push(i+1); return; }
+    answered++;
+    if(ans === it.f.card.quiz.correct){ correct++; weightScore += w; }
+    else wrongNums.push(i+1);
+  });
+  return {total:total, answered:answered, correct:correct, weightTotal:weightTotal, weightScore:weightScore, wrongNums:wrongNums, pendingNums:pendingNums};
+}
+function fmtPts(n){
+  var r = Math.round(n*10)/10;
+  return (r % 1 === 0 ? r.toFixed(0) : r.toFixed(1)).replace('.', ',');
+}
+function buildExamNarration(stats, examLabel){
+  if(stats.pendingNums.length){
+    return 'Você ainda não respondeu todas as questões d'+examLabel+'. Faltam '+stats.pendingNums.length+' questões: número '+stats.pendingNums.join(', ')+'. Volte e responda antes de ver o resultado final.';
+  }
+  var txt = 'Você concluiu '+examLabel+'! Acertou '+stats.correct+' de '+stats.total+' questões, o que dá uma nota estimada de '+fmtPts(stats.weightScore)+' de '+fmtPts(stats.weightTotal)+' pontos.';
+  if(stats.wrongNums.length){
+    txt += ' Vale a pena revisar as questões número '+stats.wrongNums.join(', ')+'.';
+  } else {
+    txt += ' Você gabaritou! Excelente.';
+  }
+  return txt;
+}
+function renderScoreVisual(stats){
+  var pct = stats.total ? Math.round(stats.correct/stats.total*100) : 0;
+  var pendingNote = stats.pendingNums.length ? '<div class="score-pending">'+stats.pendingNums.length+' questão(ões) ainda sem resposta</div>' : '';
+  return '<div class="viz-score"><div class="score-ring" style="--pct:'+pct+'"><span class="score-num">'+stats.correct+'/'+stats.total+'</span></div>'+
+    '<div class="score-detail">Nota estimada: <strong>'+fmtPts(stats.weightScore)+' / '+fmtPts(stats.weightTotal)+'</strong> pontos</div>'+pendingNote+'</div>';
+}
+function renderExamBreakdown(container, moduleId){
+  var items = [];
+  FLAT.forEach(function(f, idx){ if(f.module.id===moduleId && f.card.type==='quiz') items.push({f:f, idx:idx}); });
+  container.innerHTML = items.map(function(it, i){
+    var ans = state.quizAnswers[it.idx];
+    var status = ans===undefined ? 'pending' : (ans===it.f.card.quiz.correct ? 'ok' : 'bad');
+    var label = ans===undefined ? 'Não respondida — clique para responder'
+      : (status==='ok' ? 'Correta' : ('Sua resposta: '+String.fromCharCode(65+ans)+' — correta: '+String.fromCharCode(65+it.f.card.quiz.correct)));
+    return '<button class="breakdown-row '+status+'" data-flat="'+it.idx+'"><span class="bd-num">Q'+(i+1)+'</span><span class="bd-label">'+label+'</span></button>';
+  }).join('');
+  container.querySelectorAll('.breakdown-row').forEach(function(btn){
+    btn.addEventListener('click', function(){ goTo(parseInt(btn.getAttribute('data-flat'),10)); });
+  });
+}
 function renderQuizPanel(card, flatIdx){
   var panel = document.getElementById('quizPanel');
   if(!panel) return;
