@@ -1,0 +1,1561 @@
+<title>Aula Guiada Engenharia de Software</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#0a0e1a;
+  --surface:#121a2c;
+  --surface-2:#182238;
+  --surface-3:#1f2c47;
+  --border:#2a3958;
+  --border-soft:#1c2842;
+  --text:#eef2fb;
+  --text-dim:#9fb0cc;
+  --text-faint:#6b7a9c;
+  --accent:#45e0c4;
+  --accent-ink:#062b26;
+  --m1:#4fc3f7;
+  --m2:#b48cff;
+  --m3:#45e0a6;
+  --m4:#ffd166;
+  --m5:#ffd166;
+  --examA:#ef5350;
+  --examB:#ff8a5c;
+  --danger:#ff6f76;
+  --success:#57d68d;
+  --font-display:'Sora',system-ui,sans-serif;
+  --font-body:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  position:relative;
+  overflow:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 0%, #000 40%, transparent 100%);
+}
+button{font-family:inherit}
+ul{margin:0;padding:0}
+.chev{width:20px;height:20px;color:var(--text-faint);flex-shrink:0;display:block}
+
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh}
+
+/* ---------- topbar ---------- */
+.topbar{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 18px;border-bottom:1px solid var(--border);
+  background:rgba(18,26,44,.9);backdrop-filter:blur(6px);
+  position:relative;z-index:40;flex-shrink:0;
+}
+.menu-btn{
+  display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--border);
+  background:var(--surface-2);color:var(--text);align-items:center;justify-content:center;cursor:pointer;
+}
+.brand{display:flex;flex-direction:column;gap:1px;line-height:1.1}
+.brand .name{font-family:var(--font-display);font-weight:700;font-size:1rem;letter-spacing:.2px}
+.brand .course{font-family:var(--font-mono);font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.09em}
+.topbar .spacer{flex:1}
+.progress-wrap{display:flex;align-items:center;gap:9px}
+.progress-track{width:120px;height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;flex-shrink:0}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--m4));border-radius:inherit;transition:width .5s ease}
+.progress-pct{font-family:var(--font-mono);font-size:.68rem;color:var(--text-dim);width:34px;text-align:right}
+.score-pill{
+  font-family:var(--font-mono);font-size:.68rem;padding:5px 10px;border-radius:99px;
+  border:1px solid var(--border);color:var(--text-dim);white-space:nowrap;
+}
+.icon-btn{
+  width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;
+}
+.icon-btn:hover{color:var(--text);border-color:var(--text-faint)}
+.icon-btn svg{width:18px;height:18px}
+
+.settings-pop{
+  position:absolute;top:52px;right:18px;width:270px;background:var(--surface-2);
+  border:1px solid var(--border);border-radius:12px;padding:16px;display:none;
+  box-shadow:0 20px 40px rgba(0,0,0,.4);z-index:60;
+}
+.settings-pop.open{display:block}
+.settings-pop h4{margin:0 0 10px;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:.82rem}
+.settings-row:last-of-type{border-bottom:none}
+.rate-btn{font-family:var(--font-mono);font-size:.76rem;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface-3);color:var(--text);cursor:pointer}
+select.voice-select{background:var(--surface-3);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:5px 6px;font-size:.74rem;max-width:140px}
+.voice-inline{display:flex;align-items:center;gap:6px}
+.voice-test-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--surface-3);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0}
+.voice-test-btn svg{width:11px;height:11px;margin-left:1px}
+.voice-test-btn:hover:not(:disabled){border-color:var(--accent)}
+.voice-test-btn:disabled{opacity:.35;cursor:default}
+.switch{position:relative;width:38px;height:22px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .track{position:absolute;inset:0;background:var(--surface-3);border:1px solid var(--border);border-radius:99px;transition:.2s;cursor:pointer}
+.switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--text-faint);transition:.2s}
+.switch input:checked + .track{background:rgba(69,224,196,.25);border-color:var(--accent)}
+.switch input:checked + .track .knob{transform:translateX(16px);background:var(--accent)}
+.reset-btn{margin-top:12px;width:100%;font-family:var(--font-mono);font-size:.72rem;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-faint);cursor:pointer}
+.reset-btn:hover{color:var(--danger);border-color:var(--danger)}
+
+/* ---------- body row ---------- */
+.body-row{display:flex;flex:1;min-height:0;position:relative}
+.sidebar-backdrop{display:none}
+.sidebar{
+  width:302px;flex-shrink:0;border-right:1px solid var(--border);background:var(--surface);
+  overflow-y:auto;padding:12px 0 30px;
+}
+.mod-group{margin-bottom:4px}
+.mod-head{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none}
+.mod-head:hover{background:var(--surface-2)}
+.mod-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.mod-title{font-family:var(--font-display);font-weight:600;font-size:.85rem;flex:1;line-height:1.25}
+.mod-sub{display:block;font-family:var(--font-mono);font-size:.62rem;color:var(--text-faint);font-weight:400;margin-top:1px;text-transform:none;letter-spacing:0}
+.mod-count{font-family:var(--font-mono);font-size:.65rem;color:var(--text-dim);flex-shrink:0}
+.mod-caret{width:14px;height:14px;color:var(--text-faint);transition:transform .2s;flex-shrink:0}
+.mod-group.collapsed .mod-caret{transform:rotate(-90deg)}
+.mod-cards{display:flex;flex-direction:column;overflow:hidden}
+.mod-group.collapsed .mod-cards{display:none}
+.card-row{
+  display:flex;align-items:center;gap:9px;padding:7px 16px 7px 28px;font-size:.79rem;
+  color:var(--text-dim);cursor:pointer;border-left:2px solid transparent;line-height:1.3;
+}
+.card-row:hover{background:var(--surface-2)}
+.card-row.active{background:var(--surface-2);color:var(--text);font-weight:500}
+.idx-shape{width:15px;height:15px;flex-shrink:0;border-radius:4px;border:1px solid var(--border);display:grid;place-items:center;font-size:0}
+.card-row.active .idx-shape{border-color:currentColor}
+.card-row.visited .idx-shape{background:var(--surface-3)}
+.card-row.visited .idx-shape::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--success)}
+.card-row .row-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--text-faint);flex-shrink:0}
+
+/* ---------- stage ---------- */
+.stage-wrap{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0;position:relative}
+.stage{flex:1;overflow-y:auto;padding:34px 28px 50px}
+.stage-inner{max-width:900px;margin:0 auto}
+.stage-inner.anim{animation:cardIn .38s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.stage-inner.anim{animation:none}}
+
+.kicker-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.mod-badge{font-family:var(--font-mono);font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:6px;border:1px solid var(--card-accent);color:var(--card-accent)}
+.kicker-text{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.card-title{font-family:var(--font-display);font-size:clamp(1.5rem,3.1vw,2.05rem);font-weight:700;line-height:1.18;margin:0 0 22px;text-wrap:balance}
+
+.visual-box{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:24px;margin-bottom:22px;position:relative}
+.visual-box::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 6%, transparent), transparent 55%);pointer-events:none}
+
+/* viz: hero */
+.viz-hero{padding:6px 4px;text-align:center;position:relative}
+.hero-lead{font-family:var(--font-display);font-weight:700;font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.4;color:var(--text);max-width:660px;margin:0 auto 18px;padding:0 8px}
+.hero-lead::before{content:'\201C';color:var(--card-accent)}
+.hero-lead::after{content:'\201D';color:var(--card-accent)}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{font-family:var(--font-mono);font-size:.78rem;padding:6px 14px;border-radius:99px;border:1px solid var(--card-accent);color:var(--card-accent);background:color-mix(in srgb, var(--card-accent) 8%, transparent)}
+
+/* viz: stack */
+.viz-stack{display:flex;flex-direction:column;align-items:stretch}
+.stack-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2)}
+.stack-num{font-family:var(--font-mono);font-weight:600;font-size:.78rem;width:26px;height:26px;border-radius:50%;border:1px solid var(--card-accent);color:var(--card-accent);display:grid;place-items:center;flex-shrink:0}
+.stack-label{font-weight:600;font-size:.94rem}
+.stack-sub{font-size:.79rem;color:var(--text-dim);margin-top:2px}
+.stack-arrow{display:flex;justify-content:center;padding:1px 0}
+
+/* viz: flow */
+.viz-flow{display:flex;align-items:stretch;gap:4px;flex-wrap:wrap}
+.flow-step{flex:1;min-width:128px;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:14px;text-align:center;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.flow-num{font-family:var(--font-mono);font-weight:700;color:var(--card-accent);font-size:.86rem}
+.flow-label{font-weight:600;font-size:.85rem;line-height:1.3}
+.flow-sub{font-size:.73rem;color:var(--text-dim);line-height:1.3}
+.flow-arrow{display:flex;align-items:center;justify-content:center;min-width:22px}
+@media (max-width:760px){
+  .viz-flow{flex-direction:column}
+  .flow-arrow{min-height:22px}
+  .flow-arrow svg{transform:rotate(90deg)}
+}
+
+/* viz: compare */
+.viz-compare{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch}
+.cmp-col{border:1px solid var(--border);border-radius:12px;padding:16px 18px;background:var(--surface-2)}
+.cmp-col.winner{border-color:var(--card-accent);box-shadow:inset 0 0 0 1px var(--card-accent)}
+.cmp-head{font-family:var(--font-display);font-weight:700;font-size:.92rem;margin-bottom:10px;color:var(--text)}
+.cmp-col.winner .cmp-head{color:var(--card-accent)}
+.cmp-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.cmp-col li{font-size:.82rem;line-height:1.45;color:var(--text-dim);padding-left:14px;position:relative}
+.cmp-col li::before{content:'';position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--text-faint)}
+.cmp-col.winner li::before{background:var(--card-accent)}
+.cmp-vs{align-self:center;font-family:var(--font-mono);font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em}
+@media (max-width:660px){.viz-compare{grid-template-columns:1fr}.cmp-vs{text-align:center;padding:2px 0}}
+
+/* viz: grid cards */
+.viz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.grid-card{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:15px 16px}
+.grid-card-title{font-family:var(--font-display);font-weight:700;font-size:.9rem;color:var(--card-accent);margin-bottom:6px}
+.grid-card-desc{font-size:.79rem;color:var(--text-dim);line-height:1.45}
+.grid-card-list{margin:6px 0 0;padding-left:15px;font-size:.78rem;color:var(--text-dim);display:flex;flex-direction:column;gap:4px;list-style:disc}
+
+/* viz: swatches */
+.viz-swatch-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px}
+.swatch-color{width:100%;aspect-ratio:1.7;border-radius:10px;border:1px solid var(--border);margin-bottom:8px}
+.swatch-name{font-family:var(--font-mono);font-weight:600;font-size:.8rem}
+.swatch-use{font-size:.72rem;color:var(--text-dim);margin-top:2px;line-height:1.35}
+
+/* viz: typescale */
+.viz-typescale{display:flex;flex-direction:column}
+.type-row{display:flex;align-items:baseline;gap:18px;padding:9px 0;border-bottom:1px solid var(--border-soft)}
+.type-row:last-child{border-bottom:none}
+.type-sample{font-family:var(--font-display);font-weight:700;color:var(--card-accent);width:66px;flex-shrink:0;line-height:1}
+.type-meta{display:flex;flex-direction:column;gap:2px}
+.type-name{font-family:var(--font-mono);font-size:.78rem;font-weight:600}
+.type-use{font-size:.72rem;color:var(--text-dim)}
+
+/* viz: icons */
+.viz-icons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:6px 0}
+.icon-cell{width:60px;height:60px;border:1px dashed var(--border);border-radius:10px;display:grid;place-items:center;background:var(--surface-2)}
+.icon-glyph{width:30px;height:30px;color:var(--card-accent)}
+
+/* viz: code */
+.viz-code-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.code-block{background:#070b14;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.code-label{font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);padding:8px 12px;border-bottom:1px solid var(--border)}
+.code-pre{margin:0;padding:14px;font-family:var(--font-mono);font-size:.76rem;line-height:1.62;color:#bdf5e4;overflow-x:auto;white-space:pre}
+
+/* viz: custom svg */
+.viz-svg-wrap{display:flex;justify-content:center}
+.viz-svg-wrap svg{width:100%;max-width:560px;height:auto;color:var(--text-dim)}
+.svg-caption{text-align:center;font-size:.78rem;color:var(--text-dim);margin-top:10px}
+
+/* content grid: bullets + transcript */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:740px){.content-grid{grid-template-columns:1fr}}
+.panel{border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:var(--surface)}
+.panel h3{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin:0 0 13px}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:11px}
+.bullets li{display:flex;gap:10px;font-size:.9rem;line-height:1.5}
+.bullets li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--card-accent);margin-top:.5em;flex-shrink:0}
+
+.transcript{font-size:.9rem;line-height:1.75;color:var(--text-faint)}
+.transcript .sen{transition:color .15s,background-color .15s;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.transcript .sen.active{color:var(--text);background:color-mix(in srgb, var(--card-accent) 16%, transparent);font-weight:500;padding:1px 3px;margin:0 -3px}
+.no-voice-note{margin-top:10px;font-size:.72rem;color:var(--text-faint);font-style:italic}
+
+/* quiz */
+.quiz-question{font-family:var(--font-display);font-weight:600;font-size:1.02rem;line-height:1.45;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{
+  text-align:left;padding:11px 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text);font-size:.85rem;line-height:1.4;cursor:pointer;transition:.15s;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--card-accent)}
+.quiz-opt:disabled{cursor:default}
+.quiz-opt.correct{border-color:var(--success);background:color-mix(in srgb, var(--success) 14%, var(--surface-2));color:var(--text)}
+.quiz-opt.wrong{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 14%, var(--surface-2));color:var(--text)}
+.quiz-explain{margin-top:14px;padding:13px 15px;border-radius:10px;border:1px solid var(--border);font-size:.83rem;line-height:1.5}
+.quiz-explain.ok{border-color:var(--success);background:color-mix(in srgb, var(--success) 10%, transparent)}
+.quiz-explain.bad{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 10%, transparent)}
+
+/* exam result */
+.viz-score{padding:8px 0;text-align:center}
+.score-ring{width:132px;height:132px;border-radius:50%;margin:0 auto 14px;position:relative;background:conic-gradient(var(--card-accent) calc(var(--pct)*1%), var(--surface-3) 0)}
+.score-ring::before{content:'';position:absolute;inset:9px;border-radius:50%;background:var(--surface)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:1.4rem}
+.score-detail{font-size:.88rem;color:var(--text-dim)}
+.score-detail strong{color:var(--text);font-family:var(--font-mono)}
+.score-pending{margin-top:8px;font-size:.78rem;color:var(--examA)}
+.breakdown-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 11px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:.8rem;cursor:pointer;margin-bottom:7px}
+.breakdown-row:hover{border-color:var(--text-faint)}
+.breakdown-row.ok{border-color:var(--success)}
+.breakdown-row.bad{border-color:var(--danger)}
+.breakdown-row.pending{opacity:.65}
+.bd-num{font-family:var(--font-mono);font-weight:700;color:var(--card-accent);width:34px;flex-shrink:0}
+.bd-label{flex:1;font-size:.76rem;color:var(--text-dim);line-height:1.35}
+
+/* start overlay */
+.start-overlay{position:absolute;inset:0;background:rgba(8,11,20,.96);display:flex;align-items:center;justify-content:center;z-index:25;padding:24px}
+.start-card{max-width:480px;text-align:center}
+.start-card .tag{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.start-card h2{font-family:var(--font-display);font-size:1.7rem;margin:10px 0 12px;line-height:1.25}
+.start-card p{color:var(--text-dim);font-size:.9rem;line-height:1.55;margin:0 0 22px}
+.voice-picker{text-align:left;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:0 0 20px}
+.voice-picker label{display:block;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);margin-bottom:8px}
+.voice-picker-row{display:flex;align-items:center;gap:8px}
+.voice-picker select.voice-select{flex:1;max-width:none;width:100%;font-size:.82rem;padding:8px 10px}
+.voice-picker .voice-test-btn{width:34px;height:34px}
+.voice-picker .voice-test-btn svg{width:13px;height:13px}
+.voice-note{margin-top:8px;font-size:.7rem;color:var(--text-faint);line-height:1.4;min-height:1em}
+.start-btn{
+  font-family:var(--font-display);font-weight:700;font-size:.95rem;padding:13px 26px;border-radius:11px;border:none;
+  background:var(--accent);color:var(--accent-ink);cursor:pointer;
+}
+.start-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text-dim);margin-left:10px}
+.start-btn:hover{filter:brightness(1.08)}
+.start-note{margin-top:16px;font-size:.72rem;color:var(--text-faint)}
+
+/* transport */
+.transport{
+  flex-shrink:0;border-top:1px solid var(--border);background:rgba(18,26,44,.92);backdrop-filter:blur(6px);
+  padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.t-btn{
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text);display:grid;place-items:center;cursor:pointer;flex-shrink:0;
+}
+.t-btn:hover:not(:disabled){border-color:var(--text-faint)}
+.t-btn:disabled{opacity:.35;cursor:default}
+.t-btn svg{width:17px;height:17px}
+.play-btn{width:50px;height:50px;background:var(--accent);color:var(--accent-ink);border:none}
+.play-btn svg{width:20px;height:20px}
+.t-count{font-family:var(--font-mono);font-size:.75rem;color:var(--text-dim);white-space:nowrap}
+.t-spacer{flex:1}
+.t-toggle{display:none}
+@media (min-width:900px){.t-toggle{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--text-dim)}}
+
+@media (max-width:880px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);transition:transform .28s ease;z-index:70;box-shadow:20px 0 40px rgba(0,0,0,.4)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-backdrop.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:60}
+  .progress-track{width:74px}
+}
+@media (max-width:560px){
+  .stage{padding:22px 16px 40px}
+  .card-title{margin-bottom:16px}
+  .visual-box{padding:16px}
+  .transport{padding:9px 12px;gap:10px}
+  .brand .name{font-size:.9rem}
+}
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu de módulos">
+      <svg viewBox="0 0 24 24" width="18" height="18"><line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="brand">
+      <span class="name">Aula Guiada</span>
+      <span class="course">Engenharia de Software</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="score-pill" id="scorePill">Quizzes: 0/3</div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Configura&ccedil;&otilde;es de narra&ccedil;&atilde;o">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="settings-pop" id="settingsPop">
+      <h4>Narra&ccedil;&atilde;o</h4>
+      <div class="settings-row"><span>Velocidade</span><button class="rate-btn" id="rateBtn">1.0x</button></div>
+      <div class="settings-row" id="voiceRow"><span>Voz</span><div class="voice-inline"><select class="voice-select" id="voiceSelect"></select><button class="voice-test-btn" id="voiceTestBtnSettings" type="button" aria-label="Testar voz"><svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg></button></div></div>
+      <div class="settings-row"><span>Narrar ao chegar no card</span><label class="switch"><input type="checkbox" id="autoplayToggle" checked><span class="track"><span class="knob"></span></span></label></div>
+      <div class="settings-row"><span>Avan&ccedil;ar sozinho</span><label class="switch"><input type="checkbox" id="autoadvanceToggle" checked><span class="track"><span class="knob"></span></span></label></div>
+      <button class="reset-btn" id="resetBtn">Reiniciar progresso salvo</button>
+    </div>
+  </div>
+
+  <div class="body-row">
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="stage-wrap">
+      <div class="stage" id="stage"><div class="stage-inner" id="stageInner"></div></div>
+
+      <div class="start-overlay" id="startOverlay">
+        <div class="start-card">
+          <span class="tag">Revis&atilde;o narrada &middot; PT-BR</span>
+          <h2>Pronto para revisar Engenharia de Software?</h2>
+          <p>Ferramentas CASE, Padrões de Projeto e Arquitetura em Camadas, com diagramas, exemplos práticos e um professor narrando cada card em voz alta — como uma aula de verdade, no seu ritmo.</p>
+          <div class="voice-picker">
+            <label for="voiceSelectStart">Escolha a voz do professor</label>
+            <div class="voice-picker-row">
+              <select class="voice-select" id="voiceSelectStart"></select>
+              <button class="voice-test-btn" id="voiceTestBtnStart" type="button" aria-label="Testar voz">
+                <svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg>
+              </button>
+            </div>
+            <div class="voice-note" id="voiceNoteStart"></div>
+          </div>
+          <div>
+            <button class="start-btn" id="startBtn">Come&ccedil;ar a aula</button>
+            <button class="start-btn secondary" id="startFreshBtn" style="display:none">Come&ccedil;ar do zero</button>
+          </div>
+          <div class="start-note">Ative o som &mdash; a narra&ccedil;&atilde;o usa a voz do seu navegador.</div>
+        </div>
+      </div>
+
+      <div class="transport">
+        <button class="t-btn" id="prevBtn" aria-label="Card anterior">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="t-btn play-btn" id="playBtn" aria-label="Ouvir narra&ccedil;&atilde;o">
+          <svg id="playIcon" viewBox="0 0 24 24" fill="none"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg>
+        </button>
+        <button class="t-btn" id="nextBtn" aria-label="Pr&oacute;ximo card">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="t-count" id="tCount">Card 1 de 46</span>
+        <div class="t-spacer"></div>
+        <span class="t-toggle" id="tVoiceLabel">Voz: verificando&hellip;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+function chevronSVG(dir){
+  var pts = dir==='down' ? '6 9 12 15 18 9' : '9 6 15 12 9 18';
+  return '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ================= MODULE DATA ================= */
+var MODULES = [
+{
+  id:'m1', code:'M1', colorVar:'--m1', title:'Ferramentas CASE', sub:'Ferramentas de Engenharia',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Ferramentas CASE: o Arsenal do Engenheiro de Software',
+      narration:"Bem-vindo ao primeiro módulo desta revisão de Engenharia de Software. Vamos falar sobre ferramentas CASE, o conjunto de softwares que apoia o engenheiro em cada etapa do desenvolvimento, da análise de requisitos até o banco de dados. Vou te mostrar as categorias dessas ferramentas, exemplos reais como Jira, Git e MySQL Workbench, e por que elas existem: pra você trabalhar num nível de abstração mais alto, sem se perder em detalhes repetitivos.",
+      bullets:['CASE = Computer Aided Software Engineering','Ferramentas que apoiam cada etapa do desenvolvimento','Exemplos: Git, Jira, Helix RM, MySQL Workbench'],
+      visual:{kind:'hero', chips:['CASE','Upper/Lower','Git','Jira']}
+    },
+    { type:'content', kicker:'Conceito-base', title:'O que é uma ferramenta CASE',
+      narration:"Uma ferramenta, de forma bem simples, é qualquer instrumento usado para realizar um trabalho — desde um martelo até um software. No desenvolvimento de sistemas, chamamos de ferramentas CASE, Computer Aided Software Engineering, ou Engenharia de Software Auxiliada por Computador, todo software que ajuda o engenheiro em uma ou mais etapas do ciclo de desenvolvimento. Elas existem pra automatizar tarefas repetitivas, permitindo que você trabalhe num nível de abstração mais alto, sem se preocupar com detalhes intrínsecos do ambiente.",
+      bullets:['Ferramenta = instrumento para realizar um trabalho','CASE = ferramentas computacionais que apoiam a engenharia de software','Objetivo: elevar o nível de abstração do desenvolvedor'],
+      visual:{kind:'hero', lead:'As ferramentas CASE auxiliam engenheiros de software a especificar e projetar sistemas.'}
+    },
+    { type:'content', kicker:'Ciclo de desenvolvimento', title:'As etapas do desenvolvimento de software',
+      narration:"Antes de falar das ferramentas, vale lembrar as etapas que elas apoiam. Primeiro, a Análise, onde levantamos a especificação e os requisitos. Depois, o Desenho, onde definimos a arquitetura e os modelos do sistema. Em seguida, a Implementação, que é a codificação propriamente dita. Depois vem o Teste, pra validar a qualidade. E, por fim, a Implantação, que cobre instalação, suporte e manutenção. Cada uma dessas etapas tem ferramentas CASE específicas pra apoiar o trabalho.",
+      bullets:['Análise → especificação e requisitos','Desenho → arquitetura e modelos','Implementação → codificação','Teste → validação e qualidade','Implantação → instalação, suporte, manutenção'],
+      visual:{kind:'flow', steps:[{label:'Análise',sub:'Especificação, requisitos'},{label:'Desenho',sub:'Arquitetura, modelos'},{label:'Implementação',sub:'Codificação'},{label:'Teste',sub:'Validação, qualidade'},{label:'Implantação',sub:'Suporte, manutenção'}]}
+    },
+    { type:'content', kicker:'Categorias', title:'Upper CASE, Lower CASE e I-CASE',
+      narration:"As ferramentas CASE se dividem em três grandes categorias, e essa é uma classificação clássica de prova. Upper CASE são as ferramentas especializadas na fase de concepção do software: análise, especificação e modelagem de requisitos. Lower CASE são as ferramentas usadas na fase de implementação: desenho técnico, edição e compilação de código, e testes. E I-CASE, de Integrated CASE, são ferramentas que funcionam como Upper e Lower CASE ao mesmo tempo, de forma integrada, cobrindo a concepção e a implementação numa só plataforma.",
+      bullets:['Upper CASE → fase de concepção (análise, requisitos)','Lower CASE → fase de implementação (código, testes)','I-CASE → as duas coisas, integradas'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Upper CASE', desc:'Fase de concepção: análise, especificação e modelagem de requisitos'},
+        {title:'Lower CASE', desc:'Fase de implementação: desenho técnico, edição, compilação e testes'},
+        {title:'I-CASE', desc:'Upper + Lower funcionando de forma integrada'}
+      ]}
+    },
+    { type:'content', kicker:'Classificação funcional', title:'Outras categorias das ferramentas CASE',
+      narration:"Além de Upper, Lower e I-CASE, as ferramentas também podem ser agrupadas por função específica. Existem ferramentas de modelação de processos de negócio, de modelação de análise e desenho do sistema, de desenho de banco de dados, de programação de aplicações, de gestão de alterações no software, de testes, e ferramentas orientadas à gestão de projetos. Na prática, uma equipe grande costuma usar várias dessas categorias juntas, cada uma cobrindo uma parte do processo.",
+      bullets:['Modelação de processos de negócio','Modelação de análise e desenho do sistema','Desenho de banco de dados','Programação de aplicações','Gestão de alterações e testes','Gestão de projetos'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Modelação', desc:'Processos de negócio e análise/desenho'},
+        {title:'Banco de Dados', desc:'Desenho e modelagem de dados'},
+        {title:'Programação', desc:'Desenvolvimento de aplicações'},
+        {title:'Gestão de Alterações', desc:'Controle de mudanças no software'},
+        {title:'Testes', desc:'Validação e qualidade'},
+        {title:'Gestão de Projetos', desc:'Planejamento e acompanhamento'}
+      ]}
+    },
+    { type:'content', kicker:'Repositório integrado', title:'A arquitetura por trás das ferramentas CASE',
+      narration:"A arquitetura típica de uma ferramenta CASE é montada em torno de um repositório centralizado, que guarda tudo: os modelos de software, os modelos de processos de negócio, a modelagem do banco de dados, o desenvolvimento das aplicações, os testes e a gestão de configuração e alterações. Cada um desses componentes lê e escreve nesse repositório central, o que garante que todo mundo na equipe trabalhe com a mesma versão da verdade sobre o sistema.",
+      bullets:['Repositório centralizado é o núcleo da arquitetura','Componentes: modelagem, BD, desenvolvimento, testes, gestão de mudanças','Garante consistência entre toda a equipe'],
+      visual:{kind:'stack', layers:[
+        {label:'Modelagem de Processos e de Software', sub:'Análise e desenho'},
+        {label:'Gestão do Repositório', sub:'Núcleo centralizado'},
+        {label:'Desenvolvimento, Testes e Configuração', sub:'Implementação e controle de mudanças'}
+      ]}
+    },
+    { type:'content', kicker:'Helix RM e Jira', title:'Ferramentas de levantamento de requisitos',
+      narration:"Duas ferramentas bem conhecidas pra gerenciar requisitos são o Helix RM e o Jira. O Helix RM ajuda a capturar, decompor e priorizar requisitos, além de rastrear alterações e oferecer uma matriz de rastreabilidade, ligando requisitos a casos de teste e até ao código-fonte. O Jira, da Atlassian, é uma das ferramentas mais usadas pra gerenciamento de ciclo de vida de aplicativos, ajudando a mapear requisitos, conectar tarefas a eles e visualizar como tudo se relaciona. Identificar e gerenciar bem os requisitos de negócio é uma das etapas mais importantes pra garantir o sucesso de um projeto.",
+      bullets:['Helix RM: captura, prioriza e rastreia requisitos','Jira: gerencia ciclo de vida de aplicativos e tarefas','Ambas conectam requisitos a testes e ao código'],
+      visual:{kind:'gridcards', cols:2, items:[
+        {title:'Helix RM', desc:'Captura, prioriza e rastreia requisitos; matriz de rastreabilidade'},
+        {title:'Jira', desc:'Gerenciamento de ciclo de vida, mapeia requisitos e tarefas'}
+      ]}
+    },
+    { type:'content', kicker:'Modelagem visual', title:'Ferramentas de desenho de banco de dados',
+      narration:"Pra desenhar bancos de dados, quatro ferramentas aparecem bastante: o MySQL Workbench, que gera diagramas entidade-relacionamento direto a partir do modelo; o Astah Professional, focado em modelagem UML e de dados; o DBDesigner, que organiza tabelas e seus relacionamentos visualmente; e o SQL Power Architect, que também conecta modelos lógicos a bancos reais. Todas seguem a mesma ideia: desenhar o banco visualmente antes de criar as tabelas de verdade, reduzindo erro de modelagem.",
+      bullets:['MySQL Workbench: diagramas entidade-relacionamento','Astah Professional: modelagem UML e de dados','DBDesigner e SQL Power Architect: modelagem visual de tabelas'],
+      visual:{kind:'gridcards', cols:4, items:[
+        {title:'MySQL Workbench', desc:'Diagramas ER'},
+        {title:'Astah Professional', desc:'Modelagem UML/dados'},
+        {title:'DBDesigner', desc:'Tabelas e relacionamentos'},
+        {title:'SQL Power Architect', desc:'Modelo lógico ↔ banco real'}
+      ]}
+    },
+    { type:'content', kicker:'Desenvolvimento e versionamento', title:'Visual Studio e controle de versão com Git',
+      narration:"O Visual Studio é um exemplo de ferramenta CASE completa: serve pra desenvolvimento, testes automatizados, modelagem de banco de dados, e vem integrado com o Git, o sistema de controle de versão. No Git, o repositório, geralmente hospedado no GitHub, guarda o código. Uma branch é uma ramificação independente, onde você modifica arquivos sem afetar o branch principal. Merge é a ação de mesclar o código alterado de volta na branch. Push leva o código da sua branch local pra branch remota. E pull faz o caminho contrário: traz o código da branch remota pra sua máquina.",
+      bullets:['Branch: ramificação independente do código','Merge: mescla o código alterado de volta','Push: envia código local → remoto','Pull: traz código remoto → local'],
+      visual:{kind:'flow', steps:[{label:'Branch',sub:'ramificação independente'},{label:'Commit',sub:'salva as alterações'},{label:'Push',sub:'local → remoto'},{label:'Pull',sub:'remoto → local'},{label:'Merge',sub:'mescla o código'}]}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 1',
+      narration:"Fechando o módulo 1: ferramentas CASE são softwares que apoiam o engenheiro em uma ou mais etapas do desenvolvimento, elevando o nível de abstração. Elas se dividem em Upper CASE, pra concepção, Lower CASE, pra implementação, e I-CASE, que junta as duas. Por trás delas, normalmente existe um repositório centralizado que conecta todos os componentes. E na prática, você vai encontrar ferramentas específicas pra requisitos, como Jira e Helix RM, pra banco de dados, como o MySQL Workbench, e pra versionamento, como o Git.",
+      bullets:['CASE eleva o nível de abstração do desenvolvedor','Upper CASE (concepção) vs Lower CASE (implementação) vs I-CASE (integrado)','Repositório centralizado conecta os componentes','Git: branch, merge, push, pull'],
+      visual:{kind:'hero', chips:['Upper/Lower/I-CASE','Repositório central','Jira/Helix RM','Git']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 1',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Uma equipe de desenvolvimento utiliza uma ferramenta apenas para editar e compilar código-fonte e executar testes automatizados. Essa ferramenta é classificada como:",
+        options:['Upper CASE, pois atua na fase de concepção do software.','Lower CASE, pois atua na fase de implementação do software.','I-CASE, pois integra concepção e implementação.','Ferramenta de gestão de projetos, pois organiza tarefas da equipe.','Repositório centralizado, pois armazena o código-fonte.'],
+        correct:1,
+        explain:"Editar/compilar código e executar testes são atividades da fase de implementação — por isso a ferramenta é Lower CASE, e não Upper CASE (concepção) nem I-CASE (as duas juntas)."
+      }
+    }
+  ]
+},
+{
+  id:'m2', code:'M2', colorVar:'--m2', title:'Padrões de Projeto', sub:'Design Patterns',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Padrões de Projeto: Soluções que Já Foram Testadas',
+      narration:"Segundo módulo: padrões de projeto, ou design patterns. A ideia central é simples: problemas de projeto de software se repetem, então por que reinventar a roda toda vez? Vamos ver de onde vêm os padrões, como a Gang of Four organizou tudo isso num livro clássico de 1995, e dois exemplos práticos: Singleton e Abstract Factory. Esse módulo tem bastante nome estrangeiro, mas o conceito por trás é bem intuitivo.",
+      bullets:['Padrão = problema recorrente + solução testada','Origem: Christopher Alexander (arquitetura civil)','GoF adaptou os padrões para software em 1995'],
+      visual:{kind:'hero', chips:['GoF','Singleton','Abstract Factory','Antipadrões']}
+    },
+    { type:'content', kicker:'Motivação', title:'Por que usar padrões? Pra não reinventar a roda',
+      narration:"Mesmo usando orientação a objetos, só isso não garante um sistema com boa extensibilidade e reusabilidade. O problema é que problemas idênticos aparecem em contextos diferentes, e muitas vezes a equipe não reconhece que aquele problema já foi resolvido antes, gastando tempo e recursos procurando uma solução que, na prática, já existia. É exatamente essa a motivação dos padrões de projeto: documentar soluções que já provaram funcionar, pra você não sair reinventando a roda a cada novo projeto.",
+      bullets:['Orientação a objetos, por si só, não garante qualidade','Problemas repetidos nem sempre são reconhecidos como tal','Padrões documentam soluções já testadas'],
+      visual:{kind:'hero', lead:'Não reinvente a roda: problemas de projeto se repetem, e as soluções também podem.'}
+    },
+    { type:'content', kicker:'Origem e história', title:'De onde vêm os padrões de projeto',
+      narration:"A ideia de padrão não nasceu na computação. Ela vem de Christopher Alexander, um arquiteto de construções civis e professor em Berkeley, que dizia: cada padrão descreve um problema que sempre ocorre em nosso contexto, e uma solução para ele, de forma que possamos usá-la um milhão de vezes. Em 1995, quatro autores, Erich Gamma, Richard Helm, Ralph Johnson e John Vlissides, adaptaram essa ideia para o desenvolvimento de software orientado a objetos, num livro que ficou conhecido pelo apelido dos autores: Gang of Four, ou simplesmente GoF.",
+      bullets:['Christopher Alexander: padrões na arquitetura civil','1995: GoF adapta a ideia para software orientado a objetos','GoF = apelido dos 4 autores e também do livro'],
+      visual:{kind:'flow', steps:[{label:'Christopher Alexander',sub:'Padrões na arquitetura civil'},{label:'1995',sub:'Gamma, Helm, Johnson, Vlissides'},{label:'GoF',sub:'Padrões de Projeto (livro)'},{label:'Software OO',sub:'Padrões aplicados a sistemas'}]}
+    },
+    { type:'content', kicker:'Estrutura de um padrão', title:'As três partes de um padrão de projeto',
+      narration:"Pra entender qualquer padrão da GoF, você precisa identificar três coisas. O problema: a questão que precisa ser resolvida. O contexto: o ambiente e as circunstâncias em que esse problema ocorre. E a solução: a resposta genérica que resolve aquele problema naquele contexto. Além disso, todo padrão de projeto tem que ter um nome — porque um nome bem escolhido cria um vocabulário comum, permitindo que desenvolvedores conversem num nível mais alto de abstração, só citando o nome do padrão.",
+      bullets:['Problema: a questão a ser resolvida','Contexto: o ambiente onde o problema ocorre','Solução: a resposta genérica proposta','Nome: cria vocabulário comum entre desenvolvedores'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Problema', desc:'A questão que precisa ser resolvida'},
+        {title:'Contexto', desc:'O ambiente onde o problema ocorre'},
+        {title:'Solução', desc:'A resposta genérica proposta'}
+      ]}
+    },
+    { type:'content', kicker:'Finalidade e escopo', title:'Como a GoF classifica os padrões',
+      narration:"A GoF organiza os padrões por dois critérios. O primeiro é a finalidade, que reflete o que o padrão faz: padrões de criação descrevem técnicas para instanciar objetos; padrões de comportamento tratam de como classes e objetos interagem e distribuem responsabilidades; e padrões estruturais lidam com a composição de classes ou objetos. O segundo critério é o escopo, que especifica se o padrão se aplica a classes ou a objetos. Junte finalidade e escopo, e você sabe exatamente onde encaixar qualquer padrão da GoF.",
+      bullets:['Finalidade: Criação, Comportamento ou Estrutural','Escopo: Classe ou Objeto','Os dois critérios juntos classificam qualquer padrão GoF'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Criação', desc:'Técnicas para instanciar objetos'},
+        {title:'Comportamento', desc:'Interação e distribuição de responsabilidades'},
+        {title:'Estrutural', desc:'Composição de classes ou objetos'}
+      ]}
+    },
+    { type:'content', kicker:'Exemplo · padrão de criação', title:'Singleton: garantindo uma única instância',
+      narration:"O Singleton é um padrão de criação que resolve um problema específico: garantir que uma classe tenha apenas uma única instância em toda a aplicação, com um ponto de acesso global a ela. Pensa num recurso compartilhado, como a conexão com um banco de dados: você não quer criar uma conexão nova toda vez, quer reaproveitar a mesma. A solução do Singleton é sempre a mesma receita: tornar o construtor privado, pra impedir que outros criem novas instâncias, e criar um método estático que devolve sempre a mesma instância, criando-a só na primeira chamada.",
+      bullets:['Problema: garantir uma única instância de uma classe','Uso comum: controlar acesso a um recurso compartilhado','Solução: construtor privado + método estático de acesso'],
+      visual:{kind:'hero', lead:'Singleton: uma classe, uma única instância, um ponto de acesso global.'}
+    },
+    { type:'content', kicker:'Exemplo · padrão de criação', title:'Abstract Factory: fábricas de famílias de objetos',
+      narration:"O Abstract Factory, ou Fábrica Abstrata, também é um padrão de criação, mas resolve um problema diferente: como criar famílias inteiras de objetos relacionados, sem amarrar o código às classes concretas de cada variante. O exemplo clássico é uma loja de móveis: você tem produtos como cadeira, sofá e mesa de centro, e variantes de estilo, como moderno, vitoriano e art déco. Em vez de instanciar cada peça direto, você usa uma fábrica abstrata que sabe criar a família certa de móveis pra cada estilo, garantindo que as peças sempre combinem entre si.",
+      bullets:['Problema: criar famílias de objetos relacionados','Sem depender das classes concretas de cada variante','Exemplo: móveis de estilos diferentes, sempre combinando'],
+      visual:{kind:'hero', lead:'Abstract Factory: uma fábrica para cada variante, garantindo que os objetos combinem.'}
+    },
+    { type:'content', kicker:'Limites e antipadrões', title:'Quando os padrões não ajudam: os antipadrões',
+      narration:"Padrões de projeto são um mapa, não uma estratégia pronta: eles ajudam com o que e como resolver um problema, mas não dizem por que ou quando aplicar. Eles também não decidem qual aplicação você deve escrever, só como implementar melhor uma vez que os requisitos já estão definidos. E existe o conceito de antipadrão: segundo Andrew Koenig, se um padrão representa a melhor prática, um antipadrão representa uma lição aprendida. Um antipadrão pode descrever uma solução ruim que gerou uma situação ruim, ou o caminho para sair de uma situação ruim e chegar numa situação boa.",
+      bullets:['Padrões ajudam com o que/como, não com por que/quando','Antipadrão = lição aprendida (o oposto da melhor prática)','Antipadrão pode descrever o problema OU o caminho de saída'],
+      visual:{kind:'compare', left:{title:'Padrão', items:['Representa a melhor prática','Ajuda com o que e como resolver']}, right:{title:'Antipadrão', items:['Representa uma lição aprendida','Descreve uma solução ruim ou a saída dela']}}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 2',
+      narration:"Fechando o módulo 2: um padrão de projeto documenta um problema recorrente, o contexto em que ele aparece, e uma solução genérica testada, tudo isso batizado com um nome que vira vocabulário comum da equipe. A GoF classifica os padrões por finalidade, criação, comportamento ou estrutural, e por escopo, classe ou objeto. Singleton garante uma única instância; Abstract Factory cria famílias inteiras de objetos relacionados. E lembra: padrões ajudam com o que e como, não com o por que ou quando — e usados sem critério, viram antipadrões.",
+      bullets:['Padrão = nome + problema + contexto + solução','Finalidade: Criação, Comportamento, Estrutural','Escopo: Classe ou Objeto','Singleton (1 instância) e Abstract Factory (famílias de objetos)'],
+      visual:{kind:'hero', chips:['GoF 1995','Criação/Comportamento/Estrutural','Singleton','Abstract Factory']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 2',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Uma equipe de desenvolvimento precisa garantir que exista apenas um único gerenciador de configurações em toda a aplicação, acessível a partir de qualquer parte do sistema. Qual padrão de projeto resolve diretamente esse problema?",
+        options:['Abstract Factory, pois cria famílias de objetos relacionados.','Singleton, pois garante uma única instância com ponto de acesso global.','MVC, pois separa a interface da lógica de negócio.','Antipadrão, pois documenta soluções ruins.','Upper CASE, pois atua na fase de concepção do software.'],
+        correct:1,
+        explain:"O Singleton existe exatamente para isso: garantir que uma classe tenha uma única instância na aplicação, com um ponto de acesso global — perfeito para um gerenciador de configurações único."
+      }
+    }
+  ]
+},
+{
+  id:'m3', code:'M3', colorVar:'--m3', title:'Camadas &amp; MVC', sub:'Arquitetura de Software',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Arquitetura em Camadas e a Família MVC',
+      narration:"Terceiro módulo: como organizar um sistema em camadas, e a família de padrões MVC, MVP e MVVM que nasce dessa ideia. Vamos ver de onde vem esse conceito, os princípios de acoplamento e coesão que decidem se uma arquitetura é boa ou não, e a clássica arquitetura de três camadas: interface, lógica de negócio e banco de dados. Esse é o módulo que mais conecta teoria com o que você já viu na prática de programação.",
+      bullets:['Camadas = módulos organizados hierarquicamente','Acoplamento e coesão decidem a qualidade da arquitetura','MVC, MVP e MVVM: a família de padrões de interface'],
+      visual:{kind:'hero', chips:['Camadas','SoC','3 camadas','MVC/MVP/MVVM']}
+    },
+    { type:'content', kicker:'Conceito', title:'Arquitetura em camadas: como um bolo',
+      narration:"Numa arquitetura em camadas, as classes são organizadas em módulos maiores, chamados de camadas, dispostas de forma hierárquica — pensa num bolo, com camadas empilhadas uma sobre a outra. A regra principal é: uma camada só pode usar serviços da camada imediatamente inferior. Ela pode chamar métodos, instanciar objetos, estender classes, dessa camada de baixo, mas não pode pular camadas nem depender de camadas superiores. Essa disciplina de dependências facilita entender, manter e evoluir o sistema, e torna muito mais fácil trocar uma camada por outra.",
+      bullets:['Camadas = módulos maiores, organizados hierarquicamente','Regra: só usar serviços da camada imediatamente inferior','Facilita manutenção, evolução e troca de camadas'],
+      visual:{kind:'stack', layers:[{label:'Camada Inferior', sub:'Serviços de base'},{label:'Camada Intermediária', sub:'Usa apenas a camada inferior'},{label:'Camada Superior', sub:'Usa apenas a camada intermediária'}]}
+    },
+    { type:'content', kicker:'Origem (1968)', title:'A história: Dijkstra e o sistema THE',
+      narration:"A arquitetura em camadas é um dos padrões mais antigos e usados desde os primeiros sistemas de software de grande porte, nas décadas de 60 e 70. Uma das primeiras propostas foi de Edsger Dijkstra, em 1968, para um sistema operacional chamado THE. Ele organizou o sistema em cinco camadas: multiprogramação na base, depois alocação de memória, comunicação entre processos, gerenciamento de entrada e saída, e no topo, os programas dos usuários. Dijkstra já destacava, na época, que os benefícios dessa estrutura hierárquica crescem junto com o tamanho do projeto.",
+      bullets:['1968: Dijkstra propõe camadas para o sistema THE','5 camadas: multiprogramação → memória → processos → E/S → usuários','Quanto maior o projeto, mais importante a estrutura hierárquica'],
+      visual:{kind:'flow', steps:[{label:'Multiprogramação',sub:'Camada 0'},{label:'Alocação de memória',sub:'Camada 1'},{label:'Comunicação entre processos',sub:'Camada 2'},{label:'Entrada/Saída',sub:'Camada 3'},{label:'Programas do usuário',sub:'Camada 4'}]}
+    },
+    { type:'content', kicker:'SoC — Separation of Concerns', title:'Acoplamento fraco, coesão alta',
+      narration:"SoC, Separation of Concerns, ou separação de interesses, significa garantir que cada pedaço de código tenha um único objetivo bem definido. Isso se mede por dois conceitos. Acoplamento mede a dependência entre módulos diferentes: módulos fortemente acoplados fazem com que uma mudança em um exija intervenção no outro, o que é ruim; o ideal é acoplamento fraco, onde cada módulo muda isoladamente. Coesão mede a consistência de um módulo sozinho: um módulo altamente coeso se concentra em um único objetivo; um módulo fracamente coeso faz mais coisas do que deveria. A meta é sempre: acoplamento fraco entre módulos, coesão alta dentro de cada um.",
+      bullets:['SoC: cada código com um único objetivo bem definido','Acoplamento fraco (entre módulos) é o ideal','Coesão alta (dentro de cada módulo) é o ideal'],
+      visual:{kind:'compare', left:{title:'Acoplamento', items:['Mede dependência ENTRE módulos','Fraco = ideal (mudanças isoladas)','Forte = ruim (efeito cascata)']}, right:{title:'Coesão', items:['Mede consistência DENTRO do módulo','Alta = ideal (um único objetivo)','Baixa = ruim (faz mais do que deveria)']}}
+    },
+    { type:'content', kicker:'Interface · Negócio · Dados', title:'A arquitetura em três camadas',
+      narration:"A arquitetura em três camadas é a mais comum em sistemas corporativos. A primeira camada é a Interface com o Usuário, também chamada de apresentação: cuida da exibição de informação e da coleta de eventos, como cliques e digitação. A segunda é a Lógica de Negócio, ou camada de aplicação: implementa as regras do sistema — por exemplo, num sistema acadêmico, a regra de que uma nota precisa estar entre zero e o valor máximo da avaliação. E a terceira é o Banco de Dados, que armazena tudo depois que a lógica de negócio já validou as informações.",
+      bullets:['Interface: exibição e coleta de eventos do usuário','Lógica de Negócio: valida e aplica as regras do sistema','Banco de Dados: armazena os dados já validados'],
+      visual:{kind:'stack', layers:[{label:'Interface com o Usuário', sub:'Exibição e coleta de eventos'},{label:'Lógica de Negócio', sub:'Regras do sistema'},{label:'Banco de Dados', sub:'Armazenamento dos dados'}]}
+    },
+    { type:'content', kicker:'Cliente · Servidor · Banco', title:'Onde cada camada roda: a versão distribuída',
+      narration:"Normalmente, a arquitetura em três camadas é distribuída entre máquinas diferentes. A camada de interface roda na máquina do cliente — o computador ou celular de quem está usando o sistema. A camada de lógica de negócio roda num servidor, muitas vezes chamado de servidor de aplicação. E o banco de dados fica, claro, no servidor de banco de dados. Isso veio substituir os antigos mainframes, computadores gigantes e caros, acessados por terminais burros, sem capacidade de processamento própria.",
+      bullets:['Interface → máquina do cliente','Lógica de Negócio → servidor de aplicação','Banco de Dados → servidor de banco de dados'],
+      visual:{kind:'flow', steps:[{label:'Cliente',sub:'Interface gráfica'},{label:'Servidor de Aplicação',sub:'Lógica de negócio'},{label:'Servidor de Banco',sub:'Armazenamento'}]}
+    },
+    { type:'content', kicker:'Origem e fluxo', title:'MVC: Model, View e Controller',
+      narration:"O MVC nasceu no final da década de 70, usado no Smalltalk-80, uma das primeiras linguagens orientadas a objetos e pioneira em interfaces gráficas. Ele separa a aplicação em três camadas. A View mostra a interface e os dados. O Model guarda as regras de negócio e os dados em si. E o Controller recebe as ações do usuário, como um clique, e decide o que fazer: ele aciona o Model pra atualizar os dados, e avisa a View quando ela precisa se redesenhar. O Controller não conhece os detalhes da View, só manda avisos; e o Model não sabe nada sobre a View, só responde a pedidos.",
+      bullets:['View: exibe a interface e os dados','Model: regras de negócio e dados','Controller: recebe ações do usuário e coordena tudo'],
+      visual:{kind:'flow', steps:[{label:'Usuário age',sub:'ex: clique em um botão'},{label:'Controller',sub:'recebe e interpreta o evento'},{label:'Model',sub:'atualiza dados/regras'},{label:'View',sub:'mostra o resultado atualizado'}]}
+    },
+    { type:'content', kicker:'Especialização e reuso', title:'Por que usar MVC: as vantagens',
+      narration:"O MVC traz duas vantagens bem práticas. A primeira é a especialização do trabalho: você pode ter desenvolvedores de front-end, especialistas em interface, trabalhando só na View, enquanto outros desenvolvedores cuidam das classes de Model sem precisar entender nada de interface gráfica. A segunda vantagem é o reuso: como o Model não depende da View, o mesmo Model pode alimentar Views completamente diferentes. O exemplo clássico é um relógio: o mesmo Model, guardando hora e minutos, pode ser mostrado como um relógio analógico numa tela, e como um relógio digital em outra.",
+      bullets:['Especialização: front-end e Model podem ser times separados','Reuso: o mesmo Model pode alimentar Views diferentes','Exemplo clássico: um Model de relógio, duas Views (analógico e digital)'],
+      visual:{kind:'hero', lead:'O mesmo Model pode virar um relógio analógico numa tela e um relógio digital em outra.'}
+    },
+    { type:'content', kicker:'Comparando as famílias', title:'MVP e MVVM: variações do MVC',
+      narration:"MVP e MVVM são primos do MVC, cada um mudando o papel do intermediário entre a View e o Model. No MVP, Model-View-Presenter, é a View que recebe as ações do usuário primeiro, e repassa pro Presenter, que conhece as duas pontas, View e Model, e faz a ponte entre elas. No MVVM, Model-View-ViewModel, a View não tem nenhum conhecimento direto do Model — ela só conversa com o ViewModel, através de uma técnica chamada data binding, que mantém os dados da tela sempre sincronizados com os dados da lógica de negócio, sem você precisar atualizar a tela manualmente.",
+      bullets:['MVP: View recebe a ação e repassa ao Presenter','MVVM: View só conversa com o ViewModel, via data binding','Nos dois casos, o Model fica isolado da interface'],
+      visual:{kind:'compare', left:{title:'MVP', items:['View é o ponto de entrada','Presenter conhece View e Model','Sem data binding automático']}, right:{title:'MVVM', items:['View só conhece o ViewModel','Data binding sincroniza tudo automaticamente','Model totalmente isolado da View']}}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 3',
+      narration:"Fechando o módulo 3: uma arquitetura em camadas organiza o sistema em módulos hierárquicos, onde cada camada só usa a de baixo — isso vem desde o sistema THE, de Dijkstra, em 1968. A meta é sempre acoplamento fraco entre módulos e coesão alta dentro de cada um. Na prática, a arquitetura em três camadas separa Interface, Lógica de Negócio e Banco de Dados, geralmente distribuídas entre cliente e servidor. E dentro da camada de interface, o MVC organiza tudo em View, Model e Controller, com MVP e MVVM como variações que mudam como a View se comunica com o Model.",
+      bullets:['Camada só usa a camada imediatamente inferior','Acoplamento fraco + coesão alta = boa arquitetura','3 camadas: Interface, Negócio, Banco de Dados','MVC/MVP/MVVM: como a View se comunica com o Model'],
+      visual:{kind:'hero', chips:['Camadas','SoC','3 camadas','MVC/MVP/MVVM']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 3',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Em um sistema organizado segundo o padrão MVC, o usuário clica em um botão para adicionar um item ao carrinho de compras. Qual é o caminho correto do fluxo de processamento desse evento?",
+        options:['A View atualiza o Model diretamente, sem passar pelo Controller.','O Controller recebe o evento, aciona o Model para atualizar o carrinho, e o Model avisa a View para se redesenhar.','O Model recebe o evento diretamente do usuário e atualiza a View sem intermediários.','O Controller armazena os dados do carrinho permanentemente, sem envolver o Model.','A View e o Controller são a mesma camada no padrão MVC.'],
+        correct:1,
+        explain:"No MVC, o Controller é quem recebe as ações do usuário; ele aciona o Model para que os dados sejam atualizados, e é a partir dessa atualização que a View é notificada para exibir o novo estado."
+      }
+    }
+  ]
+},
+{
+  id:'m4', code:'REV', colorVar:'--m4', title:'Revisão Final', sub:'Antes da prova',
+  cards:[
+    { type:'summary', kicker:'Revisão geral', title:'Checklist final: os pontos que mais caem',
+      narration:"Vamos revisar rapidinho os três módulos, só o que mais cai em prova. Em Ferramentas CASE: Upper CASE é concepção, Lower CASE é implementação, e I-CASE junta as duas, tudo apoiado por um repositório centralizado. Em Padrões de Projeto: todo padrão tem nome, problema, contexto e solução, classificado pela GoF em finalidade, criação, comportamento ou estrutural, e escopo, classe ou objeto — com Singleton garantindo uma única instância e Abstract Factory criando famílias de objetos. E em Desenvolvimento em Camadas: cada camada só usa a de baixo, buscando acoplamento fraco e coesão alta, com a arquitetura de três camadas — interface, negócio e banco de dados — e o MVC organizando a interface em View, Model e Controller.",
+      bullets:['CASE: Upper (concepção) / Lower (implementação) / I-CASE','Padrões: nome + problema + contexto + solução (GoF: finalidade x escopo)','Camadas: só usa a de baixo; acoplamento fraco + coesão alta','MVC: View mostra, Model guarda regras, Controller coordena'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'M1 · CASE', list:['Upper = concepção','Lower = implementação','Repositório centralizado']},
+        {title:'M2 · Padrões', list:['Nome + problema + solução','GoF: finalidade x escopo','Singleton / Abstract Factory']},
+        {title:'M3 · Camadas', list:['Só usa a camada de baixo','Acoplamento fraco, coesão alta','MVC: View/Model/Controller']}
+      ]}
+    },
+    { type:'summary', kicker:'Última palavra', title:'Você está pronto',
+      narration:"Chegamos ao fim da revisão de Engenharia de Software. Você passou pelas ferramentas que apoiam o desenvolvimento, pelos padrões que evitam reinventar a roda, e pela forma como organizamos um sistema em camadas pra ele crescer sem virar um caos. Se ainda tiver dúvida em algum ponto, volta no menu lateral e escuta de novo — e não esquece de fazer a Prova A, e se quiser mais treino, a Prova B também. Boa prova!",
+      bullets:['Revise os cards que ainda não escutou','Faça a Prova A e, se quiser, a Prova B também','Boa prova!'],
+      visual:{kind:'hero', lead:'A repetição é sua maior aliada antes da prova. Boa sorte!'}
+    }
+  ]
+},
+{
+  id:'examA', code:'P-A', colorVar:'--examA', title:'Prova A — ENADE (Objetiva)', sub:'Simulado · Engenharia de Software',
+  cards:[
+    { type:'intro', kicker:'Simulado • Engenharia de Software', title:'Prova Objetiva — Modelo ENADE',
+      narration:"Chegou a hora de aplicar o que você revisou numa prova de verdade, no formato ENADE. São doze questões objetivas, cobrindo Ferramentas CASE, Padrões de Projeto e Desenvolvimento em Camadas. Cada questão vale 0,5 ponto, totalizando 6 pontos. Responda com calma, uma de cada vez, e no final eu te mostro sua nota estimada e quais questões vale a pena revisar.",
+      bullets:['12 questões objetivas • 0,5 ponto cada • total 6,0 pontos','Conteúdo: Ferramentas CASE, Padrões de Projeto e Camadas','Cada questão tem 5 alternativas — só uma é correta'],
+      visual:{kind:'hero', chips:['12 questões','6,0 pontos','ENADE']}
+    },
+    { type:'quiz', kicker:'Prova A • Questão 1 de 12', title:'Questão 1',
+      narration:"Questão um. Primeira afirmação: ferramentas CASE têm como objetivo auxiliar o desenvolvedor em uma ou várias etapas do ciclo de desenvolvimento de software. Agora, porque: a automatização de tarefas por essas ferramentas permite que o profissional atue em um nível de abstração mais elevado, reduzindo a preocupação com detalhes intrínsecos do ambiente de desenvolvimento. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Ferramentas CASE têm como objetivo auxiliar o desenvolvedor de sistemas em uma ou várias etapas do ciclo de desenvolvimento de software.<br><br><strong>PORQUE</strong><br><br>II. A automatização de tarefas por essas ferramentas permite que o profissional atue em um nível de abstração mais elevado, reduzindo a preocupação com detalhes intrínsecos do ambiente de desenvolvimento.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:0.5,
+        explain:"Ambas as afirmações são verdadeiras, e a segunda explica exatamente por que a primeira acontece: é a automatização que eleva o nível de abstração do desenvolvedor."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 2 de 12', title:'Questão 2',
+      narration:"Questão dois. Uma equipe usa uma ferramenta apenas para modelagem de requisitos e especificação, na fase de concepção. Outra equipe usa uma ferramenta para compilação de código e testes automatizados, na fase de implementação. Classifique essas duas ferramentas.",
+      quiz:{
+        question:"Uma equipe utiliza uma ferramenta apenas para modelagem de requisitos e especificação, ainda na fase de concepção do software (cenário I). Outra equipe utiliza uma ferramenta para compilação de código e execução de testes automatizados, na fase de implementação (cenário II).<br><br>Assinale a alternativa que classifica corretamente os cenários I e II, respectivamente.",
+        options:['Upper CASE e Lower CASE.','Lower CASE e Upper CASE.','I-CASE e Upper CASE.','Lower CASE e I-CASE.','Upper CASE e I-CASE.'],
+        correct:0, weight:0.5,
+        explain:"Modelagem de requisitos e especificação é concepção (Upper CASE); compilação de código e testes é implementação (Lower CASE)."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 3 de 12', title:'Questão 3',
+      narration:"Questão três. Sobre as ferramentas de versionamento de software, como o Git, qual afirmação está correta?",
+      quiz:{
+        question:"Sobre as ferramentas de versionamento de software (Git) apresentadas, é correto afirmar que:",
+        options:['Merge é a ação de levar o código da branch local para a branch remota.','Branch permite criar ramificações independentes, possibilitando modificar arquivos sem afetar o branch principal.','Push é a ação de mesclar o código alterado com o código da branch.','Pull é a ação de criar uma nova ramificação local.','Repositório é sinônimo de branch principal.'],
+        correct:1, weight:0.5,
+        explain:"Branch cria uma ramificação independente do código, permitindo alterações isoladas sem afetar o branch principal — as demais alternativas trocam as definições de merge, push e pull entre si."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 4 de 12', title:'Questão 4',
+      narration:"Questão quatro. Analise três afirmações sobre a arquitetura típica das ferramentas CASE e assinale a alternativa com as que estão corretas.",
+      quiz:{
+        question:"Sobre a arquitetura típica das ferramentas CASE, analise as afirmações a seguir:<br><br>I. É constituída por um conjunto de aplicações/componentes suportados por um repositório integrado (centralizado).<br>II. Cada componente (modelagem de software, modelagem de banco de dados, testes, gestão de projetos etc.) acessa e atualiza esse repositório central.<br>III. A existência de um repositório centralizado torna dispensável qualquer gestão de configuração e alterações.<br><br>É correto apenas o que se afirma em:",
+        options:['I.','III.','I e II.','II e III.','I, II e III.'],
+        correct:2, weight:0.5,
+        explain:"III está errada: mesmo com repositório centralizado, a gestão de configuração e alterações continua sendo um componente necessário da arquitetura CASE."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 5 de 12', title:'Questão 5',
+      narration:"Questão cinco. Primeira afirmação: um padrão de projeto descreve um problema recorrente e uma solução genérica para ele, de modo que possa ser reaplicada em contextos diferentes. Agora, porque: problemas idênticos que se repetem em contextos diferentes tendem a não ser reconhecidos como tais, levando a um retrabalho na busca de soluções já conhecidas. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Um padrão de projeto descreve um problema recorrente e uma solução genérica para ele, de modo que possa ser reaplicada em contextos diferentes.<br><br><strong>PORQUE</strong><br><br>II. Problemas idênticos que se repetem em contextos diferentes tendem a não ser reconhecidos como tais, levando a retrabalho na busca de soluções já conhecidas.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:0.5,
+        explain:"É justamente porque problemas repetidos não são reconhecidos como tal (II) que documentar a solução genérica em um padrão (I) se torna valioso — a II justifica corretamente a I."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 6 de 12', title:'Questão 6',
+      narration:"Questão seis. Segundo a classificação da Gang of Four, os padrões de projeto são organizados por dois critérios: finalidade e escopo. Qual alternativa descreve corretamente esses critérios?",
+      quiz:{
+        question:"Segundo a classificação da GoF (Gang of Four), os padrões de projeto são organizados por dois critérios: finalidade e escopo. Sobre esses critérios, é correto afirmar que:",
+        options:['A finalidade especifica se o padrão se aplica a classes ou a objetos, enquanto o escopo reflete o que o padrão faz (criação, comportamento ou estrutura).','A finalidade reflete o que o padrão faz (criação, comportamento ou estrutura), enquanto o escopo especifica se o padrão se aplica a classes ou a objetos.','Finalidade e escopo são sinônimos e descrevem exclusivamente padrões de criação.','O escopo determina se o padrão é criacional, e a finalidade determina se ele é estrutural.','A GoF não classifica os padrões, apenas os cataloga em ordem alfabética.'],
+        correct:1, weight:0.5,
+        explain:"Finalidade = o que o padrão faz (criação, comportamento, estrutural); escopo = se aplica a classe ou a objeto. A alternativa B é a única que associa corretamente cada critério à sua definição."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 7 de 12', title:'Questão 7',
+      narration:"Questão sete. O padrão Singleton, classificado como um padrão de criação, tem como propósito principal:",
+      quiz:{
+        question:"O padrão Singleton, classificado como um padrão de criação, tem como propósito principal:",
+        options:['permitir que uma família de objetos relacionados seja criada sem especificar suas classes concretas.','garantir que uma classe tenha apenas uma única instância, fornecendo um ponto de acesso global a ela.','separar a interface de um objeto de sua implementação, permitindo múltiplas visões dos mesmos dados.','distribuir responsabilidades entre múltiplos objetos que colaboram para realizar uma tarefa comum.','converter a interface de uma classe em outra interface esperada pelos clientes.'],
+        correct:1, weight:0.5,
+        explain:"O Singleton garante uma única instância de uma classe, com ponto de acesso global — a alternativa A descreve o Abstract Factory, não o Singleton."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 8 de 12', title:'Questão 8',
+      narration:"Questão oito. Sobre padrões de projeto e antipadrões, qual afirmação está correta?",
+      quiz:{
+        question:"Sobre padrões de projeto e antipadrões (anti-patterns), é correto afirmar que:",
+        options:['padrões de projeto garantem, por si só, que o sistema terá boa extensibilidade e reusabilidade, independentemente de como forem aplicados.','um antipadrão sempre representa uma solução recomendada pela GoF para problemas de desempenho.','antipadrões podem descrever tanto uma solução ruim que resultou em uma situação ruim quanto o caminho para sair de uma situação ruim em direção a uma situação boa.','padrões de projeto eliminam a necessidade de análise de requisitos, pois já definem qual aplicação deve ser escrita.','o uso de qualquer padrão de projeto é obrigatório em qualquer sistema orientado a objetos.'],
+        correct:2, weight:0.5,
+        explain:"Existem duas noções de antipadrão: a que descreve uma solução ruim que gerou uma situação ruim, e a que descreve o caminho para saída de uma situação ruim rumo a uma boa — exatamente o que a alternativa C afirma."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 9 de 12', title:'Questão 9',
+      narration:"Questão nove. Primeira afirmação: em uma arquitetura em camadas, uma camada somente pode utilizar serviços da camada imediatamente inferior. Agora, porque: essa disciplina de dependências facilita o entendimento, a manutenção e a evolução do sistema, tornando mais fácil substituir uma camada por outra. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Em uma arquitetura em camadas, uma camada somente pode utilizar serviços da camada imediatamente inferior.<br><br><strong>PORQUE</strong><br><br>II. Essa disciplina de dependências facilita o entendimento, a manutenção e a evolução do sistema, tornando mais fácil substituir uma camada por outra.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:0.5,
+        explain:"Ambas são verdadeiras, e a II justifica corretamente a I: a regra de só usar a camada inferior existe justamente para facilitar manutenção e evolução do sistema."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 10 de 12', title:'Questão 10',
+      narration:"Questão dez. Sobre acoplamento e coesão no desenvolvimento de software em camadas, qual afirmação está correta?",
+      quiz:{
+        question:"Sobre acoplamento e coesão no desenvolvimento de software em camadas, é correto afirmar que:",
+        options:['módulos fortemente acoplados são o ideal, pois garantem que uma mudança em um módulo sempre exija intervenção nos demais.','coesão mede a intensidade de dependência entre módulos distintos do sistema.','um módulo altamente coeso concentra-se em um único objetivo principal, enquanto módulos fracamente acoplados podem ser alterados isoladamente, sem impacto concomitante em outros módulos.','acoplamento fraco entre módulos é indesejável, pois impede a evolução independente do sistema.','um módulo fracamente coeso é aquele que realiza exatamente uma função, de forma bem definida.'],
+        correct:2, weight:0.5,
+        explain:"Coesão alta = um único objetivo por módulo; acoplamento fraco = módulos podem mudar isoladamente. As demais alternativas trocam ou invertem essas definições."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 11 de 12', title:'Questão 11',
+      narration:"Questão onze. Em um sistema acadêmico organizado em três camadas, quem verifica a regra de que as notas devem estar entre zero e o valor da avaliação, e quem implementa o formulário de lançamento de notas?",
+      quiz:{
+        question:"Em um sistema acadêmico organizado em arquitetura de três camadas, a regra de negócio \"as notas devem ser maiores ou iguais a zero e menores ou iguais ao valor da avaliação\" deve ser verificada por qual camada, e o formulário de lançamento de notas (nome do aluno e nota) deve ser implementado por qual camada, respectivamente?",
+        options:['Banco de Dados e Lógica de Negócio.','Interface com o Usuário e Banco de Dados.','Lógica de Negócio e Interface com o Usuário.','Lógica de Negócio e Banco de Dados.','Interface com o Usuário e Lógica de Negócio.'],
+        correct:2, weight:0.5,
+        explain:"Regras de negócio (validação de notas) ficam na camada de Lógica de Negócio; o formulário visual fica na camada de Interface com o Usuário."
+      }
+    },
+    { type:'quiz', kicker:'Prova A • Questão 12 de 12', title:'Questão 12',
+      narration:"Questão doze, a última da Prova A. Sobre o padrão MVC e suas variações MVP e MVVM, qual afirmação está correta?",
+      quiz:{
+        question:"Sobre o padrão MVC (Model-View-Controller) e suas variações MVP e MVVM, é correto afirmar que:",
+        options:['no MVC, o Controller não tem conhecimento direto da View, apenas envia mensagens quando ela precisa ser atualizada, enquanto no MVP a View é o ponto de entrada das solicitações, repassando-as ao Presenter.','no MVVM, a View mantém conhecimento direto e completo da camada Model, sem qualquer intermediário.','o MVP dispensa completamente a camada Model, comunicando a View diretamente com o banco de dados.','o MVC, o MVP e o MVVM são exatamente o mesmo padrão, apenas com nomes diferentes.','no MVVM, a camada ViewModel pode ser ignorada sempre que a View precisar acessar diretamente as classes do Model.'],
+        correct:0, weight:0.5,
+        explain:"No MVC, o Controller só avisa a View quando algo muda; no MVP, é a View que recebe a solicitação e repassa ao Presenter. No MVVM, ao contrário da alternativa B, a View não conhece o Model diretamente — só o ViewModel."
+      }
+    },
+    { type:'examresult', kicker:'Resultado', title:'Resultado — Prova A', narration:'' }
+  ]
+},
+{
+  id:'examB', code:'P-B', colorVar:'--examB', title:'Prova B — ENADE (opcional)', sub:'Rodada extra · Engenharia de Software',
+  cards:[
+    { type:'intro', kicker:'Simulado extra • Engenharia de Software', title:'Prova B — Rodada Extra (opcional)',
+      narration:"Se você quiser mais treino antes da prova, essa é a Prova B: uma segunda rodada, opcional, com oito questões objetivas sobre o mesmo conteúdo. Cada questão vale 1 ponto, totalizando 8 pontos. Não é obrigatório fazer essa parte agora — mas se você quer garantir que fixou o conteúdo, vale muito a pena.",
+      bullets:['Opcional: uma segunda rodada de prática, só se você quiser','8 questões objetivas • 1,0 ponto cada • total 8,0 pontos','Mesmo conteúdo da Prova A, questões diferentes'],
+      visual:{kind:'hero', chips:['Opcional','8 questões','8,0 pontos']}
+    },
+    { type:'quiz', kicker:'Prova B • Questão 1 de 8', title:'Questão 1',
+      narration:"Questão um. Sobre as ferramentas CASE, Computer Aided Software Engineering, qual afirmação está correta?",
+      quiz:{
+        question:"Sobre as ferramentas CASE (Computer Aided Software Engineering), é correto afirmar que:",
+        options:['CASE significa Computer Aided Software Engineering e refere-se a ferramentas baseadas em computador que auxiliam atividades de engenharia de software, da análise de requisitos até a programação e os testes.','Ferramentas CASE substituem integralmente a necessidade de um engenheiro de software especificar e projetar o sistema.','CASE é um padrão de projeto da GoF utilizado exclusivamente para modelagem de banco de dados.','Ferramentas CASE são exclusivas da fase de testes do ciclo de desenvolvimento de software.','CASE é sinônimo de arquitetura em camadas.'],
+        correct:0, weight:1,
+        explain:"CASE é exatamente isso: ferramentas computacionais que apoiam a engenharia de software em diversas etapas, da análise até os testes — não substituem o engenheiro, nem são um padrão de projeto ou exclusivas de uma única fase."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 2 de 8', title:'Questão 2',
+      narration:"Questão dois. Uma equipe utiliza uma ferramenta apenas para diagramas de modelagem de requisitos, na fase de concepção. Outra equipe utiliza uma ferramenta que atua simultaneamente na concepção e na implementação, de forma integrada. Classifique os dois cenários.",
+      quiz:{
+        question:"Uma equipe utiliza uma ferramenta apenas para elaborar diagramas de modelagem de requisitos, ainda na fase de concepção do software (cenário I). Outra equipe utiliza uma ferramenta que atua simultaneamente na concepção e na implementação, de forma integrada (cenário II).<br><br>Assinale a alternativa que classifica corretamente os cenários I e II, respectivamente.",
+        options:['Lower CASE e Upper CASE.','Upper CASE e I-CASE.','I-CASE e Lower CASE.','Lower CASE e I-CASE.','Upper CASE e Lower CASE.'],
+        correct:1, weight:1,
+        explain:"Diagramas de requisitos na concepção = Upper CASE; atuar simultaneamente na concepção e implementação, integradamente, é a própria definição de I-CASE."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 3 de 8', title:'Questão 3',
+      narration:"Questão três. Primeira afirmação: padrões de projeto, segundo a Gang of Four, descrevem objetos e classes que se relacionam para resolver um problema de projeto genérico em um contexto particular. Agora, porque: essa definição foi adaptada, em 1995, das ideias de Christopher Alexander sobre padrões na arquitetura de construções civis. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Padrões de projeto, segundo a definição da Gang of Four, descrevem objetos e classes que se relacionam para resolver um problema de projeto genérico em um contexto particular.<br><br><strong>PORQUE</strong><br><br>II. Essa definição foi adaptada, em 1995, das ideias de Christopher Alexander sobre padrões na arquitetura de construções civis.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:1,
+        explain:"Ambas são verdadeiras: a definição da GoF (I) realmente nasce da adaptação, em 1995, das ideias de Alexander sobre padrões na arquitetura civil (II) — a II justifica corretamente a origem da I."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 4 de 8', title:'Questão 4',
+      narration:"Questão quatro. O padrão Abstract Factory, classificado como um padrão de criação, tem como propósito:",
+      quiz:{
+        question:"O padrão Abstract Factory (Fábrica Abstrata), classificado como um padrão de criação, tem como propósito:",
+        options:['garantir que uma classe tenha apenas uma única instância em toda a aplicação.','permitir a produção de famílias de objetos relacionados sem que seja necessário especificar suas classes concretas.','definir uma interface de callback acionada automaticamente pelo sistema operacional.','converter automaticamente JSON em objetos de domínio.','reduzir o acoplamento entre a camada de interface e o banco de dados, eliminando a camada de negócio.'],
+        correct:1, weight:1,
+        explain:"O Abstract Factory permite criar famílias inteiras de objetos relacionados (como móveis de um mesmo estilo) sem depender das classes concretas de cada variante — a alternativa A descreve o Singleton, não o Abstract Factory."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 5 de 8', title:'Questão 5',
+      narration:"Questão cinco. Analise três afirmações sobre a arquitetura em camadas e assinale a alternativa com as que estão corretas.",
+      quiz:{
+        question:"Analise as afirmações a seguir, relativas à arquitetura em camadas:<br><br>I. As camadas são organizadas de forma hierárquica, e uma camada pode utilizar livremente serviços de qualquer outra camada do sistema, superior ou inferior.<br>II. Uma das primeiras propostas de arquitetura em camadas foi elaborada por Edsger W. Dijkstra, em 1968, para o sistema operacional THE.<br>III. A separação em camadas ajuda no entendimento, na manutenção e na evolução do sistema, facilitando a substituição de uma camada por outra.<br><br>É correto apenas o que se afirma em:",
+        options:['I.','II e III.','I e II.','I, II e III.','III.'],
+        correct:1, weight:1,
+        explain:"I está errada: uma camada só pode usar a camada imediatamente inferior, não qualquer camada livremente. II e III descrevem corretamente a história (Dijkstra/THE) e os benefícios da arquitetura em camadas."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 6 de 8', title:'Questão 6',
+      narration:"Questão seis. Em uma arquitetura em três camadas distribuída, a interface roda no cliente, e a lógica de negócio roda num servidor de aplicação. A terceira camada corresponde a quê?",
+      quiz:{
+        question:"Em uma arquitetura em três camadas distribuída, a camada de interface executa na máquina dos clientes, a camada de lógica de negócio executa em um servidor de aplicação, e a terceira camada corresponde a:",
+        options:['outro servidor de aplicação redundante.','o banco de dados, onde os dados manipulados pelo sistema são armazenados.','um segundo cliente, para balanceamento de carga.','o próprio navegador do usuário.','o controlador de eventos de mouse e teclado.'],
+        correct:1, weight:1,
+        explain:"A terceira camada da arquitetura em três camadas é o banco de dados, responsável por armazenar os dados já validados pela lógica de negócio."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 7 de 8', title:'Questão 7',
+      narration:"Questão sete. Sobre o padrão MVC, qual afirmação está correta?",
+      quiz:{
+        question:"Sobre o padrão MVC (Model-View-Controller), é correto afirmar que:",
+        options:['a View acessa diretamente o banco de dados, dispensando a camada Model.','o Controller gerencia os eventos de entrada do usuário e aciona o Model, que por sua vez fornece os dados para a View gerar a interface apropriada, permitindo inclusive que o mesmo Model seja reutilizado por Views diferentes.','o Model tem conhecimento direto da View e a atualiza diretamente, sem intermediação do Controller.','MVC exige obrigatoriamente uma linguagem de programação específica, não podendo ser aplicado fora do Smalltalk-80.','o Controller é responsável exclusivamente pelo armazenamento persistente dos dados.'],
+        correct:1, weight:1,
+        explain:"O Controller gerencia os eventos e aciona o Model; a View usa o Model para se atualizar. Como o Model não depende da View, ele pode inclusive ser reutilizado por Views diferentes (como no exemplo do relógio analógico/digital)."
+      }
+    },
+    { type:'quiz', kicker:'Prova B • Questão 8 de 8', title:'Questão 8',
+      narration:"Questão oito, a última da Prova B. Comparando MVC, MVP e MVVM, qual afirmação está correta?",
+      quiz:{
+        question:"Comparando MVC, MVP e MVVM, é correto afirmar que:",
+        options:['no MVP, a camada Presenter conhece tanto a View quanto o Model, servindo de intermediária entre as duas extremidades.','no MVC, a View é sempre o ponto de entrada das solicitações do usuário, e não o Controller.','o MVVM dispensa a separação entre View e Model, unificando-as em uma única camada.','MVP e MVVM são padrões exclusivos de aplicações web, não podendo ser usados em aplicações desktop.','no MVVM, a View mantém acesso direto e irrestrito às classes de negócio do Model.'],
+        correct:0, weight:1,
+        explain:"No MVP, o Presenter é o intermediário que conhece as duas extremidades, View e Model — diferente do MVC, onde o Controller é o ponto de entrada, e do MVVM, onde a View não acessa o Model diretamente."
+      }
+    },
+    { type:'examresult', kicker:'Resultado', title:'Resultado — Prova B', narration:'' }
+  ]
+}
+];
+
+/* ================= VISUAL RENDERERS ================= */
+function visualHTML(v){
+  switch(v.kind){
+    case 'hero': return renderHero(v);
+    case 'stack': return renderStack(v);
+    case 'flow': return renderFlow(v);
+    case 'compare': return renderCompare(v);
+    case 'gridcards': return renderGrid(v);
+    case 'swatches': return renderSwatches(v);
+    case 'typescale': return renderTypescale(v);
+    case 'icons': return renderIcons();
+    case 'code': return renderCode(v);
+    case 'target': return renderTarget();
+    case 'brain': return renderBrain();
+    default: return '';
+  }
+}
+function renderHero(v){
+  var lead = v.lead ? '<div class="hero-lead">'+v.lead+'</div>' : '';
+  var chips = v.chips ? '<div class="hero-chips">'+v.chips.map(function(c){return '<span class="chip">'+c+'</span>';}).join('')+'</div>' : '';
+  return '<div class="viz-hero">'+lead+chips+'</div>';
+}
+function renderStack(v){
+  var rows = v.layers.map(function(l,i){
+    var arrow = i < v.layers.length-1 ? '<div class="stack-arrow">'+chevronSVG('down')+'</div>' : '';
+    return '<div class="stack-row"><div class="stack-num">'+(i+1)+'</div><div class="stack-body"><div class="stack-label">'+l.label+'</div>'+(l.sub?'<div class="stack-sub">'+l.sub+'</div>':'')+'</div></div>'+arrow;
+  }).join('');
+  return '<div class="viz-stack">'+rows+'</div>';
+}
+function renderFlow(v){
+  var parts = v.steps.map(function(s,i){
+    var arrow = i < v.steps.length-1 ? '<div class="flow-arrow">'+chevronSVG('right')+'</div>' : '';
+    return '<div class="flow-step"><div class="flow-num">'+(i+1)+'</div><div class="flow-label">'+s.label+'</div>'+(s.sub?'<div class="flow-sub">'+s.sub+'</div>':'')+'</div>'+arrow;
+  }).join('');
+  return '<div class="viz-flow">'+parts+'</div>';
+}
+function renderCompare(v){
+  var lw = v.winner==='left' ? ' winner' : '';
+  var rw = v.winner==='right' ? ' winner' : '';
+  var L = v.left, R = v.right;
+  return '<div class="viz-compare">'+
+    '<div class="cmp-col'+lw+'"><div class="cmp-head">'+L.title+'</div><ul>'+L.items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div>'+
+    '<div class="cmp-vs">vs</div>'+
+    '<div class="cmp-col'+rw+'"><div class="cmp-head">'+R.title+'</div><ul>'+R.items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div>'+
+  '</div>';
+}
+function renderGrid(v){
+  var items = v.items.map(function(it){
+    var desc = it.desc ? '<div class="grid-card-desc">'+it.desc+'</div>' : '';
+    var list = it.list ? '<ul class="grid-card-list">'+it.list.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>' : '';
+    return '<div class="grid-card"><div class="grid-card-title">'+it.title+'</div>'+desc+list+'</div>';
+  }).join('');
+  return '<div class="viz-grid">'+items+'</div>';
+}
+function renderSwatches(v){
+  var items = v.items.map(function(it){
+    return '<div class="swatch"><div class="swatch-color" style="background:'+it.hex+'"></div><div class="swatch-name">'+it.name+'</div><div class="swatch-use">'+it.use+'</div></div>';
+  }).join('');
+  return '<div class="viz-swatch-row">'+items+'</div>';
+}
+function renderTypescale(v){
+  var rows = v.items.map(function(it){
+    return '<div class="type-row"><div class="type-sample" style="font-size:'+it.size+'">Aa</div><div class="type-meta"><span class="type-name">'+it.name+'</span><span class="type-use">'+it.use+'</span></div></div>';
+  }).join('');
+  return '<div class="viz-typescale">'+rows+'</div>';
+}
+function renderIcons(){
+  var glyphs = [
+    '<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/>',
+    '<circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2"/><line x1="14.2" y1="14.2" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    '<polyline points="4,11 12,4 20,11" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="6" y="11" width="12" height="9" fill="none" stroke="currentColor" stroke-width="2"/>',
+    '<rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/>',
+    '<polygon points="12,4 15,10 21,11 16.5,15 18,21 12,17.5 6,21 7.5,15 3,11 9,10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+  ];
+  var cells = glyphs.map(function(g){ return '<div class="icon-cell"><svg viewBox="0 0 24 24" class="icon-glyph" aria-hidden="true">'+g+'</svg></div>'; }).join('');
+  return '<div class="viz-icons">'+cells+'</div>';
+}
+function renderCode(v){
+  var blocks = v.blocks.map(function(b){
+    return '<div class="code-block"><div class="code-label">'+b.label+'</div><pre class="code-pre"><code>'+escapeHtml(b.code)+'</code></pre></div>';
+  }).join('');
+  return '<div class="viz-code-row">'+blocks+'</div>';
+}
+function renderTarget(){
+  return '<div class="viz-svg-wrap"><svg viewBox="0 0 400 250" role="img" aria-label="Um botão de 44 por 44 pontos com a área de toque de um dedo sobreposta, mostrando a área mínima de toque recomendada.">'+
+  '<rect x="150" y="70" width="140" height="140" rx="22" fill="var(--card-accent)" fill-opacity="0.14" stroke="currentColor" stroke-width="2"/>'+
+  '<ellipse cx="220" cy="140" rx="36" ry="42" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.6" stroke-dasharray="5 4"/>'+
+  '<line x1="150" y1="50" x2="290" y2="50" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="150" y1="44" x2="150" y2="56" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="290" y1="44" x2="290" y2="56" stroke="currentColor" stroke-width="1.4"/>'+
+  '<text x="220" y="36" text-anchor="middle" font-size="13" fill="currentColor" font-family="IBM Plex Mono, monospace">44pt</text>'+
+  '<line x1="130" y1="70" x2="130" y2="210" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="124" y1="70" x2="136" y2="70" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="124" y1="210" x2="136" y2="210" stroke="currentColor" stroke-width="1.4"/>'+
+  '<text x="112" y="144" text-anchor="end" font-size="13" fill="currentColor" font-family="IBM Plex Mono, monospace">44pt</text>'+
+  '<text x="220" y="230" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">botão &nbsp; + &nbsp; área de toque do dedo</text>'+
+  '</svg></div><div class="svg-caption">A área mínima recomendada de toque é 44&times;44 pontos — o dedo humano não encolhe de acordo com a tela.</div>';
+}
+function renderBrain(){
+  return '<div class="viz-svg-wrap"><svg viewBox="0 0 640 220" role="img" aria-label="Um olho à esquerda envia um estímulo visual, em meio segundo, até um agrupamento de círculos representando o cérebro à direita.">'+
+  '<ellipse cx="90" cy="112" rx="48" ry="28" fill="none" stroke="currentColor" stroke-width="2"/>'+
+  '<circle cx="90" cy="112" r="13" fill="currentColor"/>'+
+  '<text x="90" y="168" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">Estímulo visual</text>'+
+  '<line x1="150" y1="112" x2="420" y2="112" stroke="currentColor" stroke-width="2"/>'+
+  '<polygon points="420,112 408,106 408,118" fill="currentColor"/>'+
+  '<rect x="250" y="88" width="72" height="26" rx="13" fill="var(--card-accent)" fill-opacity="0.18" stroke="var(--card-accent)" stroke-width="1.4"/>'+
+  '<text x="286" y="105" text-anchor="middle" font-size="13" fill="var(--card-accent)" font-family="IBM Plex Mono, monospace">0,5s</text>'+
+  '<g fill="none" stroke="currentColor" stroke-width="1.6">'+
+  '<circle cx="500" cy="108" r="30"/><circle cx="535" cy="95" r="22"/><circle cx="540" cy="130" r="24"/><circle cx="505" cy="140" r="20"/><circle cx="470" cy="120" r="18"/>'+
+  '</g>'+
+  '<text x="510" y="168" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">Decisão instantânea</text>'+
+  '</svg></div><div class="svg-caption">O cérebro processa a tela e forma uma primeira impressão em cerca de 0,5 segundo, antes da leitura consciente começar.</div>';
+}
+
+/* ================= FLATTEN ================= */
+var FLAT = [];
+MODULES.forEach(function(mod){
+  mod.cards.forEach(function(card){ FLAT.push({module:mod, card:card}); });
+});
+var SELFCHECK_MODULES = ['m1','m2','m3'];
+var TOTAL_QUIZZES = FLAT.filter(function(f){ return f.card.type==='quiz' && SELFCHECK_MODULES.indexOf(f.module.id)!==-1; }).length;
+
+/* ================= STATE ================= */
+var STORAGE_KEY = 'kdev_mobile_review_v2';
+var state = {
+  flatIndex: 0,
+  visited: {},
+  quizAnswers: {},
+  rate: 1,
+  autoplayNarration: true,
+  autoAdvance: true,
+  sentences: [],
+  playing: false,
+  speechToken: 0
+};
+
+function loadProgress(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+function saveProgress(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      visited: state.visited,
+      quizAnswers: state.quizAnswers,
+      lastIndex: state.flatIndex,
+      rate: state.rate,
+      autoplayNarration: state.autoplayNarration,
+      autoAdvance: state.autoAdvance,
+      voiceURI: chosenVoiceURI
+    }));
+  }catch(e){}
+}
+
+var chosenVoiceURI = null;
+var saved = loadProgress();
+if(saved){
+  state.visited = saved.visited || {};
+  state.quizAnswers = saved.quizAnswers || {};
+  if(typeof saved.rate === 'number') state.rate = saved.rate;
+  if(typeof saved.autoplayNarration === 'boolean') state.autoplayNarration = saved.autoplayNarration;
+  if(typeof saved.autoAdvance === 'boolean') state.autoAdvance = saved.autoAdvance;
+  if(saved.voiceURI) chosenVoiceURI = saved.voiceURI;
+}
+
+/* ================= SPEECH ================= */
+var voices = [];
+var HAS_SPEECH = 'speechSynthesis' in window;
+
+function ptVoices(){
+  return voices.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf('pt') === 0; });
+}
+function pickVoice(){
+  if(chosenVoiceURI){
+    var m = voices.filter(function(v){ return v.voiceURI === chosenVoiceURI; });
+    if(m.length) return m[0];
+  }
+  var pt = ptVoices();
+  if(pt.length){
+    var br = pt.filter(function(v){ return v.lang.toLowerCase()==='pt-br'; });
+    return br[0] || pt[0];
+  }
+  return voices[0] || null;
+}
+function populateVoiceSelect(){
+  var pt = ptVoices();
+  var list = pt.length ? pt : voices;
+  var noteText = '';
+  if(!HAS_SPEECH){
+    noteText = 'Seu navegador não suporta narração por voz — mas você ainda pode ler as legendas.';
+  } else if(!list.length){
+    noteText = 'Carregando vozes do navegador…';
+  } else if(!pt.length){
+    noteText = 'Nenhuma voz em português foi encontrada — mostrando todas as vozes do navegador.';
+  }
+  if(list.length){
+    chosenVoiceURI = (chosenVoiceURI && list.some(function(v){ return v.voiceURI===chosenVoiceURI; }))
+      ? chosenVoiceURI : list[0].voiceURI;
+  }
+  document.querySelectorAll('.voice-select').forEach(function(sel){
+    if(!list.length){
+      sel.innerHTML = '<option value="">'+(HAS_SPEECH ? 'Carregando…' : 'Indisponível')+'</option>';
+      sel.disabled = true;
+      return;
+    }
+    sel.disabled = false;
+    sel.innerHTML = list.map(function(v){
+      return '<option value="'+v.voiceURI+'">'+v.name+' ('+v.lang+')</option>';
+    }).join('');
+    sel.value = chosenVoiceURI;
+  });
+  document.querySelectorAll('.voice-test-btn').forEach(function(btn){ btn.disabled = !list.length; });
+  document.querySelectorAll('.voice-note').forEach(function(n){ n.textContent = noteText; });
+  updateVoiceLabel();
+}
+function updateVoiceLabel(){
+  var label = document.getElementById('tVoiceLabel');
+  if(!HAS_SPEECH){
+    label.textContent = 'Narração indisponível neste navegador';
+    return;
+  }
+  var v = pickVoice();
+  label.textContent = v ? ('Voz: ' + v.name) : 'Nenhuma voz encontrada';
+}
+function refreshVoices(){
+  if(!HAS_SPEECH){ populateVoiceSelect(); return; }
+  voices = window.speechSynthesis.getVoices() || [];
+  populateVoiceSelect();
+}
+function onVoiceSelectChange(e){
+  chosenVoiceURI = e.target.value;
+  document.querySelectorAll('.voice-select').forEach(function(sel){ if(sel !== e.target) sel.value = chosenVoiceURI; });
+  updateVoiceLabel();
+  saveProgress();
+}
+function testVoice(){
+  if(!HAS_SPEECH || !chosenVoiceURI) return;
+  window.speechSynthesis.cancel();
+  var v = voices.filter(function(x){ return x.voiceURI === chosenVoiceURI; })[0];
+  var u = new SpeechSynthesisUtterance('Olá! Esta é a voz que vou usar para narrar a aula.');
+  if(v) u.voice = v;
+  u.lang = v ? v.lang : 'pt-BR';
+  u.rate = state.rate;
+  window.speechSynthesis.speak(u);
+}
+if(HAS_SPEECH){
+  refreshVoices();
+  window.speechSynthesis.onvoiceschanged = refreshVoices;
+  [300, 900, 2000].forEach(function(ms){ setTimeout(refreshVoices, ms); });
+} else {
+  populateVoiceSelect();
+}
+
+function splitSentences(text){
+  if(!text) return [];
+  var parts = text.match(/[^.!?]+[.!?]+(\s+|$)/g);
+  if(!parts) return [text];
+  return parts.map(function(s){ return s.trim(); }).filter(Boolean);
+}
+
+function speakQueue(sentences, onSentence, onDone){
+  var myToken = ++state.speechToken;
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if(!('speechSynthesis' in window) || !sentences.length){
+    onDone && onDone();
+    return;
+  }
+  var i = 0;
+  function step(){
+    if(myToken !== state.speechToken) return;
+    if(i >= sentences.length){ onDone && onDone(); return; }
+    onSentence && onSentence(i);
+    var u = new SpeechSynthesisUtterance(sentences[i]);
+    u.lang = 'pt-BR';
+    var v = pickVoice();
+    if(v) u.voice = v;
+    u.rate = state.rate;
+    u.pitch = 1;
+    u.onend = function(){ if(myToken===state.speechToken){ i++; step(); } };
+    u.onerror = function(){ if(myToken===state.speechToken){ i++; step(); } };
+    window.speechSynthesis.speak(u);
+  }
+  step();
+}
+function cancelSpeech(){
+  state.speechToken++;
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  state.playing = false;
+  updatePlayBtn();
+}
+
+/* ================= RENDER: SIDEBAR ================= */
+var sidebarEl = document.getElementById('sidebar');
+function buildSidebar(){
+  var html = '';
+  var counter = 0;
+  MODULES.forEach(function(mod, mi){
+    var startIdx = counter;
+    var rows = mod.cards.map(function(card, ci){
+      var flatIdx = counter++;
+      var typeLabel = card.type==='quiz' ? 'Quiz' : card.type==='examresult' ? 'Resultado' : card.type==='summary' ? 'Resumo' : card.type==='intro' ? 'Início' : '';
+      return '<div class="card-row" data-idx="'+flatIdx+'" id="row-'+flatIdx+'"><span class="idx-shape"></span><span class="row-label">'+card.title+'</span>'+(typeLabel?'<span class="row-tag">'+typeLabel+'</span>':'')+'</div>';
+    }).join('');
+    html += '<div class="mod-group" id="mgroup-'+mi+'">'+
+      '<div class="mod-head" data-mi="'+mi+'">'+
+        '<span class="mod-dot" style="background:var('+mod.colorVar+')"></span>'+
+        '<span class="mod-title">'+mod.title+'<span class="mod-sub">'+mod.sub+'</span></span>'+
+        '<span class="mod-count" id="mcount-'+mi+'">0/'+mod.cards.length+'</span>'+
+        chevronSVG('down').replace('class="chev"','class="chev mod-caret"')+
+      '</div>'+
+      '<div class="mod-cards">'+rows+'</div>'+
+    '</div>';
+  });
+  sidebarEl.innerHTML = html;
+
+  sidebarEl.querySelectorAll('.card-row').forEach(function(row){
+    row.addEventListener('click', function(){
+      goTo(parseInt(row.getAttribute('data-idx'),10));
+      closeSidebarMobile();
+    });
+  });
+  sidebarEl.querySelectorAll('.mod-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var mi = head.getAttribute('data-mi');
+      document.getElementById('mgroup-'+mi).classList.toggle('collapsed');
+    });
+  });
+}
+function updateSidebarActiveAndProgress(){
+  sidebarEl.querySelectorAll('.card-row').forEach(function(row){
+    var idx = parseInt(row.getAttribute('data-idx'),10);
+    row.classList.toggle('active', idx===state.flatIndex);
+    row.classList.toggle('visited', !!state.visited[idx]);
+  });
+  var counter = 0;
+  MODULES.forEach(function(mod, mi){
+    var visitedCount = 0;
+    mod.cards.forEach(function(){ if(state.visited[counter]) visitedCount++; counter++; });
+    var el = document.getElementById('mcount-'+mi);
+    if(el) el.textContent = visitedCount+'/'+mod.cards.length;
+  });
+}
+
+/* ================= RENDER: TOP PROGRESS + SCORE ================= */
+function updateTopBar(){
+  var visitedCount = Object.keys(state.visited).length;
+  var pct = Math.round(visitedCount / FLAT.length * 100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressPct').textContent = pct+'%';
+  var correct = 0, answered = 0;
+  Object.keys(state.quizAnswers).forEach(function(k){
+    var f = FLAT[parseInt(k,10)];
+    if(!f || f.card.type!=='quiz' || SELFCHECK_MODULES.indexOf(f.module.id)===-1) return;
+    answered++;
+    if(state.quizAnswers[k] === f.card.quiz.correct) correct++;
+  });
+  document.getElementById('scorePill').textContent = 'Quizzes: '+correct+'/'+TOTAL_QUIZZES;
+}
+
+/* ================= RENDER: STAGE ================= */
+var stageEl = document.getElementById('stage');
+var stageInnerEl = document.getElementById('stageInner');
+
+function renderStage(){
+  var entry = FLAT[state.flatIndex];
+  var card = entry.card, mod = entry.module;
+  var accentVar = 'var('+mod.colorVar+')';
+
+  var examStats = null;
+  if(card.type==='examresult'){
+    examStats = computeExamStats(mod.id);
+    var examLabel = mod.id==='examA' ? ' a Prova A' : ' a Prova B';
+    card.narration = buildExamNarration(examStats, examLabel);
+  }
+
+  var visualHtml;
+  if(card.type==='quiz'){
+    visualHtml = '';
+  } else if(card.type==='examresult'){
+    visualHtml = '<div class="visual-box">'+renderScoreVisual(examStats)+'</div>';
+  } else {
+    visualHtml = '<div class="visual-box">'+visualHTML(card.visual)+'</div>';
+  }
+
+  var leftPanel;
+  if(card.type==='quiz'){
+    leftPanel = '<div class="panel"><h3>Sua resposta</h3><div id="quizPanel"></div></div>';
+  } else if(card.type==='examresult'){
+    leftPanel = '<div class="panel"><h3>Questão por questão</h3><div id="examBreakdown"></div></div>';
+  } else {
+    leftPanel = '<div class="panel"><h3>Pontos-chave</h3><ul class="bullets">'+card.bullets.map(function(b){return '<li>'+b+'</li>';}).join('')+'</ul></div>';
+  }
+  var rightPanel = '<div class="panel"><h3>O que o professor está dizendo</h3><div class="transcript" id="transcript"></div>'+
+    (('speechSynthesis' in window) ? '' : '<div class="no-voice-note">Seu navegador não suporta narração por voz — mas você pode ler a transcrição acima.</div>')+
+    '</div>';
+
+  stageInnerEl.style.setProperty('--card-accent', accentVar);
+  stageInnerEl.innerHTML =
+    '<div class="kicker-row"><span class="mod-badge">'+mod.code+'</span><span class="kicker-text">'+card.kicker+'</span></div>'+
+    '<h1 class="card-title">'+card.title+'</h1>'+
+    visualHtml+
+    '<div class="content-grid">'+leftPanel+rightPanel+'</div>';
+
+  stageInnerEl.classList.remove('anim');
+  void stageInnerEl.offsetWidth;
+  stageInnerEl.classList.add('anim');
+
+  if(card.type==='quiz') renderQuizPanel(card, state.flatIndex);
+  if(card.type==='examresult') renderExamBreakdown(document.getElementById('examBreakdown'), mod.id);
+
+  state.sentences = splitSentences(card.narration);
+  renderTranscript();
+  stageEl.scrollTop = 0;
+}
+
+function renderTranscript(){
+  var t = document.getElementById('transcript');
+  if(!t) return;
+  t.innerHTML = state.sentences.map(function(s,i){
+    return '<span class="sen" data-i="'+i+'">'+s+' </span>';
+  }).join('');
+}
+function highlightSentence(i){
+  var t = document.getElementById('transcript');
+  if(!t) return;
+  t.querySelectorAll('.sen').forEach(function(el){
+    el.classList.toggle('active', parseInt(el.getAttribute('data-i'),10)===i);
+  });
+}
+
+function computeExamStats(moduleId){
+  var items = [];
+  FLAT.forEach(function(f, idx){ if(f.module.id===moduleId && f.card.type==='quiz') items.push({f:f, idx:idx}); });
+  var total = items.length, answered = 0, correct = 0, weightTotal = 0, weightScore = 0;
+  var wrongNums = [], pendingNums = [];
+  items.forEach(function(it, i){
+    var w = it.f.card.quiz.weight || 1;
+    weightTotal += w;
+    var ans = state.quizAnswers[it.idx];
+    if(ans === undefined){ pendingNums.push(i+1); return; }
+    answered++;
+    if(ans === it.f.card.quiz.correct){ correct++; weightScore += w; }
+    else wrongNums.push(i+1);
+  });
+  return {total:total, answered:answered, correct:correct, weightTotal:weightTotal, weightScore:weightScore, wrongNums:wrongNums, pendingNums:pendingNums};
+}
+function fmtPts(n){
+  var r = Math.round(n*10)/10;
+  return (r % 1 === 0 ? r.toFixed(0) : r.toFixed(1)).replace('.', ',');
+}
+function buildExamNarration(stats, examLabel){
+  if(stats.pendingNums.length){
+    return 'Você ainda não respondeu todas as questões d'+examLabel+'. Faltam '+stats.pendingNums.length+' questões: número '+stats.pendingNums.join(', ')+'. Volte e responda antes de ver o resultado final.';
+  }
+  var txt = 'Você concluiu '+examLabel+'! Acertou '+stats.correct+' de '+stats.total+' questões, o que dá uma nota estimada de '+fmtPts(stats.weightScore)+' de '+fmtPts(stats.weightTotal)+' pontos.';
+  if(stats.wrongNums.length){
+    txt += ' Vale a pena revisar as questões número '+stats.wrongNums.join(', ')+'.';
+  } else {
+    txt += ' Você gabaritou! Excelente.';
+  }
+  return txt;
+}
+function renderScoreVisual(stats){
+  var pct = stats.total ? Math.round(stats.correct/stats.total*100) : 0;
+  var pendingNote = stats.pendingNums.length ? '<div class="score-pending">'+stats.pendingNums.length+' questão(ões) ainda sem resposta</div>' : '';
+  return '<div class="viz-score"><div class="score-ring" style="--pct:'+pct+'"><span class="score-num">'+stats.correct+'/'+stats.total+'</span></div>'+
+    '<div class="score-detail">Nota estimada: <strong>'+fmtPts(stats.weightScore)+' / '+fmtPts(stats.weightTotal)+'</strong> pontos</div>'+pendingNote+'</div>';
+}
+function renderExamBreakdown(container, moduleId){
+  var items = [];
+  FLAT.forEach(function(f, idx){ if(f.module.id===moduleId && f.card.type==='quiz') items.push({f:f, idx:idx}); });
+  container.innerHTML = items.map(function(it, i){
+    var ans = state.quizAnswers[it.idx];
+    var status = ans===undefined ? 'pending' : (ans===it.f.card.quiz.correct ? 'ok' : 'bad');
+    var label = ans===undefined ? 'Não respondida — clique para responder'
+      : (status==='ok' ? 'Correta' : ('Sua resposta: '+String.fromCharCode(65+ans)+' — correta: '+String.fromCharCode(65+it.f.card.quiz.correct)));
+    return '<button class="breakdown-row '+status+'" data-flat="'+it.idx+'"><span class="bd-num">Q'+(i+1)+'</span><span class="bd-label">'+label+'</span></button>';
+  }).join('');
+  container.querySelectorAll('.breakdown-row').forEach(function(btn){
+    btn.addEventListener('click', function(){ goTo(parseInt(btn.getAttribute('data-flat'),10)); });
+  });
+}
+function renderQuizPanel(card, flatIdx){
+  var panel = document.getElementById('quizPanel');
+  if(!panel) return;
+  var answered = state.quizAnswers[flatIdx];
+  var opts = card.quiz.options.map(function(opt, i){
+    var cls = 'quiz-opt';
+    var dis = '';
+    if(answered !== undefined){
+      cls += ' disabled';
+      dis = 'disabled';
+      if(i === card.quiz.correct) cls += ' correct';
+      else if(i === answered) cls += ' wrong';
+    }
+    return '<button class="'+cls+'" data-i="'+i+'" '+dis+'>'+String.fromCharCode(65+i)+'. '+opt+'</button>';
+  }).join('');
+  var explain = '';
+  if(answered !== undefined){
+    var ok = answered === card.quiz.correct;
+    explain = '<div class="quiz-explain '+(ok?'ok':'bad')+'">'+(ok ? 'Certo! ' : 'Quase — a correta é a '+String.fromCharCode(65+card.quiz.correct)+'. ')+card.quiz.explain+'</div>';
+  }
+  panel.innerHTML = '<div class="quiz-question">'+card.quiz.question+'</div><div class="quiz-options">'+opts+'</div>'+explain;
+
+  if(answered === undefined){
+    panel.querySelectorAll('.quiz-opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        selectQuizOption(flatIdx, parseInt(btn.getAttribute('data-i'),10));
+      });
+    });
+  }
+}
+
+function selectQuizOption(flatIdx, i){
+  if(flatIdx !== state.flatIndex) return;
+  state.quizAnswers[flatIdx] = i;
+  saveProgress();
+  updateTopBar();
+  var card = FLAT[flatIdx].card;
+  renderQuizPanel(card, flatIdx);
+
+  var ok = i === card.quiz.correct;
+  var feedback = [ok ? 'Isso mesmo!' : ('Quase. A correta é a '+String.fromCharCode(65+card.quiz.correct)+'.'), card.quiz.explain];
+  state.playing = true; updatePlayBtn();
+  speakQueue(feedback, null, function(){
+    state.playing = false; updatePlayBtn();
+    if(state.autoAdvance) scheduleAutoAdvance();
+  });
+}
+
+/* ================= NAV & PLAYBACK ================= */
+function goTo(idx, opts){
+  opts = opts || {};
+  idx = Math.max(0, Math.min(FLAT.length-1, idx));
+  cancelSpeech();
+  state.flatIndex = idx;
+  state.visited[idx] = true;
+  saveProgress();
+  renderStage();
+  updateSidebarActiveAndProgress();
+  updateTopBar();
+  updateTransport();
+  if(opts.autoplay !== false && state.autoplayNarration && userStarted){
+    setTimeout(function(){ playNarration(); }, 220);
+  }
+}
+function next(){ if(state.flatIndex < FLAT.length-1) goTo(state.flatIndex+1); }
+function prev(){ if(state.flatIndex > 0) goTo(state.flatIndex-1); }
+
+function playNarration(){
+  var card = FLAT[state.flatIndex].card;
+  state.playing = true;
+  updatePlayBtn();
+  speakQueue(state.sentences, function(i){ highlightSentence(i); }, function(){
+    state.playing = false;
+    updatePlayBtn();
+    highlightSentence(-1);
+    if(card.type === 'quiz'){
+      return; // wait for the user to answer
+    }
+    if(state.autoAdvance) scheduleAutoAdvance();
+  });
+}
+function toggleNarration(){
+  if(state.playing){ cancelSpeech(); }
+  else { playNarration(); }
+}
+function scheduleAutoAdvance(){
+  if(state.flatIndex >= FLAT.length-1) return;
+  setTimeout(function(){
+    if(!state.playing) next();
+  }, 1000);
+}
+
+function updatePlayBtn(){
+  var icon = document.getElementById('playIcon');
+  icon.innerHTML = state.playing
+    ? '<rect x="6" y="5" width="4.5" height="14" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="4.5" height="14" rx="1" fill="currentColor"/>'
+    : '<path d="M8 5l12 7-12 7V5z" fill="currentColor"/>';
+}
+function updateTransport(){
+  document.getElementById('tCount').textContent = 'Card '+(state.flatIndex+1)+' de '+FLAT.length;
+  document.getElementById('prevBtn').disabled = state.flatIndex===0;
+  document.getElementById('nextBtn').disabled = state.flatIndex===FLAT.length-1;
+}
+
+/* ================= SIDEBAR MOBILE ================= */
+var sidebarBackdrop = document.getElementById('sidebarBackdrop');
+function openSidebarMobile(){
+  document.getElementById('sidebar').classList.add('open');
+  sidebarBackdrop.classList.add('open');
+}
+function closeSidebarMobile(){
+  document.getElementById('sidebar').classList.remove('open');
+  sidebarBackdrop.classList.remove('open');
+}
+document.getElementById('menuBtn').addEventListener('click', openSidebarMobile);
+sidebarBackdrop.addEventListener('click', closeSidebarMobile);
+
+/* ================= SETTINGS POPOVER ================= */
+var settingsBtn = document.getElementById('settingsBtn');
+var settingsPop = document.getElementById('settingsPop');
+settingsBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  settingsPop.classList.toggle('open');
+});
+document.addEventListener('click', function(e){
+  if(!settingsPop.contains(e.target) && e.target !== settingsBtn){
+    settingsPop.classList.remove('open');
+  }
+});
+var RATES = [0.85, 1, 1.15];
+document.getElementById('rateBtn').addEventListener('click', function(){
+  var i = RATES.indexOf(state.rate);
+  state.rate = RATES[(i+1) % RATES.length];
+  this.textContent = state.rate.toFixed(2).replace(/0$/,'') + 'x';
+  saveProgress();
+});
+document.querySelectorAll('.voice-select').forEach(function(sel){
+  sel.addEventListener('change', onVoiceSelectChange);
+});
+document.querySelectorAll('.voice-test-btn').forEach(function(btn){
+  btn.addEventListener('click', testVoice);
+});
+document.getElementById('autoplayToggle').addEventListener('change', function(){
+  state.autoplayNarration = this.checked;
+  saveProgress();
+});
+document.getElementById('autoadvanceToggle').addEventListener('change', function(){
+  state.autoAdvance = this.checked;
+  saveProgress();
+});
+document.getElementById('resetBtn').addEventListener('click', function(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  state.visited = {}; state.quizAnswers = {};
+  updateSidebarActiveAndProgress();
+  updateTopBar();
+  renderStage();
+});
+
+/* ================= TRANSPORT BUTTONS ================= */
+document.getElementById('prevBtn').addEventListener('click', prev);
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('playBtn').addEventListener('click', toggleNarration);
+
+/* ================= KEYBOARD ================= */
+document.addEventListener('keydown', function(e){
+  if(document.activeElement && document.activeElement !== document.body) return;
+  if(e.code === 'Space'){ e.preventDefault(); toggleNarration(); }
+  else if(e.key === 'ArrowRight'){ next(); }
+  else if(e.key === 'ArrowLeft'){ prev(); }
+});
+
+/* ================= START OVERLAY ================= */
+var userStarted = false;
+var startOverlay = document.getElementById('startOverlay');
+var startBtn = document.getElementById('startBtn');
+var startFreshBtn = document.getElementById('startFreshBtn');
+var resumeIndex = 0;
+if(saved && typeof saved.lastIndex === 'number' && saved.lastIndex > 0){
+  resumeIndex = saved.lastIndex;
+  startBtn.textContent = 'Continuar (Card '+(resumeIndex+1)+')';
+  startFreshBtn.style.display = 'inline-block';
+}
+document.getElementById('rateBtn').textContent = state.rate.toFixed(2).replace(/0$/,'') + 'x';
+document.getElementById('autoplayToggle').checked = state.autoplayNarration;
+document.getElementById('autoadvanceToggle').checked = state.autoAdvance;
+
+function launch(idx){
+  userStarted = true;
+  startOverlay.style.display = 'none';
+  goTo(idx);
+}
+startBtn.addEventListener('click', function(){ launch(resumeIndex); });
+startFreshBtn.addEventListener('click', function(){ launch(0); });
+
+/* ================= INIT ================= */
+buildSidebar();
+state.flatIndex = resumeIndex;
+renderStage();
+updateSidebarActiveAndProgress();
+updateTopBar();
+updateTransport();
+updateVoiceLabel();
+
+})();
+</script>

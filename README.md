@@ -1,5 +1,8 @@
-# Aula Guiada Mobile
+# Aulas Guiadas — Revisão para Provas
 
-Revisão narrada e interativa (pt-BR) de Desenvolvimento de Software para Dispositivos Móveis: UI/UX, Eventos & Scroll, APIs & Webhooks e Material Design 3 — com diagramas, legendas sincronizadas com a narração e quizzes de autoavaliação.
+Aulas narradas e interativas (pt-BR), com diagramas, legendas sincronizadas com a narração, quizzes de autoavaliação e provas modelo ENADE com nota estimada.
 
-Publicado via GitHub Pages a partir de `index.html`. Abra o link do Pages no navegador (celular ou desktop) e clique em "Começar a aula".
+- **Dev Mobile** (`index.html`): UI/UX, Eventos & Scroll, APIs & Webhooks e Material Design 3.
+- **Engenharia de Software** (`engenharia-software.html`): Ferramentas CASE, Padrões de Projeto e Arquitetura em Camadas/MVC.
+
+Publicado via GitHub Pages. Abra o link no navegador (celular ou desktop) e clique em "Começar a aula".
