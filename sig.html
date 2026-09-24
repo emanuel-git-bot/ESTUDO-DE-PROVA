@@ -1,0 +1,1572 @@
+<title>Aula Guiada Sistemas de Informação</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#0a0e1a;
+  --surface:#121a2c;
+  --surface-2:#182238;
+  --surface-3:#1f2c47;
+  --border:#2a3958;
+  --border-soft:#1c2842;
+  --text:#eef2fb;
+  --text-dim:#9fb0cc;
+  --text-faint:#6b7a9c;
+  --accent:#45e0c4;
+  --accent-ink:#062b26;
+  --m1:#3fb6e0;
+  --m2:#c084fc;
+  --m3:#f2a13d;
+  --m4:#ffd166;
+  --m5:#ffd166;
+  --examA:#ef5350;
+  --examB:#ff8a5c;
+  --danger:#ff6f76;
+  --success:#57d68d;
+  --font-display:'Sora',system-ui,sans-serif;
+  --font-body:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  position:relative;
+  overflow:hidden;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  opacity:.5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 0%, #000 40%, transparent 100%);
+}
+button{font-family:inherit}
+ul{margin:0;padding:0}
+.chev{width:20px;height:20px;color:var(--text-faint);flex-shrink:0;display:block}
+
+.app{position:relative;z-index:1;display:flex;flex-direction:column;height:100vh}
+
+/* ---------- topbar ---------- */
+.topbar{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 18px;border-bottom:1px solid var(--border);
+  background:rgba(18,26,44,.9);backdrop-filter:blur(6px);
+  position:relative;z-index:40;flex-shrink:0;
+}
+.menu-btn{
+  display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--border);
+  background:var(--surface-2);color:var(--text);align-items:center;justify-content:center;cursor:pointer;
+}
+.brand{display:flex;flex-direction:column;gap:1px;line-height:1.1}
+.brand .name{font-family:var(--font-display);font-weight:700;font-size:1rem;letter-spacing:.2px}
+.brand .course{font-family:var(--font-mono);font-size:.65rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.09em}
+.topbar .spacer{flex:1}
+.progress-wrap{display:flex;align-items:center;gap:9px}
+.progress-track{width:120px;height:6px;border-radius:99px;background:var(--surface-3);overflow:hidden;flex-shrink:0}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--m4));border-radius:inherit;transition:width .5s ease}
+.progress-pct{font-family:var(--font-mono);font-size:.68rem;color:var(--text-dim);width:34px;text-align:right}
+.score-pill{
+  font-family:var(--font-mono);font-size:.68rem;padding:5px 10px;border-radius:99px;
+  border:1px solid var(--border);color:var(--text-dim);white-space:nowrap;
+}
+.icon-btn{
+  width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;
+}
+.icon-btn:hover{color:var(--text);border-color:var(--text-faint)}
+.icon-btn svg{width:18px;height:18px}
+
+.settings-pop{
+  position:absolute;top:52px;right:18px;width:270px;background:var(--surface-2);
+  border:1px solid var(--border);border-radius:12px;padding:16px;display:none;
+  box-shadow:0 20px 40px rgba(0,0,0,.4);z-index:60;
+}
+.settings-pop.open{display:block}
+.settings-pop h4{margin:0 0 10px;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-soft);font-size:.82rem}
+.settings-row:last-of-type{border-bottom:none}
+.rate-btn{font-family:var(--font-mono);font-size:.76rem;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface-3);color:var(--text);cursor:pointer}
+select.voice-select{background:var(--surface-3);color:var(--text);border:1px solid var(--border);border-radius:7px;padding:5px 6px;font-size:.74rem;max-width:140px}
+.voice-inline{display:flex;align-items:center;gap:6px}
+.voice-test-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--surface-3);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;padding:0}
+.voice-test-btn svg{width:11px;height:11px;margin-left:1px}
+.voice-test-btn:hover:not(:disabled){border-color:var(--accent)}
+.voice-test-btn:disabled{opacity:.35;cursor:default}
+.switch{position:relative;width:38px;height:22px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .track{position:absolute;inset:0;background:var(--surface-3);border:1px solid var(--border);border-radius:99px;transition:.2s;cursor:pointer}
+.switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--text-faint);transition:.2s}
+.switch input:checked + .track{background:rgba(69,224,196,.25);border-color:var(--accent)}
+.switch input:checked + .track .knob{transform:translateX(16px);background:var(--accent)}
+.reset-btn{margin-top:12px;width:100%;font-family:var(--font-mono);font-size:.72rem;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-faint);cursor:pointer}
+.reset-btn:hover{color:var(--danger);border-color:var(--danger)}
+
+/* ---------- body row ---------- */
+.body-row{display:flex;flex:1;min-height:0;position:relative}
+.sidebar-backdrop{display:none}
+.sidebar{
+  width:302px;flex-shrink:0;border-right:1px solid var(--border);background:var(--surface);
+  overflow-y:auto;padding:12px 0 30px;
+}
+.mod-group{margin-bottom:4px}
+.mod-head{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;user-select:none}
+.mod-head:hover{background:var(--surface-2)}
+.mod-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.mod-title{font-family:var(--font-display);font-weight:600;font-size:.85rem;flex:1;line-height:1.25}
+.mod-sub{display:block;font-family:var(--font-mono);font-size:.62rem;color:var(--text-faint);font-weight:400;margin-top:1px;text-transform:none;letter-spacing:0}
+.mod-count{font-family:var(--font-mono);font-size:.65rem;color:var(--text-dim);flex-shrink:0}
+.mod-caret{width:14px;height:14px;color:var(--text-faint);transition:transform .2s;flex-shrink:0}
+.mod-group.collapsed .mod-caret{transform:rotate(-90deg)}
+.mod-cards{display:flex;flex-direction:column;overflow:hidden}
+.mod-group.collapsed .mod-cards{display:none}
+.card-row{
+  display:flex;align-items:center;gap:9px;padding:7px 16px 7px 28px;font-size:.79rem;
+  color:var(--text-dim);cursor:pointer;border-left:2px solid transparent;line-height:1.3;
+}
+.card-row:hover{background:var(--surface-2)}
+.card-row.active{background:var(--surface-2);color:var(--text);font-weight:500}
+.idx-shape{width:15px;height:15px;flex-shrink:0;border-radius:4px;border:1px solid var(--border);display:grid;place-items:center;font-size:0}
+.card-row.active .idx-shape{border-color:currentColor}
+.card-row.visited .idx-shape{background:var(--surface-3)}
+.card-row.visited .idx-shape::after{content:'';width:5px;height:5px;border-radius:50%;background:var(--success)}
+.card-row .row-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-tag{font-family:var(--font-mono);font-size:.6rem;color:var(--text-faint);flex-shrink:0}
+
+/* ---------- stage ---------- */
+.stage-wrap{flex:1;min-width:0;display:flex;flex-direction:column;min-height:0;position:relative}
+.stage{flex:1;overflow-y:auto;padding:34px 28px 50px}
+.stage-inner{max-width:900px;margin:0 auto}
+.stage-inner.anim{animation:cardIn .38s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){.stage-inner.anim{animation:none}}
+
+.kicker-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.mod-badge{font-family:var(--font-mono);font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:6px;border:1px solid var(--card-accent);color:var(--card-accent)}
+.kicker-text{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim)}
+.card-title{font-family:var(--font-display);font-size:clamp(1.5rem,3.1vw,2.05rem);font-weight:700;line-height:1.18;margin:0 0 22px;text-wrap:balance}
+
+.visual-box{border:1px solid var(--border);background:var(--surface);border-radius:14px;padding:24px;margin-bottom:22px;position:relative}
+.visual-box::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg, color-mix(in srgb, var(--card-accent) 6%, transparent), transparent 55%);pointer-events:none}
+
+/* viz: hero */
+.viz-hero{padding:6px 4px;text-align:center;position:relative}
+.hero-lead{font-family:var(--font-display);font-weight:700;font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.4;color:var(--text);max-width:660px;margin:0 auto 18px;padding:0 8px}
+.hero-lead::before{content:'\201C';color:var(--card-accent)}
+.hero-lead::after{content:'\201D';color:var(--card-accent)}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{font-family:var(--font-mono);font-size:.78rem;padding:6px 14px;border-radius:99px;border:1px solid var(--card-accent);color:var(--card-accent);background:color-mix(in srgb, var(--card-accent) 8%, transparent)}
+
+/* viz: stack */
+.viz-stack{display:flex;flex-direction:column;align-items:stretch}
+.stack-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2)}
+.stack-num{font-family:var(--font-mono);font-weight:600;font-size:.78rem;width:26px;height:26px;border-radius:50%;border:1px solid var(--card-accent);color:var(--card-accent);display:grid;place-items:center;flex-shrink:0}
+.stack-label{font-weight:600;font-size:.94rem}
+.stack-sub{font-size:.79rem;color:var(--text-dim);margin-top:2px}
+.stack-arrow{display:flex;justify-content:center;padding:1px 0}
+
+/* viz: flow */
+.viz-flow{display:flex;align-items:stretch;gap:4px;flex-wrap:wrap}
+.flow-step{flex:1;min-width:128px;border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:14px;text-align:center;display:flex;flex-direction:column;gap:5px;justify-content:center}
+.flow-num{font-family:var(--font-mono);font-weight:700;color:var(--card-accent);font-size:.86rem}
+.flow-label{font-weight:600;font-size:.85rem;line-height:1.3}
+.flow-sub{font-size:.73rem;color:var(--text-dim);line-height:1.3}
+.flow-arrow{display:flex;align-items:center;justify-content:center;min-width:22px}
+@media (max-width:760px){
+  .viz-flow{flex-direction:column}
+  .flow-arrow{min-height:22px}
+  .flow-arrow svg{transform:rotate(90deg)}
+}
+
+/* viz: compare */
+.viz-compare{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch}
+.cmp-col{border:1px solid var(--border);border-radius:12px;padding:16px 18px;background:var(--surface-2)}
+.cmp-col.winner{border-color:var(--card-accent);box-shadow:inset 0 0 0 1px var(--card-accent)}
+.cmp-head{font-family:var(--font-display);font-weight:700;font-size:.92rem;margin-bottom:10px;color:var(--text)}
+.cmp-col.winner .cmp-head{color:var(--card-accent)}
+.cmp-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.cmp-col li{font-size:.82rem;line-height:1.45;color:var(--text-dim);padding-left:14px;position:relative}
+.cmp-col li::before{content:'';position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--text-faint)}
+.cmp-col.winner li::before{background:var(--card-accent)}
+.cmp-vs{align-self:center;font-family:var(--font-mono);font-size:.72rem;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em}
+@media (max-width:660px){.viz-compare{grid-template-columns:1fr}.cmp-vs{text-align:center;padding:2px 0}}
+
+/* viz: grid cards */
+.viz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.grid-card{border:1px solid var(--border);background:var(--surface-2);border-radius:10px;padding:15px 16px}
+.grid-card-title{font-family:var(--font-display);font-weight:700;font-size:.9rem;color:var(--card-accent);margin-bottom:6px}
+.grid-card-desc{font-size:.79rem;color:var(--text-dim);line-height:1.45}
+.grid-card-list{margin:6px 0 0;padding-left:15px;font-size:.78rem;color:var(--text-dim);display:flex;flex-direction:column;gap:4px;list-style:disc}
+
+/* viz: swatches */
+.viz-swatch-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:14px}
+.swatch-color{width:100%;aspect-ratio:1.7;border-radius:10px;border:1px solid var(--border);margin-bottom:8px}
+.swatch-name{font-family:var(--font-mono);font-weight:600;font-size:.8rem}
+.swatch-use{font-size:.72rem;color:var(--text-dim);margin-top:2px;line-height:1.35}
+
+/* viz: typescale */
+.viz-typescale{display:flex;flex-direction:column}
+.type-row{display:flex;align-items:baseline;gap:18px;padding:9px 0;border-bottom:1px solid var(--border-soft)}
+.type-row:last-child{border-bottom:none}
+.type-sample{font-family:var(--font-display);font-weight:700;color:var(--card-accent);width:66px;flex-shrink:0;line-height:1}
+.type-meta{display:flex;flex-direction:column;gap:2px}
+.type-name{font-family:var(--font-mono);font-size:.78rem;font-weight:600}
+.type-use{font-size:.72rem;color:var(--text-dim)}
+
+/* viz: icons */
+.viz-icons{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:6px 0}
+.icon-cell{width:60px;height:60px;border:1px dashed var(--border);border-radius:10px;display:grid;place-items:center;background:var(--surface-2)}
+.icon-glyph{width:30px;height:30px;color:var(--card-accent)}
+
+/* viz: code */
+.viz-code-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.code-block{background:#070b14;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.code-label{font-family:var(--font-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);padding:8px 12px;border-bottom:1px solid var(--border)}
+.code-pre{margin:0;padding:14px;font-family:var(--font-mono);font-size:.76rem;line-height:1.62;color:#bdf5e4;overflow-x:auto;white-space:pre}
+
+/* viz: custom svg */
+.viz-svg-wrap{display:flex;justify-content:center}
+.viz-svg-wrap svg{width:100%;max-width:560px;height:auto;color:var(--text-dim)}
+.svg-caption{text-align:center;font-size:.78rem;color:var(--text-dim);margin-top:10px}
+
+/* content grid: bullets + transcript */
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:740px){.content-grid{grid-template-columns:1fr}}
+.panel{border:1px solid var(--border);border-radius:12px;padding:18px 20px;background:var(--surface)}
+.panel h3{font-family:var(--font-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin:0 0 13px}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:11px}
+.bullets li{display:flex;gap:10px;font-size:.9rem;line-height:1.5}
+.bullets li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--card-accent);margin-top:.5em;flex-shrink:0}
+
+.transcript{font-size:.9rem;line-height:1.75;color:var(--text-faint)}
+.transcript .sen{transition:color .15s,background-color .15s;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.transcript .sen.active{color:var(--text);background:color-mix(in srgb, var(--card-accent) 16%, transparent);font-weight:500;padding:1px 3px;margin:0 -3px}
+.no-voice-note{margin-top:10px;font-size:.72rem;color:var(--text-faint);font-style:italic}
+
+/* quiz */
+.quiz-question{font-family:var(--font-display);font-weight:600;font-size:1.02rem;line-height:1.45;margin-bottom:16px}
+.quiz-options{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{
+  text-align:left;padding:11px 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text);font-size:.85rem;line-height:1.4;cursor:pointer;transition:.15s;
+}
+.quiz-opt:hover:not(:disabled){border-color:var(--card-accent)}
+.quiz-opt:disabled{cursor:default}
+.quiz-opt.correct{border-color:var(--success);background:color-mix(in srgb, var(--success) 14%, var(--surface-2));color:var(--text)}
+.quiz-opt.wrong{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 14%, var(--surface-2));color:var(--text)}
+.quiz-explain{margin-top:14px;padding:13px 15px;border-radius:10px;border:1px solid var(--border);font-size:.83rem;line-height:1.5}
+.quiz-explain.ok{border-color:var(--success);background:color-mix(in srgb, var(--success) 10%, transparent)}
+.quiz-explain.bad{border-color:var(--danger);background:color-mix(in srgb, var(--danger) 10%, transparent)}
+
+/* exam result */
+.viz-score{padding:8px 0;text-align:center}
+.score-ring{width:132px;height:132px;border-radius:50%;margin:0 auto 14px;position:relative;background:conic-gradient(var(--card-accent) calc(var(--pct)*1%), var(--surface-3) 0)}
+.score-ring::before{content:'';position:absolute;inset:9px;border-radius:50%;background:var(--surface)}
+.score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:1.4rem}
+.score-detail{font-size:.88rem;color:var(--text-dim)}
+.score-detail strong{color:var(--text);font-family:var(--font-mono)}
+.score-pending{margin-top:8px;font-size:.78rem;color:var(--examA)}
+.breakdown-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 11px;border-radius:9px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:.8rem;cursor:pointer;margin-bottom:7px}
+.breakdown-row:hover{border-color:var(--text-faint)}
+.breakdown-row.ok{border-color:var(--success)}
+.breakdown-row.bad{border-color:var(--danger)}
+.breakdown-row.pending{opacity:.65}
+.bd-num{font-family:var(--font-mono);font-weight:700;color:var(--card-accent);width:34px;flex-shrink:0}
+.bd-label{flex:1;font-size:.76rem;color:var(--text-dim);line-height:1.35}
+
+/* open (dissertativa) */
+.open-case{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:14px;font-size:.82rem;line-height:1.6;color:var(--text-dim);max-height:280px;overflow-y:auto}
+.open-case strong{color:var(--text);font-family:var(--font-display)}
+.open-questions{list-style:decimal;padding-left:20px;display:flex;flex-direction:column;gap:8px;margin:0 0 14px;font-size:.85rem;line-height:1.5;color:var(--text)}
+.open-textarea{width:100%;min-height:150px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--font-body);font-size:.85rem;line-height:1.55;resize:vertical}
+.open-textarea:focus{outline:none;border-color:var(--card-accent)}
+.open-reveal-btn{margin-top:10px;font-family:var(--font-mono);font-size:.76rem;padding:9px 16px;border-radius:8px;border:1px solid var(--card-accent);background:transparent;color:var(--card-accent);cursor:pointer}
+.open-reveal-btn:hover{background:color-mix(in srgb, var(--card-accent) 14%, transparent)}
+.open-model{margin-top:14px;padding:13px 15px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);font-size:.82rem;line-height:1.65;color:var(--text-dim)}
+.open-model h4{margin:0 0 8px;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--card-accent)}
+.open-score-row{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.open-score-label{font-family:var(--font-mono);font-size:.7rem;color:var(--text-faint)}
+.open-score-btn{font-family:var(--font-mono);font-size:.76rem;padding:6px 13px;border-radius:7px;border:1px solid var(--border);background:var(--surface-3);color:var(--text);cursor:pointer}
+.open-score-btn.active{border-color:var(--card-accent);background:color-mix(in srgb, var(--card-accent) 20%, var(--surface-3))}
+
+
+/* start overlay */
+.start-overlay{position:absolute;inset:0;background:rgba(8,11,20,.96);display:flex;align-items:center;justify-content:center;z-index:25;padding:24px}
+.start-card{max-width:480px;text-align:center}
+.start-card .tag{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.start-card h2{font-family:var(--font-display);font-size:1.7rem;margin:10px 0 12px;line-height:1.25}
+.start-card p{color:var(--text-dim);font-size:.9rem;line-height:1.55;margin:0 0 22px}
+.voice-picker{text-align:left;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:0 0 20px}
+.voice-picker label{display:block;font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--text-dim);margin-bottom:8px}
+.voice-picker-row{display:flex;align-items:center;gap:8px}
+.voice-picker select.voice-select{flex:1;max-width:none;width:100%;font-size:.82rem;padding:8px 10px}
+.voice-picker .voice-test-btn{width:34px;height:34px}
+.voice-picker .voice-test-btn svg{width:13px;height:13px}
+.voice-note{margin-top:8px;font-size:.7rem;color:var(--text-faint);line-height:1.4;min-height:1em}
+.start-btn{
+  font-family:var(--font-display);font-weight:700;font-size:.95rem;padding:13px 26px;border-radius:11px;border:none;
+  background:var(--accent);color:var(--accent-ink);cursor:pointer;
+}
+.start-btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text-dim);margin-left:10px}
+.start-btn:hover{filter:brightness(1.08)}
+.start-note{margin-top:16px;font-size:.72rem;color:var(--text-faint)}
+
+/* transport */
+.transport{
+  flex-shrink:0;border-top:1px solid var(--border);background:rgba(18,26,44,.92);backdrop-filter:blur(6px);
+  padding:10px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.t-btn{
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);
+  color:var(--text);display:grid;place-items:center;cursor:pointer;flex-shrink:0;
+}
+.t-btn:hover:not(:disabled){border-color:var(--text-faint)}
+.t-btn:disabled{opacity:.35;cursor:default}
+.t-btn svg{width:17px;height:17px}
+.play-btn{width:50px;height:50px;background:var(--accent);color:var(--accent-ink);border:none}
+.play-btn svg{width:20px;height:20px}
+.t-count{font-family:var(--font-mono);font-size:.75rem;color:var(--text-dim);white-space:nowrap}
+.t-spacer{flex:1}
+.t-toggle{display:none}
+@media (min-width:900px){.t-toggle{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--text-dim)}}
+
+@media (max-width:880px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);transition:transform .28s ease;z-index:70;box-shadow:20px 0 40px rgba(0,0,0,.4)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-backdrop.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:60}
+  .progress-track{width:74px}
+}
+@media (max-width:560px){
+  .stage{padding:22px 16px 40px}
+  .card-title{margin-bottom:16px}
+  .visual-box{padding:16px}
+  .transport{padding:9px 12px;gap:10px}
+  .brand .name{font-size:.9rem}
+}
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu de módulos">
+      <svg viewBox="0 0 24 24" width="18" height="18"><line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="17" x2="20" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="brand">
+      <span class="name">Aula Guiada</span>
+      <span class="course">Sistemas de Informações Gerenciais</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="score-pill" id="scorePill">Quizzes: 0/3</div>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Configura&ccedil;&otilde;es de narra&ccedil;&atilde;o">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/><path d="M4 12h2M18 12h2M12 4v2M12 18v2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M17.7 6.3l-1.4 1.4M7.7 16.3l-1.4 1.4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="settings-pop" id="settingsPop">
+      <h4>Narra&ccedil;&atilde;o</h4>
+      <div class="settings-row"><span>Velocidade</span><button class="rate-btn" id="rateBtn">1.0x</button></div>
+      <div class="settings-row" id="voiceRow"><span>Voz</span><div class="voice-inline"><select class="voice-select" id="voiceSelect"></select><button class="voice-test-btn" id="voiceTestBtnSettings" type="button" aria-label="Testar voz"><svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg></button></div></div>
+      <div class="settings-row"><span>Narrar ao chegar no card</span><label class="switch"><input type="checkbox" id="autoplayToggle" checked><span class="track"><span class="knob"></span></span></label></div>
+      <div class="settings-row"><span>Avan&ccedil;ar sozinho</span><label class="switch"><input type="checkbox" id="autoadvanceToggle" checked><span class="track"><span class="knob"></span></span></label></div>
+      <button class="reset-btn" id="resetBtn">Reiniciar progresso salvo</button>
+    </div>
+  </div>
+
+  <div class="body-row">
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <div class="stage-wrap">
+      <div class="stage" id="stage"><div class="stage-inner" id="stageInner"></div></div>
+
+      <div class="start-overlay" id="startOverlay">
+        <div class="start-card">
+          <span class="tag">Revis&atilde;o narrada &middot; PT-BR</span>
+          <h2>Pronto para revisar SIG?</h2>
+          <p>Fundamentos de SI, Negócios Globais e Estratégia, com diagramas, um professor narrando cada card e uma prova com questão dissertativa no final.</p>
+          <div class="voice-picker">
+            <label for="voiceSelectStart">Escolha a voz do professor</label>
+            <div class="voice-picker-row">
+              <select class="voice-select" id="voiceSelectStart"></select>
+              <button class="voice-test-btn" id="voiceTestBtnStart" type="button" aria-label="Testar voz">
+                <svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg>
+              </button>
+            </div>
+            <div class="voice-note" id="voiceNoteStart"></div>
+          </div>
+          <div>
+            <button class="start-btn" id="startBtn">Come&ccedil;ar a aula</button>
+            <button class="start-btn secondary" id="startFreshBtn" style="display:none">Come&ccedil;ar do zero</button>
+          </div>
+          <div class="start-note">Ative o som &mdash; a narra&ccedil;&atilde;o usa a voz do seu navegador.</div>
+        </div>
+      </div>
+
+      <div class="transport">
+        <button class="t-btn" id="prevBtn" aria-label="Card anterior">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="t-btn play-btn" id="playBtn" aria-label="Ouvir narra&ccedil;&atilde;o">
+          <svg id="playIcon" viewBox="0 0 24 24" fill="none"><path d="M8 5l12 7-12 7V5z" fill="currentColor"/></svg>
+        </button>
+        <button class="t-btn" id="nextBtn" aria-label="Pr&oacute;ximo card">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="t-count" id="tCount">Card 1 de 46</span>
+        <div class="t-spacer"></div>
+        <span class="t-toggle" id="tVoiceLabel">Voz: verificando&hellip;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+function chevronSVG(dir){
+  var pts = dir==='down' ? '6 9 12 15 18 9' : '9 6 15 12 9 18';
+  return '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ================= MODULE DATA ================= */
+var MODULES = [
+{
+  id:'m1', code:'M1', colorVar:'--m1', title:'Fundamentos de SI', sub:'Sistemas &amp; Informação',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Fundamentos de Sistemas de Informação',
+      narration:"Bem-vindo ao primeiro módulo desta revisão de Sistemas de Informações Gerenciais. Vamos começar do zero: o que é um sistema, como dados viram informação, e o que exatamente é um Sistema de Informações Gerenciais. Esses conceitos parecem simples, mas são a base de tudo que vem depois — sem eles, você não entende por que uma empresa investe milhões em tecnologia.",
+      bullets:['Sistema = conjunto de partes interdependentes com um objetivo','Dado vira informação quando é processado e ganha significado','SIG transforma dados em decisão'],
+      visual:{kind:'hero', chips:['Sistema','Dado→Informação','SI','SIG']}
+    },
+    { type:'content', kicker:'Teoria Geral dos Sistemas', title:'O que é um sistema?',
+      narration:"A Teoria Geral dos Sistemas, de Ludwig von Bertalanffy, ajuda a entender qualquer fenômeno a partir das relações entre as partes e o todo. Segundo Oliveira, dois mil e quatorze, sistema é um conjunto de partes interagentes e interdependentes que formam um todo unitário, com determinado objetivo e função. A ideia central que cai bastante em prova é essa: nenhum elemento pode ser analisado isoladamente, ele só faz sentido quando entendido em relação aos demais.",
+      bullets:['Sistema = partes interagentes e interdependentes + objetivo comum','Bertalanffy: base da Teoria Geral dos Sistemas','Nenhuma parte se analisa isoladamente'],
+      visual:{kind:'hero', lead:'Sistema é um conjunto de partes interagentes e interdependentes que formam um todo unitário, com determinado objetivo e função.'}
+    },
+    { type:'content', kicker:'Abertos, fechados e hierarquia', title:'Sistemas abertos, fechados e a hierarquia',
+      narration:"Todo sistema pode ser classificado como fechado, quando tem pouca ou nenhuma troca com o ambiente — pensa num relógio ou num aparelho de DVD — ou aberto, quando troca recursos, informações e energia com o ambiente, como uma organização ou a economia. E existe uma hierarquia de níveis: o ecossistema é o todo, o sistema é a parte que você está estudando, e os subsistemas são as partes estruturadas que compõem esse sistema. Um exemplo clássico: o mercado contém a empresa, que contém os setores e departamentos.",
+      bullets:['Fechados: pouca troca com o ambiente (ex: relógio)','Abertos: trocam recursos e informação (ex: organizações)','Hierarquia: Ecossistema → Sistema → Subsistemas'],
+      visual:{kind:'compare', winner:'right', left:{title:'Sistema Fechado', items:['Pouca ou nenhuma troca com o ambiente','Ex: relógio, aparelho de DVD']}, right:{title:'Sistema Aberto', items:['Troca recursos, informação e energia','Ex: organizações, a economia']}}
+    },
+    { type:'content', kicker:'Fluxo básico', title:'Os componentes do sistema',
+      narration:"Todo sistema tem seis componentes básicos, e essa sequência é muito cobrada em prova. Os objetivos são a razão de existir do sistema. As entradas são os materiais, a energia e os dados que entram. O processo de transformação converte esses insumos em resultados. As saídas são os produtos, serviços ou resultados gerados. O controle e a avaliação verificam se essas saídas realmente batem com os objetivos definidos. E a retroalimentação, o feedback, reintroduz parte da saída como nova informação de entrada, fechando o ciclo.",
+      bullets:['Objetivos → Entradas → Processo de transformação → Saídas','Controle e avaliação: compara saídas com objetivos','Retroalimentação: a saída volta como nova entrada'],
+      visual:{kind:'flow', steps:[{label:'Entradas',sub:'materiais, energia, dados'},{label:'Processo',sub:'transformação'},{label:'Saídas',sub:'produtos, serviços'},{label:'Controle',sub:'compara com objetivos'},{label:'Feedback',sub:'realimenta a entrada'}]}
+    },
+    { type:'content', kicker:'Forças externas', title:'O ambiente do sistema',
+      narration:"Ambiente é o conjunto de elementos que não pertencem ao sistema, mas que podem alterá-lo — e também serem alterados por ele. No caso de uma empresa, isso inclui governo, mercado, concorrência, consumidores, fornecedores, mão de obra, sindicatos, o sistema financeiro e a tecnologia disponível. Entender o ambiente é essencial porque nenhuma organização funciona isolada: ela está o tempo todo trocando informação e recursos com esse conjunto de forças externas.",
+      bullets:['Ambiente = tudo que não é o sistema, mas pode afetá-lo','Exemplos: mercado, concorrência, governo, fornecedores','A relação é de mão dupla: o ambiente afeta e é afetado'],
+      visual:{kind:'gridcards', cols:4, items:[
+        {title:'Mercado', desc:'e concorrência'},
+        {title:'Governo', desc:'e regulação'},
+        {title:'Fornecedores', desc:'e sistema financeiro'},
+        {title:'Clientes', desc:'e sociedade'}
+      ]}
+    },
+    { type:'content', kicker:'A cadeia do significado', title:'De dado a conhecimento',
+      narration:"Dado é um elemento identificado em sua forma bruta que, sozinho, não leva à compreensão de um fato ou situação — por exemplo, uma linha de venda de um caixa de supermercado: código, produto, preço. Informação é esse dado trabalhado, processado, organizado e comparado, que já permite ao executivo tomar uma decisão — por exemplo, o total de unidades vendidas por loja numa semana. E conhecimento vai além: nasce da experiência, do aprendizado e da inteligência aplicados sobre essa informação ao longo do tempo.",
+      bullets:['Dado: fato bruto, sem significado isolado','Informação: dado processado, organizado, com significado','Conhecimento: informação + experiência + aprendizado'],
+      visual:{kind:'flow', steps:[{label:'Dados',sub:'fatos brutos'},{label:'Informação',sub:'comparação, síntese'},{label:'Conhecimento',sub:'experiência, aprendizado'}]}
+    },
+    { type:'content', kicker:'Definição técnica', title:'Sistema de Informação (SI)',
+      narration:"Um sistema de informação pode ser definido tecnicamente como um conjunto de componentes inter-relacionados que coletam, ou recuperam, processam, armazenam e distribuem informações para apoiar a tomada de decisões e o controle numa organização. Segundo Laudon e Laudon, dois mil e vinte e dois, um SI cumpre três funções centrais: apoiar decisões, fornecendo informação relevante para os gestores; coordenar e controlar, organizando processos e fluxos de trabalho; e permitir análise e inovação, ajudando a visualizar problemas complexos e a criar novos produtos.",
+      bullets:['SI: componentes inter-relacionados que coletam, processam e distribuem informação','Apoia decisões, coordena processos e permite inovação','Baseado em Laudon e Laudon (2022)'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Apoia decisões', desc:'Informação relevante para gestores'},
+        {title:'Coordenação e controle', desc:'Organiza processos e fluxos'},
+        {title:'Análise e inovação', desc:'Visualiza problemas, cria produtos'}
+      ]}
+    },
+    { type:'content', kicker:'Dados → Decisão', title:'SIG: Sistema de Informações Gerenciais',
+      narration:"SIG é o processo de transformação de dados em informações utilizadas na estrutura decisória da empresa, proporcionando sustentação administrativa para otimizar os resultados esperados — essa é a definição de Oliveira, dois mil e quatorze, e vale decorar quase palavra por palavra. Repara na sequência lógica: primeiro você tem os dados brutos, depois eles viram informação gerencial, e essa informação gerencial é o que efetivamente sustenta a decisão do gestor.",
+      bullets:['SIG: transforma dados em informação para a estrutura decisória','Objetivo: otimizar os resultados esperados da empresa','Sequência: Dados → Informação gerencial → Decisão'],
+      visual:{kind:'flow', steps:[{label:'Dados',sub:'registros brutos'},{label:'Informação gerencial',sub:'processada e sintetizada'},{label:'Decisão',sub:'sustentação administrativa'}]}
+    },
+    { type:'content', kicker:'Por nível hierárquico', title:'A evolução dos sistemas empresariais',
+      narration:"Historicamente, os sistemas empresariais evoluíram acompanhando os níveis da organização. Nos anos sessenta, surgem os SPT, Sistemas de Processamento de Transações, para o nível operacional — registrando pedidos de venda, estoque, folha de pagamento. Nos anos setenta, os SIG atendem o nível gerencial, tático, com relatórios de desempenho. Nos anos oitenta, os SAD, Sistemas de Apoio à Decisão, dão suporte a decisões não rotineiras de nível médio, com modelos e projeções. E entre os anos oitenta e noventa, os SAE, Sistemas de Apoio ao Executivo, atendem o nível estratégico, com dados sumarizados e projeções de tendência.",
+      bullets:['SPT (1960) → nível operacional: registra transações de rotina','SIG (1970) → nível gerencial/tático: relatórios de desempenho','SAD (1980) → nível médio: modelos e projeções de cenário','SAE (1980-90) → nível estratégico: tendências e dados sumarizados'],
+      visual:{kind:'stack', layers:[
+        {label:'SPT · Nível Operacional', sub:'Registro de transações de rotina (1960)'},
+        {label:'SIG · Nível Gerencial', sub:'Relatórios de desempenho (1970)'},
+        {label:'SAD · Nível Médio', sub:'Modelos e projeções (1980)'},
+        {label:'SAE · Nível Estratégico', sub:'Tendências e dados sumarizados (1980-90)'}
+      ]}
+    },
+    { type:'content', kicker:'ERP · CRM · SCM · BI', title:'A abrangência dos sistemas integrados',
+      narration:"Além dos níveis hierárquicos, os sistemas também são classificados pela abrangência em relação aos processos que cobrem. O ERP, Enterprise Resource Planning, é o Planejamento de Recursos Empresariais, que integra praticamente toda a empresa. O SCM, Supply Chain Management, é a Gestão da Cadeia de Suprimentos. O CRM, Customer Relationship Management, é a Gestão do Relacionamento com o Cliente. E o BI, Business Intelligence, junto com a Gestão do Conhecimento, cuida da análise de dados para apoiar decisões. O valor de verdade aparece quando esses sistemas conversam entre si, de forma integrada.",
+      bullets:['ERP: Planejamento de Recursos Empresariais','SCM: Gestão da Cadeia de Suprimentos','CRM: Gestão do Relacionamento com o Cliente','BI: Business Intelligence / Gestão do Conhecimento'],
+      visual:{kind:'gridcards', cols:4, items:[
+        {title:'ERP', desc:'Recursos Empresariais'},
+        {title:'SCM', desc:'Cadeia de Suprimentos'},
+        {title:'CRM', desc:'Relacionamento com Cliente'},
+        {title:'BI', desc:'Inteligência de Negócios'}
+      ]}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 1',
+      narration:"Fechando o módulo 1: um sistema é um conjunto de partes interdependentes com um objetivo comum, e pode ser aberto ou fechado. Todo sistema tem entradas, processamento, saídas, controle e retroalimentação, e existe dentro de um ambiente que o influencia. Dado vira informação quando processado, e informação vira conhecimento com experiência. Um sistema de informação coleta, processa e distribui informação para apoiar decisões, e o SIG especificamente transforma dados em informação gerencial para a estrutura decisória. Por fim, os sistemas evoluíram do SPT operacional até o SAE estratégico, e hoje se integram em ERP, CRM, SCM e BI.",
+      bullets:['Sistema = partes interdependentes + objetivo (Oliveira, 2014)','Fluxo: entrada → processo → saída → controle → feedback','Dado → Informação → Conhecimento','SPT (operacional) → SIG → SAD → SAE (estratégico)'],
+      visual:{kind:'hero', chips:['Sistema','Fluxo básico','SIG','SPT/SAD/SAE']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 1',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Em um sistema, a etapa responsável por verificar se as saídas produzidas realmente correspondem aos objetivos definidos é chamada de:",
+        options:['Entrada.','Processo de transformação.','Retroalimentação.','Controle e avaliação.','Ambiente.'],
+        correct:3,
+        explain:"Controle e avaliação é exatamente a etapa que compara as saídas obtidas com os objetivos do sistema — é diferente da retroalimentação, que é o reaproveitamento dessa saída como nova entrada."
+      }
+    }
+  ]
+},
+{
+  id:'m2', code:'M2', colorVar:'--m2', title:'SI nos Negócios Globais', sub:'Empresa Digital',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Sistemas de Informação nos Negócios Globais Atuais',
+      narration:"Segundo módulo: como os sistemas de informação se encaixam na empresa digital de hoje. Vamos ver por que tecnologia sozinha não garante resultado, o que são ativos complementares, e como um caso real, o da UPS, mostra tudo isso na prática. Esse módulo é bastante conceitual, mas cai muito em questão de asserção e justificativa na prova.",
+      bullets:['Empresa digital: processos, relações e ativos cada vez mais digitais','Tecnologia sozinha não garante retorno','Ativos complementares: a peça que faz a diferença'],
+      visual:{kind:'hero', chips:['Empresa digital','Organização-Gestão-Tecnologia','Ativos complementares','UPS']}
+    },
+    { type:'content', kicker:'Processos, relações, ativos', title:'A empresa digital emergente',
+      narration:"Nas organizações atuais, processos, relações e ativos dependem cada vez mais de redes digitais. As relações comerciais são habilitadas e mediadas digitalmente. Os processos de negócio são realizados por meio de redes digitais. E os ativos corporativos — dados, conhecimento, infraestrutura e recursos — são gerenciados digitalmente. Pensa em plataformas digitais, marketplaces, ERP, CRM e SCM integrados, automação, inteligência artificial e trabalho remoto: tudo isso é a empresa digital emergente.",
+      bullets:['Relações comerciais mediadas digitalmente','Processos de negócio via redes digitais','Ativos corporativos gerenciados digitalmente'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Relações comerciais', desc:'Habilitadas e mediadas digitalmente'},
+        {title:'Processos de negócio', desc:'Realizados por redes digitais'},
+        {title:'Ativos corporativos', desc:'Dados, conhecimento e infraestrutura'}
+      ]}
+    },
+    { type:'content', kicker:'Time shifting · Space shifting', title:'Flexibilidade de tempo e espaço',
+      narration:"As empresas digitais ganharam uma flexibilidade que antes não existia. Time shifting significa que o trabalho e a gestão deixam de depender apenas do mesmo horário — dá pra trabalhar de forma assíncrona. Space shifting significa que as atividades podem acontecer em lugares diferentes, conectadas por tecnologia. Juntando os dois, a norma deixou de ser 'todo mundo no mesmo lugar, no mesmo horário' e passou a ser flexibilidade de tempo e de espaço.",
+      bullets:['Time shifting: o trabalho não depende mais do mesmo horário','Space shifting: as atividades podem ocorrer em lugares diferentes','A norma atual é a flexibilidade de tempo e espaço'],
+      visual:{kind:'compare', left:{title:'Time shifting', items:['Trabalho assíncrono','Não depende do mesmo horário']}, right:{title:'Space shifting', items:['Atividades em lugares diferentes','Conectadas por tecnologia']}}
+    },
+    { type:'content', kicker:'Interdependência crescente', title:'Tecnologia e estratégia caminham juntas',
+      narration:"A capacidade de usar tecnologia da informação está cada vez mais ligada à capacidade de implementar estratégias corporativas e atingir metas. Tecnologia não é apenas suporte técnico: ela influencia processos, decisões, modelos de negócio e vantagem competitiva. E essa relação é de mão dupla — os objetivos estratégicos e os processos de negócio moldam o sistema de informação, mas o próprio sistema, com seu hardware, software, gestão de dados e telecomunicações, também molda o que a estratégia consegue realizar.",
+      bullets:['Capacidade tecnológica ↔ capacidade de atingir metas estratégicas','Tecnologia influencia processos, decisões e modelos de negócio','Relação de mão dupla entre estratégia e sistema de informação'],
+      visual:{kind:'hero', lead:'Tecnologia não é apenas suporte técnico: ela influencia processos, decisões, modelos de negócio e vantagem competitiva.'}
+    },
+    { type:'content', kicker:'As três dimensões', title:'Organização, Gestão e Tecnologia',
+      narration:"Usar sistemas de informação de forma eficaz exige compreender três dimensões que moldam o sistema. Organização: pessoas, estrutura, cultura e processos. Gestão: decisão, liderança e estratégia. E Tecnologia: hardware, software, dados e redes. O sistema de informação só agrega valor de verdade quando responde a desafios organizacionais e gerenciais do ambiente — não basta ser tecnicamente bom, ele precisa fazer sentido pra organização e pra gestão também.",
+      bullets:['Organização: pessoas, estrutura, cultura, processos','Gestão: decisão, liderança, estratégia','Tecnologia: hardware, software, dados, redes'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Organização', desc:'Pessoas, estrutura, cultura e processos'},
+        {title:'Gestão', desc:'Decisão, liderança e estratégia'},
+        {title:'Tecnologia', desc:'Hardware, software, dados e redes'}
+      ]}
+    },
+    { type:'content', kicker:'A pergunta gerencial', title:'Perspectiva de negócios: qual valor este sistema gera?',
+      narration:"Empresas investem em tecnologia porque esperam resultados superiores. Isso envolve três ideias. Valor econômico real: criar ou manter um sistema pressupõe retorno superior a outros investimentos possíveis. Retorno do investimento: produtividade, crescimento de receita ou posicionamento estratégico melhor no longo prazo. E resultados esperados, que se resumem numa pergunta gerencial simples: qual valor de negócio este sistema deve gerar? Se você não consegue responder essa pergunta, o investimento em tecnologia está andando sem direção.",
+      bullets:['Valor econômico real: retorno superior a outros investimentos','Retorno esperado: produtividade, receita, posição estratégica','Pergunta-chave: qual valor de negócio este sistema deve gerar?'],
+      visual:{kind:'hero', lead:'“Qual valor de negócio este sistema deve gerar?”'}
+    },
+    { type:'content', kicker:'Teece (1998)', title:'Ativos complementares: por que só tecnologia não basta',
+      narration:"Se investir em tecnologia sozinho não garante retorno, o que explica a diferença entre empresas que capturam valor e empresas que só compram tecnologia? A resposta são os ativos complementares: aqueles necessários para se obter valor de um investimento original, segundo Teece, mil novecentos e noventa e oito. Isso inclui modelos de negócio, processos de negócio, comportamento gerencial, cultura organizacional e treinamento. Sem esses ativos, a tecnologia tende a ser só custo. Com eles, a tecnologia pode virar capacidade organizacional de verdade.",
+      bullets:['Ativos complementares: necessários para extrair valor de um investimento','Exemplos: processos, cultura, treinamento, comportamento gerencial','Sem eles, tecnologia = custo. Com eles, tecnologia = capacidade'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Organizacionais', desc:'Cultura de colaboração, processos redesenhados'},
+        {title:'Gerenciais', desc:'Apoio da liderança, decisão orientada a dados'},
+        {title:'Sociais', desc:'Infraestrutura, padrões técnicos, capital humano'}
+      ]}
+    },
+    { type:'content', kicker:'Do investimento ao retorno', title:'TI + ativos complementares = retornos superiores',
+      narration:"Juntando tudo: a tecnologia da informação, sozinha, leva a novos processos possíveis. Esses processos, combinados com novos valores e estruturas organizacionais, geram uma mudança real na forma de trabalhar. E é só essa mudança na forma de trabalhar que efetivamente produz retornos superiores. Pular etapas — comprar a tecnologia e não mudar nada na organização — é exatamente o erro que explica por que tantos projetos de TI caro não entregam o resultado esperado.",
+      bullets:['TI sozinha → apenas novos processos possíveis','Processos + valores/estruturas → mudança na forma de trabalhar','Só essa mudança real gera retornos superiores'],
+      visual:{kind:'flow', steps:[{label:'TI',sub:'tecnologia adquirida'},{label:'Novos processos',sub:'possibilitados pela TI'},{label:'Valores e estruturas',sub:'mudam junto'},{label:'Nova forma de trabalhar',sub:'mudança real'},{label:'Retornos superiores',sub:'resultado'}]}
+    },
+    { type:'content', kicker:'Estudo de caso', title:'UPS: tecnologia da informação como estratégia',
+      narration:"O caso clássico é o da UPS. As entradas do sistema de rastreamento incluem informações do pacote, assinatura do cliente, dados de coleta e entrega, e localização durante o trajeto. O processamento transmite e reorganiza esses dados por conta, data e motorista. E as saídas incluem horários, localização em tempo real e relatórios gerenciais. A estratégia da UPS, há mais de noventa anos, é oferecer o melhor serviço com as menores tarifas — e a tecnologia, como computadores portáteis e leitura de código de barras, é o que torna essa estratégia possível, permitindo inclusive que a empresa venda sua expertise logística para outras empresas.",
+      bullets:['Entradas: dados do pacote, coleta, entrega, localização','Processamento: transmissão e reorganização por conta/motorista','Saídas: rastreamento em tempo real e relatórios gerenciais','Estratégia: melhor serviço, menores tarifas — sustentada pela TI'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Entradas', desc:'Pacote, assinatura, coleta, localização'},
+        {title:'Processamento', desc:'Transmissão e reorganização dos dados'},
+        {title:'Saídas', desc:'Rastreamento e relatórios gerenciais'}
+      ]}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 2',
+      narration:"Fechando o módulo 2: a empresa digital depende de redes digitais para relações, processos e ativos, com flexibilidade de tempo e espaço. Usar sistemas de informação bem exige entender três dimensões: organização, gestão e tecnologia. E o conceito mais importante do módulo: tecnologia sozinha não garante retorno — são os ativos complementares, como processos redesenhados, cultura e treinamento, que transformam um investimento em vantagem real. O caso da UPS mostra isso na prática: a tecnologia só funciona porque está alinhada à estratégia e aos processos da empresa.",
+      bullets:['Empresa digital: processos, relações e ativos em rede','3 dimensões: Organização, Gestão, Tecnologia','Ativos complementares (Teece, 1998) transformam TI em valor','UPS: tecnologia alinhada à estratégia de serviço + preço'],
+      visual:{kind:'hero', chips:['Empresa digital','O-G-T','Ativos complementares','Caso UPS']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 2',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Uma empresa investe em um novo sistema de gestão, mas não redesenha processos, não treina funcionários e não muda a forma como a liderança toma decisões. Segundo o conceito de ativos complementares, o resultado mais provável é:",
+        options:['A empresa obtém vantagem competitiva automaticamente, pois a tecnologia garante o resultado sozinha.','O investimento tende a se tornar apenas custo, pois faltam os ativos organizacionais e gerenciais necessários para capturar valor.','Os custos de transação da empresa caem a zero, independentemente de qualquer mudança organizacional.','A cultura organizacional deixa de influenciar os resultados a partir da adoção da tecnologia.','O sistema elimina a necessidade de liderança e de decisões gerenciais.'],
+        correct:1,
+        explain:"Sem ativos complementares — processos redesenhados, treinamento, apoio da liderança — o investimento em tecnologia tende a ser apenas custo, e não se converte em capacidade organizacional real."
+      }
+    }
+  ]
+},
+{
+  id:'m3', code:'M3', colorVar:'--m3', title:'SI, Organizações &amp; Estratégia', sub:'Vantagem Competitiva',
+  cards:[
+    { type:'intro', kicker:'Boas-vindas', title:'Sistemas de Informação, Organizações e Estratégia',
+      narration:"Terceiro e último módulo de conteúdo: como os sistemas de informação moldam — e são moldados por — as organizações, e como eles se tornam armas de vantagem competitiva. Vamos ver as características das organizações, o modelo de forças competitivas de Porter, e as quatro estratégias genéricas que toda empresa pode usar com apoio de SI. Esse é o módulo mais estratégico da disciplina, e cai muito em questão dissertativa também.",
+      bullets:['Organizações moldam e são moldadas pelos SI','5 características organizacionais que todo gestor precisa entender','Porter: 5 forças competitivas + 4 estratégias genéricas'],
+      visual:{kind:'hero', chips:['Organização','Mintzberg','Porter','Vantagem competitiva']}
+    },
+    { type:'content', kicker:'Técnica vs comportamental', title:'O que é uma organização?',
+      narration:"Existem duas visões sobre organização. A visão técnica, microeconômica, a define como uma estrutura social formal e estável que retira recursos do ambiente e os processa para produzir algo — capital e trabalho entram, produtos e serviços saem, num ciclo de feedback com o ambiente. Já a visão comportamental enfatiza como pessoas e grupos realmente se organizam por dentro: hierarquia, divisão do trabalho, regras, processos e cultura, além de direitos, valores, normas e pessoas. Uma organização de verdade é as duas coisas ao mesmo tempo.",
+      bullets:['Visão técnica: estrutura que transforma recursos em produtos','Visão comportamental: hierarquia, cultura, valores, pessoas','As duas visões são complementares, não excludentes'],
+      visual:{kind:'compare', left:{title:'Visão Técnica', items:['Estrutura social formal e estável','Transforma entradas em saídas','Capital e trabalho como insumos']}, right:{title:'Visão Comportamental', items:['Hierarquia, regras, cultura','Direitos, valores, normas','Como pessoas realmente se organizam']}}
+    },
+    { type:'content', kicker:'O que gestores precisam entender', title:'As 5 características das organizações',
+      narration:"Para projetar e usar sistemas de informação com sucesso, o gestor precisa entender cinco características organizacionais. Primeiro, rotinas e processos de negócios: rotinas individuais se combinam em processos, que compõem a empresa. Segundo, política organizacional: pessoas em posições diferentes têm visões divergentes sobre recursos e recompensas, e mudanças trazidas por SI geram resistência. Terceiro, cultura organizacional: premissas inquestionáveis que são uma forte barreira à mudança tecnológica. Quarto, ambientes organizacionais: uma via de mão dupla entre a empresa e seu entorno. E quinto, estrutura organizacional, que veremos em detalhe a seguir.",
+      bullets:['1. Rotinas e processos de negócios','2. Política organizacional (resistência a mudanças)','3. Cultura organizacional (barreira à mudança tecnológica)','4. Ambientes organizacionais (mão dupla)','5. Estrutura organizacional'],
+      visual:{kind:'gridcards', cols:5, items:[
+        {title:'Rotinas', desc:'e processos'},
+        {title:'Política', desc:'organizacional'},
+        {title:'Cultura', desc:'organizacional'},
+        {title:'Ambiente', desc:'organizacional'},
+        {title:'Estrutura', desc:'organizacional'}
+      ]}
+    },
+    { type:'content', kicker:'Mintzberg (1971)', title:'Os 5 tipos de estrutura organizacional',
+      narration:"Mintzberg, mil novecentos e setenta e um, propõe cinco tipos de estrutura. A empreendedora é uma empresa jovem e pequena, com estrutura simples e um único CEO — típica de startups. A mecânica é uma grande burocracia, em ambiente de mudanças lentas, com gestão centralizada — fábricas de porte médio. A profissional combina múltiplas burocracias com produtos diferentes sob uma sede central — empresas grandes, tipo Fortune 500. A diversificada é baseada no conhecimento, como escritórios de advocacia e hospitais. E a adhocracia é uma força-tarefa que responde a mudanças rápidas, com equipes multidisciplinares de curta duração — típica de consultorias.",
+      bullets:['Empreendedora: startup, CEO único, mudanças rápidas','Mecânica: burocracia grande, gestão centralizada','Profissional: múltiplas burocracias, sede central','Diversificada: baseada em conhecimento (hospitais, advocacia)','Adhocracia: força-tarefa, equipes de curta duração'],
+      visual:{kind:'gridcards', cols:5, items:[
+        {title:'Empreendedora', desc:'Startups'},
+        {title:'Mecânica', desc:'Fábricas de porte médio'},
+        {title:'Profissional', desc:'Empresas Fortune 500'},
+        {title:'Diversificada', desc:'Escritórios, hospitais'},
+        {title:'Adhocracia', desc:'Consultorias'}
+      ]}
+    },
+    { type:'content', kicker:'Vencedores e perdedores', title:'Tecnologias disruptivas',
+      narration:"Tecnologias disruptivas são produtos que substituem outros já existentes, com desempenho tão bom quanto, ou ainda melhor. O Ford Model T substituiu a carruagem. O Microsoft Word substituiu a máquina de escrever. O Spotify substituiu o CD físico. E cada onda disruptiva cria vencedores e perdedores: os microprocessadores fizeram a Intel ganhar e os fabricantes de transistores perderem; a Web fez donos de conteúdo online ganharem e jornais tradicionais perderem; o streaming fez plataformas ganharem e lojas físicas perderem.",
+      bullets:['Tecnologia disruptiva substitui produtos existentes com desempenho igual ou melhor','Exemplos: Ford Model T, Microsoft Word, Spotify','Toda onda disruptiva cria vencedores e perdedores'],
+      visual:{kind:'compare', left:{title:'Quem tende a ganhar', items:['Empresas de chips (microprocessadores)','Donos de conteúdo online (Web)','Plataformas de streaming']}, right:{title:'Quem tende a perder', items:['Fabricantes de transistores','Jornais e TV tradicionais','Lojas físicas de mídia']}}
+    },
+    { type:'content', kicker:'Econômicos e organizacionais', title:'O impacto dos SI nas organizações',
+      narration:"Os sistemas de informação têm impactos econômicos: substituem trabalho humano em tarefas repetitivas, afetam o custo e a qualidade da informação, reduzem custos de transação e de gerenciamento interno. E têm impactos organizacionais e comportamentais: tornam as organizações mais planas, com menos níveis hierárquicos, e deslocam a autoridade para se basear mais em conhecimento do que em posição. Mas a implementação de um SI gera resistência à mudança, porque estrutura organizacional, tarefas, pessoas e tecnologia precisam mudar juntas, ao mesmo tempo, para a mudança dar certo.",
+      bullets:['Impacto econômico: reduz custos de transação e gerenciamento','Organizações ficam mais planas, com menos hierarquia','Resistência à mudança: estrutura, tarefas, pessoas e tecnologia devem mudar juntas'],
+      visual:{kind:'gridcards', cols:4, items:[
+        {title:'Estrutura organizacional', desc:''},
+        {title:'Tarefas de trabalho', desc:''},
+        {title:'Pessoas', desc:''},
+        {title:'Tecnologia da informação', desc:''}
+      ]}
+    },
+    { type:'content', kicker:'O que é', title:'Vantagem competitiva',
+      narration:"Empresas que se saem melhor do que outras têm vantagem competitiva: acesso a recursos especiais que as demais não têm, ou uso mais eficiente dos recursos gerais, por conta de conhecimento superior e ativos de informação. Isso se traduz em três coisas: crescimento de receita, lucratividade acima da média, e produtividade, eficiência operacional superior. No fim das contas, tudo isso normalmente se reflete em avaliações de mercado mais altas do que as dos concorrentes.",
+      bullets:['Vantagem competitiva: se sair melhor que os concorrentes','Vem de recursos especiais ou uso mais eficiente dos recursos gerais','Se traduz em receita, lucratividade e produtividade superiores'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'Receita', desc:'Crescimento de receita'},
+        {title:'Lucratividade', desc:'Rentabilidade acima da média'},
+        {title:'Produtividade', desc:'Eficiência operacional'}
+      ]}
+    },
+    { type:'content', kicker:'Michael Porter', title:'O modelo de 5 forças competitivas',
+      narration:"Michael Porter propõe um modelo com cinco forças que moldam a competição num setor. No centro, a rivalidade entre concorrentes diretos. E ao redor: a ameaça de entrada de novos concorrentes, a ameaça de produtos substitutos, o poder de negociação dos fornecedores, e o poder de negociação dos clientes. Toda empresa está posicionada nesse jogo de forças, e o papel dos sistemas de informação é ajudar a empresa a se defender ou atacar em cada uma dessas frentes.",
+      bullets:['Rivalidade entre concorrentes (força central)','Ameaça de novos entrantes','Ameaça de produtos substitutos','Poder de negociação de fornecedores e de clientes'],
+      visual:{kind:'gridcards', cols:5, items:[
+        {title:'Rivalidade', desc:'entre concorrentes'},
+        {title:'Novos entrantes', desc:'ameaça'},
+        {title:'Substitutos', desc:'ameaça'},
+        {title:'Fornecedores', desc:'poder de negociação'},
+        {title:'Clientes', desc:'poder de negociação'}
+      ]}
+    },
+    { type:'content', kicker:'4 estratégias genéricas', title:'Enfrentando as forças competitivas com SI',
+      narration:"Pra enfrentar essas forças, existem quatro estratégias genéricas com apoio de SI. Liderança em custos baixos: usar SI para os menores custos e preços, como o sistema de reposição de estoque do Walmart. Diferenciação de produtos: usar SI para oferecer algo novo, como a customização Nike By You. Foco em nicho de mercado: usar SI para atender um público específico melhor que os concorrentes, como o sistema OnQ da Hilton, que identifica os hóspedes mais lucrativos. E intimidade com cliente e fornecedor: usar SI para estreitar vínculos, como a Toyota e a Ford dando acesso direto dos fornecedores aos cronogramas de produção.",
+      bullets:['Liderança em custo: menores preços (ex: Walmart)','Diferenciação: produto/serviço novo (ex: Nike By You)','Foco em nicho: atender um público-alvo melhor (ex: Hilton OnQ)','Intimidade cliente/fornecedor: estreitar vínculos (ex: Toyota/Ford)'],
+      visual:{kind:'gridcards', cols:4, items:[
+        {title:'Custo baixo', desc:'Walmart'},
+        {title:'Diferenciação', desc:'Nike By You'},
+        {title:'Foco em nicho', desc:'Hilton OnQ'},
+        {title:'Intimidade', desc:'Toyota / Ford'}
+      ]}
+    },
+    { type:'content', kicker:'Revisitando Porter', title:'O impacto da internet nas forças competitivas',
+      narration:"A internet mudou o jogo de Porter em todas as frentes. Ela reduz as barreiras de entrada para novos concorrentes, já que precisa de menos força de vendas e acesso físico a canais. Permite que produtos substitutos surjam com novas abordagens. Aumenta o poder de barganha sobre fornecedores, eliminando intermediários. Transfere poder de barganha para os clientes, que agora têm informação global de preços. E alarga o mercado geográfico, aumentando a concorrência e pressionando os preços para baixo. Por isso Porter diz: se você faz essencialmente a mesma coisa que seus concorrentes, dificilmente vai ter muito sucesso.",
+      bullets:['Reduz barreiras de entrada para novos concorrentes','Facilita o surgimento de produtos substitutos','Transfere poder de barganha para os clientes','Alarga o mercado geográfico e aumenta a concorrência'],
+      visual:{kind:'hero', lead:'“Se tudo o que está tentando fazer é essencialmente a mesma coisa que seus concorrentes, é improvável que você tenha muito sucesso.” — Michael Porter'}
+    },
+    { type:'summary', kicker:'Antes da prova', title:'Resumo rápido: Módulo 3',
+      narration:"Fechando o módulo 3: uma organização é, ao mesmo tempo, uma estrutura técnica que transforma recursos e um sistema comportamental de pessoas, cultura e política. Cinco características organizacionais — rotinas, política, cultura, ambiente e estrutura — precisam ser entendidas antes de implantar qualquer SI, e Mintzberg descreve cinco tipos de estrutura, da empreendedora à adhocracia. Tecnologias disruptivas criam vencedores e perdedores, e a implantação de um SI exige mudar estrutura, tarefas, pessoas e tecnologia juntas. Por fim, vantagem competitiva se constrói enfrentando as cinco forças de Porter com quatro estratégias genéricas: custo, diferenciação, nicho e intimidade com cliente e fornecedor.",
+      bullets:['Organização: visão técnica + visão comportamental','5 características organizacionais (Mintzberg: 5 estruturas)','SI muda: estrutura, tarefas, pessoas e tecnologia — juntos','Porter: 5 forças + 4 estratégias genéricas com SI'],
+      visual:{kind:'hero', chips:['Organização','Mintzberg','5 forças','4 estratégias']}
+    },
+    { type:'quiz', kicker:'Autoavaliação', title:'Quiz rápido — Módulo 3',
+      narration:"Vamos testar o que você aprendeu. Leia a pergunta e escolha uma alternativa.",
+      quiz:{
+        question:"Uma fabricante de automóveis passa a dar aos seus fornecedores acesso direto aos cronogramas de produção, permitindo que eles decidam como e quando enviar suprimentos às fábricas. Essa é uma aplicação de sistemas de informação voltada à estratégia de:",
+        options:['Liderança em custos baixos.','Diferenciação de produtos.','Foco em nicho de mercado.','Intimidade com cliente e fornecedor.','Ameaça de produtos substitutos.'],
+        correct:3,
+        explain:"Dar acesso direto dos fornecedores aos cronogramas de produção é exatamente o exemplo de Toyota e Ford usado na disciplina para ilustrar a estratégia de intimidade com cliente e fornecedor — estreitar vínculos usando SI."
+      }
+    }
+  ]
+},
+{
+  id:'m4', code:'REV', colorVar:'--m4', title:'Revisão Final', sub:'Antes da prova',
+  cards:[
+    { type:'summary', kicker:'Revisão geral', title:'Checklist final: os pontos que mais caem',
+      narration:"Vamos revisar rapidinho os três módulos, só o que mais cai em prova. Em Fundamentos de SI: sistema é um conjunto de partes interdependentes com objetivo comum, o fluxo é entrada, processo, saída, controle e feedback, dado vira informação quando processado, e os sistemas evoluíram de SPT operacional até SAE estratégico. Em SI nos Negócios Globais: tecnologia sozinha não garante retorno, são os ativos complementares — processos, cultura, treinamento — que transformam investimento em vantagem, dentro das três dimensões organização, gestão e tecnologia. E em SI, Organizações e Estratégia: toda organização tem cinco características que o gestor precisa entender, e a vantagem competitiva se constrói enfrentando as cinco forças de Porter com as quatro estratégias genéricas de custo, diferenciação, nicho e intimidade.",
+      bullets:['M1: Sistema = partes + objetivo. Fluxo: entrada→processo→saída→feedback','M2: Ativos complementares transformam TI em vantagem (Teece, 1998)','M3: Porter — 5 forças + 4 estratégias genéricas com SI','Dado→Informação→Conhecimento · SPT→SIG→SAD→SAE'],
+      visual:{kind:'gridcards', cols:3, items:[
+        {title:'M1 · Fundamentos', list:['Sistema = partes + objetivo','Entrada→Processo→Saída→Feedback','SPT→SIG→SAD→SAE']},
+        {title:'M2 · Negócios Globais', list:['3 dimensões: O-G-T','Ativos complementares (Teece)','TI sozinha ≠ retorno']},
+        {title:'M3 · Estratégia', list:['5 características organizacionais','Porter: 5 forças','4 estratégias genéricas com SI']}
+      ]}
+    },
+    { type:'summary', kicker:'Última palavra', title:'Você está pronto',
+      narration:"Chegamos ao fim da revisão de Sistemas de Informações Gerenciais. Você passou pelos conceitos fundamentais de sistema e informação, por como a tecnologia só vira vantagem quando vem acompanhada de mudança organizacional e gerencial, e por como os sistemas de informação se tornam armas estratégicas frente à concorrência. Agora é hora da prova: seis questões objetivas e uma questão aberta, no estilo de estudo de caso. Releia com calma o exemplo de estudo de caso antes de responder a questão dissertativa — ela pede pra você conectar um caso real aos conceitos que você acabou de revisar. Boa prova!",
+      bullets:['Revise os cards que ainda não escutou','A questão aberta pede para conectar um caso real aos conceitos da disciplina','Boa prova!'],
+      visual:{kind:'hero', lead:'A repetição é sua maior aliada antes da prova. Boa sorte!'}
+    }
+  ]
+},
+{
+  id:'prova', code:'P', colorVar:'--examA', title:'Prova — Modelo da Disciplina', sub:'6 objetivas + 1 dissertativa',
+  cards:[
+    { type:'intro', kicker:'Simulado • Sistemas de Informações Gerenciais', title:'Prova — Modelo da Disciplina',
+      narration:"Chegou a hora de aplicar o que você revisou. Essa prova segue o formato que o professor descreveu: seis questões objetivas, valendo um ponto cada, totalizando seis pontos, mais uma questão aberta, no estilo de estudo de caso, valendo dois pontos — fechando em oito pontos ao todo. Responda as objetivas com calma, e na questão aberta, tente escrever sua própria resposta antes de olhar o modelo — é assim que você realmente fixa o conteúdo.",
+      bullets:['6 questões objetivas • 1,0 ponto cada • total 6,0 pontos','1 questão aberta (estudo de caso) • 2,0 pontos','Total da prova: 8,0 pontos'],
+      visual:{kind:'hero', chips:['6 objetivas','1 aberta','8,0 pontos']}
+    },
+    { type:'quiz', kicker:'Questão 1 de 6', title:'Questão 1',
+      narration:"Questão um. Primeira afirmação: um sistema é um conjunto de partes interagentes e interdependentes que formam um todo unitário, com determinado objetivo e função. Agora, porque: nenhum elemento do sistema pode ser analisado isoladamente, ele precisa ser entendido em relação aos demais. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Um sistema é um conjunto de partes interagentes e interdependentes que formam um todo unitário, com determinado objetivo e função.<br><br><strong>PORQUE</strong><br><br>II. Nenhum elemento de um sistema pode ser analisado isoladamente; ele precisa ser entendido em relação aos demais.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:1,
+        explain:"Ambas as afirmações são verdadeiras — essa é exatamente a definição de sistema de Oliveira (2014): um todo cujas partes só fazem sentido quando analisadas em relação às demais."
+      }
+    },
+    { type:'quiz', kicker:'Questão 2 de 6', title:'Questão 2',
+      narration:"Questão dois. Sobre os componentes do sistema, qual é a etapa responsável por verificar a coerência entre as saídas produzidas e os objetivos definidos?",
+      quiz:{
+        question:"Sobre os componentes do sistema, a etapa responsável por verificar a coerência entre as saídas produzidas e os objetivos definidos é chamada de:",
+        options:['Entrada.','Processo de transformação.','Retroalimentação.','Controle e avaliação.','Ambiente.'],
+        correct:3, weight:1,
+        explain:"Controle e avaliação é a etapa que compara as saídas obtidas com os objetivos definidos, fechando o ciclo antes da retroalimentação."
+      }
+    },
+    { type:'quiz', kicker:'Questão 3 de 6', title:'Questão 3',
+      narration:"Questão três. Uma empresa investe pesadamente em um novo ERP, mas não altera seus processos de negócio, sua cultura organizacional nem treina seus funcionários. Segundo o conceito de ativos complementares, o que tende a acontecer?",
+      quiz:{
+        question:"Segundo o conceito de ativos complementares (Teece, 1998), uma empresa que investe pesadamente em um novo ERP, mas não altera seus processos de negócio, sua cultura organizacional nem treina seus funcionários, tende a:",
+        options:['obter automaticamente retornos superiores aos concorrentes, pois a tecnologia por si só garante vantagem.','não conseguir capturar o valor do investimento, pois tecnologia sem ativos complementares tende a ser apenas custo.','eliminar a necessidade de ativos organizacionais e gerenciais, já que o ERP substitui esses processos.','reduzir seus custos de transação a zero, independentemente de mudanças organizacionais.','garantir vantagem competitiva sustentável apenas pela superioridade técnica do software escolhido.'],
+        correct:1, weight:1,
+        explain:"Sem ativos complementares — processos redesenhados, cultura, treinamento, apoio da liderança — o investimento em tecnologia tende a virar custo, não capacidade organizacional, exatamente como descreve o conceito de Teece (1998)."
+      }
+    },
+    { type:'quiz', kicker:'Questão 4 de 6', title:'Questão 4',
+      narration:"Questão quatro. Primeira afirmação: investir em tecnologia da informação, isoladamente, não garante bons retornos às organizações. Agora, porque: o valor de um investimento em TI depende da presença de ativos complementares, como processos redesenhados, cultura de colaboração e apoio da liderança. Assinale a alternativa correta.",
+      quiz:{
+        question:"I. Investir em tecnologia da informação, isoladamente, não garante bons retornos às organizações.<br><br><strong>PORQUE</strong><br><br>II. O valor de um investimento em TI depende da presença de ativos complementares, como processos redesenhados, cultura de colaboração e apoio da liderança.<br><br>A respeito das asserções acima, assinale a alternativa correta.",
+        options:['As duas asserções são proposições verdadeiras, e a II é uma justificativa correta da I.','As duas asserções são proposições verdadeiras, mas a II não é uma justificativa correta da I.','A asserção I é uma proposição verdadeira, e a II é uma proposição falsa.','A asserção I é uma proposição falsa, e a II é uma proposição verdadeira.','As asserções I e II são proposições falsas.'],
+        correct:0, weight:1,
+        explain:"As duas afirmações são verdadeiras, e a segunda explica exatamente por que a primeira ocorre: o retorno de TI depende dos ativos complementares que a acompanham."
+      }
+    },
+    { type:'quiz', kicker:'Questão 5 de 6', title:'Questão 5',
+      narration:"Questão cinco. Segundo Mintzberg, uma empresa jovem e pequena, atuando num ambiente de rápidas mudanças, com estrutura simples e centralizada em um único CEO, é classificada como qual tipo de estrutura organizacional?",
+      quiz:{
+        question:"Segundo Mintzberg (1971), uma empresa jovem e pequena, atuando em um ambiente de rápidas mudanças, com estrutura simples e centralizada em um único CEO, é classificada como uma estrutura organizacional do tipo:",
+        options:['Mecânica.','Profissional.','Empreendedora.','Diversificada.','Adhocracia.'],
+        correct:2, weight:1,
+        explain:"A estrutura Empreendedora é definida por Mintzberg como uma empresa jovem, pequena, com estrutura simples e um único CEO — típica de startups."
+      }
+    },
+    { type:'quiz', kicker:'Questão 6 de 6', title:'Questão 6',
+      narration:"Questão seis, a última objetiva. Analise três afirmações sobre as estratégias genéricas de uso de sistemas de informação para enfrentar forças competitivas e assinale a alternativa com as que estão corretas.",
+      quiz:{
+        question:"Analise as afirmações a seguir, relativas às estratégias genéricas de uso de SI para enfrentar forças competitivas:<br><br>I. A liderança em custos baixos busca utilizar SI para obter os menores custos operacionais e os menores preços, como no exemplo do sistema de reposição de estoque do Walmart.<br>II. A diferenciação de produtos busca, por meio de SI, oferecer produtos e serviços novos ou mudar significativamente a conveniência do cliente, como no programa de customização Nike By You.<br>III. A intimidade com cliente e fornecedor é uma estratégia que visa eliminar completamente a necessidade de vínculo direto entre a empresa e seus fornecedores.<br><br>É correto apenas o que se afirma em:",
+        options:['I.','I e II.','II e III.','I, II e III.','III.'],
+        correct:1, weight:1,
+        explain:"III está errada: a intimidade com cliente e fornecedor busca ESTREITAR vínculos (como no exemplo Toyota/Ford, que dão acesso direto aos cronogramas de produção), e não eliminá-los."
+      }
+    },
+    { type:'open', kicker:'Questão dissertativa', title:'Questão 7 — Estudo de caso (2,0 pontos)',
+      narration:"Questão sete, a questão aberta, no estilo de estudo de caso, valendo dois pontos. Leia o caso do Magazine Luiza e responda às três perguntas a seguir, relacionando o caso aos conceitos que você revisou nos três módulos: níveis de sistemas de informação, dimensões de organização, gestão e tecnologia, ativos complementares, e as estratégias competitivas de Porter. Escreva sua resposta no campo abaixo e, quando terminar, clique em ver resposta modelo para comparar.",
+      open:{
+        weight:2,
+        caseTitle:"Estudo de caso: Magazine Luiza e a integração de canais no varejo",
+        caseText:"O Magazine Luiza (Magalu) é uma das maiores varejistas do Brasil e um exemplo frequente de transformação digital no varejo. A empresa integra lojas físicas, aplicativo, marketplace e uma assistente virtual (a “Lu”) em uma mesma experiência de compra, permitindo que o cliente pesquise, compre e retire produtos por diferentes canais.<br><br>Por trás dessa operação, sistemas coletam continuamente dados sobre pedidos, estoque, entregas e comportamento de navegação dos clientes. Esses dados alimentam desde o controle diário de estoque nas lojas até painéis gerenciais de desempenho por região, e também modelos que ajudam a diretoria a decidir onde abrir novos centros de distribuição.<br><br>A empresa também investe em um marketplace que conecta milhares de vendedores parceiros aos consumidores, e em uma rede logística própria para acelerar entregas. Segundo executivos da companhia, a tecnologia sozinha não explica esse crescimento: foi necessário redesenhar processos internos, treinar equipes de loja para atuarem também como pontos de logística, e mudar a forma como o marketing se relaciona com o cliente pelo aplicativo.",
+        questions:[
+          "De que maneira os sistemas de informação sustentam as operações do Magazine Luiza? Em sua resposta, identifique exemplos de dados e informações do caso e explique como diferentes tipos de sistemas podem apoiar os níveis operacional, gerencial e estratégico da organização.",
+          "O caso mostra que a tecnologia, sozinha, não explica o crescimento do Magazine Luiza. Relacione essa afirmação ao conceito de ativos complementares e às três dimensões (organização, gestão e tecnologia) dos sistemas de informação estudadas na disciplina.",
+          "Como os sistemas de informação utilizados pelo Magazine Luiza podem contribuir para a obtenção de vantagem competitiva? Relacione os elementos do caso a pelo menos duas das quatro estratégias competitivas genéricas apresentadas na disciplina."
+        ],
+        modelAnswer:"<strong>Questão 1 — Dados, informação e os três níveis:</strong><br>Dados brutos do caso: registros de pedidos, unidades em estoque por loja, rotas e horários de entrega, cliques e buscas no aplicativo.<br>• Nível operacional (SPT): sistemas registram cada venda, baixa de estoque e confirmação de entrega em tempo real.<br>• Nível gerencial/tático (SIG): os dados operacionais são sintetizados em relatórios de desempenho por região ou categoria de produto.<br>• Nível estratégico (SAD/SAE): modelos que cruzam vendas, logística e comportamento do cliente apoiam decisões de longo prazo, como onde abrir um novo centro de distribuição.<br><br><strong>Questão 2 — Ativos complementares e as três dimensões:</strong><br>O ERP, o app e o marketplace (dimensão Tecnologia) só geram valor porque vieram acompanhados de mudança na forma de trabalhar: lojas físicas passaram a funcionar como pontos logísticos (dimensão Organização) e a empresa treinou equipes e redesenhou o relacionamento com o cliente (dimensão Gestão). Isso ilustra o conceito de ativos complementares (Teece, 1998): sem processos redesenhados, treinamento e apoio da liderança, o investimento em tecnologia tenderia a ser apenas custo.<br><br><strong>Questão 3 — Vantagem competitiva e estratégias genéricas:</strong><br>• Intimidade com cliente: a assistente virtual “Lu” e a integração de canais aproximam a empresa do consumidor, no espírito do exemplo Hilton/Toyota-Ford.<br>• Diferenciação: a experiência omnichannel (comprar online, retirar na loja) diferencia o Magalu de concorrentes puramente digitais, como no exemplo Nike By You.<br>• Também cabe citar liderança em custo, via rede logística própria que reduz custos de entrega, na linha do exemplo Walmart.<br>O ponto central: o sistema de informação, sozinho, não cria vantagem — ela nasce da combinação entre tecnologia, processos e decisões gerenciais alinhados a uma estratégia competitiva."
+      }
+    },
+    { type:'examresult', kicker:'Resultado', title:'Resultado — Prova', narration:'' }
+  ]
+}
+];
+
+/* ================= VISUAL RENDERERS ================= */
+function visualHTML(v){
+  switch(v.kind){
+    case 'hero': return renderHero(v);
+    case 'stack': return renderStack(v);
+    case 'flow': return renderFlow(v);
+    case 'compare': return renderCompare(v);
+    case 'gridcards': return renderGrid(v);
+    case 'swatches': return renderSwatches(v);
+    case 'typescale': return renderTypescale(v);
+    case 'icons': return renderIcons();
+    case 'code': return renderCode(v);
+    case 'target': return renderTarget();
+    case 'brain': return renderBrain();
+    default: return '';
+  }
+}
+function renderHero(v){
+  var lead = v.lead ? '<div class="hero-lead">'+v.lead+'</div>' : '';
+  var chips = v.chips ? '<div class="hero-chips">'+v.chips.map(function(c){return '<span class="chip">'+c+'</span>';}).join('')+'</div>' : '';
+  return '<div class="viz-hero">'+lead+chips+'</div>';
+}
+function renderStack(v){
+  var rows = v.layers.map(function(l,i){
+    var arrow = i < v.layers.length-1 ? '<div class="stack-arrow">'+chevronSVG('down')+'</div>' : '';
+    return '<div class="stack-row"><div class="stack-num">'+(i+1)+'</div><div class="stack-body"><div class="stack-label">'+l.label+'</div>'+(l.sub?'<div class="stack-sub">'+l.sub+'</div>':'')+'</div></div>'+arrow;
+  }).join('');
+  return '<div class="viz-stack">'+rows+'</div>';
+}
+function renderFlow(v){
+  var parts = v.steps.map(function(s,i){
+    var arrow = i < v.steps.length-1 ? '<div class="flow-arrow">'+chevronSVG('right')+'</div>' : '';
+    return '<div class="flow-step"><div class="flow-num">'+(i+1)+'</div><div class="flow-label">'+s.label+'</div>'+(s.sub?'<div class="flow-sub">'+s.sub+'</div>':'')+'</div>'+arrow;
+  }).join('');
+  return '<div class="viz-flow">'+parts+'</div>';
+}
+function renderCompare(v){
+  var lw = v.winner==='left' ? ' winner' : '';
+  var rw = v.winner==='right' ? ' winner' : '';
+  var L = v.left, R = v.right;
+  return '<div class="viz-compare">'+
+    '<div class="cmp-col'+lw+'"><div class="cmp-head">'+L.title+'</div><ul>'+L.items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div>'+
+    '<div class="cmp-vs">vs</div>'+
+    '<div class="cmp-col'+rw+'"><div class="cmp-head">'+R.title+'</div><ul>'+R.items.map(function(i){return '<li>'+i+'</li>';}).join('')+'</ul></div>'+
+  '</div>';
+}
+function renderGrid(v){
+  var items = v.items.map(function(it){
+    var desc = it.desc ? '<div class="grid-card-desc">'+it.desc+'</div>' : '';
+    var list = it.list ? '<ul class="grid-card-list">'+it.list.map(function(l){return '<li>'+l+'</li>';}).join('')+'</ul>' : '';
+    return '<div class="grid-card"><div class="grid-card-title">'+it.title+'</div>'+desc+list+'</div>';
+  }).join('');
+  return '<div class="viz-grid">'+items+'</div>';
+}
+function renderSwatches(v){
+  var items = v.items.map(function(it){
+    return '<div class="swatch"><div class="swatch-color" style="background:'+it.hex+'"></div><div class="swatch-name">'+it.name+'</div><div class="swatch-use">'+it.use+'</div></div>';
+  }).join('');
+  return '<div class="viz-swatch-row">'+items+'</div>';
+}
+function renderTypescale(v){
+  var rows = v.items.map(function(it){
+    return '<div class="type-row"><div class="type-sample" style="font-size:'+it.size+'">Aa</div><div class="type-meta"><span class="type-name">'+it.name+'</span><span class="type-use">'+it.use+'</span></div></div>';
+  }).join('');
+  return '<div class="viz-typescale">'+rows+'</div>';
+}
+function renderIcons(){
+  var glyphs = [
+    '<circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="9" x2="12" y2="15" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/>',
+    '<circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2"/><line x1="14.2" y1="14.2" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    '<polyline points="4,11 12,4 20,11" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="6" y="11" width="12" height="9" fill="none" stroke="currentColor" stroke-width="2"/>',
+    '<rect x="5" y="5" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="9" y1="12" x2="15" y2="12" stroke="currentColor" stroke-width="2"/>',
+    '<polygon points="12,4 15,10 21,11 16.5,15 18,21 12,17.5 6,21 7.5,15 3,11 9,10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>'
+  ];
+  var cells = glyphs.map(function(g){ return '<div class="icon-cell"><svg viewBox="0 0 24 24" class="icon-glyph" aria-hidden="true">'+g+'</svg></div>'; }).join('');
+  return '<div class="viz-icons">'+cells+'</div>';
+}
+function renderCode(v){
+  var blocks = v.blocks.map(function(b){
+    return '<div class="code-block"><div class="code-label">'+b.label+'</div><pre class="code-pre"><code>'+escapeHtml(b.code)+'</code></pre></div>';
+  }).join('');
+  return '<div class="viz-code-row">'+blocks+'</div>';
+}
+function renderTarget(){
+  return '<div class="viz-svg-wrap"><svg viewBox="0 0 400 250" role="img" aria-label="Um botão de 44 por 44 pontos com a área de toque de um dedo sobreposta, mostrando a área mínima de toque recomendada.">'+
+  '<rect x="150" y="70" width="140" height="140" rx="22" fill="var(--card-accent)" fill-opacity="0.14" stroke="currentColor" stroke-width="2"/>'+
+  '<ellipse cx="220" cy="140" rx="36" ry="42" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.6" stroke-dasharray="5 4"/>'+
+  '<line x1="150" y1="50" x2="290" y2="50" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="150" y1="44" x2="150" y2="56" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="290" y1="44" x2="290" y2="56" stroke="currentColor" stroke-width="1.4"/>'+
+  '<text x="220" y="36" text-anchor="middle" font-size="13" fill="currentColor" font-family="IBM Plex Mono, monospace">44pt</text>'+
+  '<line x1="130" y1="70" x2="130" y2="210" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="124" y1="70" x2="136" y2="70" stroke="currentColor" stroke-width="1.4"/>'+
+  '<line x1="124" y1="210" x2="136" y2="210" stroke="currentColor" stroke-width="1.4"/>'+
+  '<text x="112" y="144" text-anchor="end" font-size="13" fill="currentColor" font-family="IBM Plex Mono, monospace">44pt</text>'+
+  '<text x="220" y="230" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">botão &nbsp; + &nbsp; área de toque do dedo</text>'+
+  '</svg></div><div class="svg-caption">A área mínima recomendada de toque é 44&times;44 pontos — o dedo humano não encolhe de acordo com a tela.</div>';
+}
+function renderBrain(){
+  return '<div class="viz-svg-wrap"><svg viewBox="0 0 640 220" role="img" aria-label="Um olho à esquerda envia um estímulo visual, em meio segundo, até um agrupamento de círculos representando o cérebro à direita.">'+
+  '<ellipse cx="90" cy="112" rx="48" ry="28" fill="none" stroke="currentColor" stroke-width="2"/>'+
+  '<circle cx="90" cy="112" r="13" fill="currentColor"/>'+
+  '<text x="90" y="168" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">Estímulo visual</text>'+
+  '<line x1="150" y1="112" x2="420" y2="112" stroke="currentColor" stroke-width="2"/>'+
+  '<polygon points="420,112 408,106 408,118" fill="currentColor"/>'+
+  '<rect x="250" y="88" width="72" height="26" rx="13" fill="var(--card-accent)" fill-opacity="0.18" stroke="var(--card-accent)" stroke-width="1.4"/>'+
+  '<text x="286" y="105" text-anchor="middle" font-size="13" fill="var(--card-accent)" font-family="IBM Plex Mono, monospace">0,5s</text>'+
+  '<g fill="none" stroke="currentColor" stroke-width="1.6">'+
+  '<circle cx="500" cy="108" r="30"/><circle cx="535" cy="95" r="22"/><circle cx="540" cy="130" r="24"/><circle cx="505" cy="140" r="20"/><circle cx="470" cy="120" r="18"/>'+
+  '</g>'+
+  '<text x="510" y="168" text-anchor="middle" font-size="12" fill="currentColor" font-family="IBM Plex Sans, sans-serif">Decisão instantânea</text>'+
+  '</svg></div><div class="svg-caption">O cérebro processa a tela e forma uma primeira impressão em cerca de 0,5 segundo, antes da leitura consciente começar.</div>';
+}
+
+/* ================= FLATTEN ================= */
+var FLAT = [];
+MODULES.forEach(function(mod){
+  mod.cards.forEach(function(card){ FLAT.push({module:mod, card:card}); });
+});
+var SELFCHECK_MODULES = ['m1','m2','m3'];
+var TOTAL_QUIZZES = FLAT.filter(function(f){ return f.card.type==='quiz' && SELFCHECK_MODULES.indexOf(f.module.id)!==-1; }).length;
+
+/* ================= STATE ================= */
+var STORAGE_KEY = 'kdev_mobile_review_v2';
+var state = {
+  flatIndex: 0,
+  visited: {},
+  quizAnswers: {},
+  openAnswers: {},
+  rate: 1,
+  autoplayNarration: true,
+  autoAdvance: true,
+  sentences: [],
+  playing: false,
+  speechToken: 0
+};
+
+function loadProgress(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){ return null; }
+}
+function saveProgress(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      visited: state.visited,
+      quizAnswers: state.quizAnswers,
+      openAnswers: state.openAnswers,
+      lastIndex: state.flatIndex,
+      rate: state.rate,
+      autoplayNarration: state.autoplayNarration,
+      autoAdvance: state.autoAdvance,
+      voiceURI: chosenVoiceURI
+    }));
+  }catch(e){}
+}
+
+var chosenVoiceURI = null;
+var saved = loadProgress();
+if(saved){
+  state.visited = saved.visited || {};
+  state.quizAnswers = saved.quizAnswers || {};
+  state.openAnswers = saved.openAnswers || {};
+  if(typeof saved.rate === 'number') state.rate = saved.rate;
+  if(typeof saved.autoplayNarration === 'boolean') state.autoplayNarration = saved.autoplayNarration;
+  if(typeof saved.autoAdvance === 'boolean') state.autoAdvance = saved.autoAdvance;
+  if(saved.voiceURI) chosenVoiceURI = saved.voiceURI;
+}
+
+/* ================= SPEECH ================= */
+var voices = [];
+var HAS_SPEECH = 'speechSynthesis' in window;
+
+function ptVoices(){
+  return voices.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf('pt') === 0; });
+}
+function pickVoice(){
+  if(chosenVoiceURI){
+    var m = voices.filter(function(v){ return v.voiceURI === chosenVoiceURI; });
+    if(m.length) return m[0];
+  }
+  var pt = ptVoices();
+  if(pt.length){
+    var br = pt.filter(function(v){ return v.lang.toLowerCase()==='pt-br'; });
+    return br[0] || pt[0];
+  }
+  return voices[0] || null;
+}
+function populateVoiceSelect(){
+  var pt = ptVoices();
+  var list = pt.length ? pt : voices;
+  var noteText = '';
+  if(!HAS_SPEECH){
+    noteText = 'Seu navegador não suporta narração por voz — mas você ainda pode ler as legendas.';
+  } else if(!list.length){
+    noteText = 'Carregando vozes do navegador…';
+  } else if(!pt.length){
+    noteText = 'Nenhuma voz em português foi encontrada — mostrando todas as vozes do navegador.';
+  }
+  if(list.length){
+    chosenVoiceURI = (chosenVoiceURI && list.some(function(v){ return v.voiceURI===chosenVoiceURI; }))
+      ? chosenVoiceURI : list[0].voiceURI;
+  }
+  document.querySelectorAll('.voice-select').forEach(function(sel){
+    if(!list.length){
+      sel.innerHTML = '<option value="">'+(HAS_SPEECH ? 'Carregando…' : 'Indisponível')+'</option>';
+      sel.disabled = true;
+      return;
+    }
+    sel.disabled = false;
+    sel.innerHTML = list.map(function(v){
+      return '<option value="'+v.voiceURI+'">'+v.name+' ('+v.lang+')</option>';
+    }).join('');
+    sel.value = chosenVoiceURI;
+  });
+  document.querySelectorAll('.voice-test-btn').forEach(function(btn){ btn.disabled = !list.length; });
+  document.querySelectorAll('.voice-note').forEach(function(n){ n.textContent = noteText; });
+  updateVoiceLabel();
+}
+function updateVoiceLabel(){
+  var label = document.getElementById('tVoiceLabel');
+  if(!HAS_SPEECH){
+    label.textContent = 'Narração indisponível neste navegador';
+    return;
+  }
+  var v = pickVoice();
+  label.textContent = v ? ('Voz: ' + v.name) : 'Nenhuma voz encontrada';
+}
+function refreshVoices(){
+  if(!HAS_SPEECH){ populateVoiceSelect(); return; }
+  voices = window.speechSynthesis.getVoices() || [];
+  populateVoiceSelect();
+}
+function onVoiceSelectChange(e){
+  chosenVoiceURI = e.target.value;
+  document.querySelectorAll('.voice-select').forEach(function(sel){ if(sel !== e.target) sel.value = chosenVoiceURI; });
+  updateVoiceLabel();
+  saveProgress();
+}
+function testVoice(){
+  if(!HAS_SPEECH || !chosenVoiceURI) return;
+  window.speechSynthesis.cancel();
+  var v = voices.filter(function(x){ return x.voiceURI === chosenVoiceURI; })[0];
+  var u = new SpeechSynthesisUtterance('Olá! Esta é a voz que vou usar para narrar a aula.');
+  if(v) u.voice = v;
+  u.lang = v ? v.lang : 'pt-BR';
+  u.rate = state.rate;
+  window.speechSynthesis.speak(u);
+}
+if(HAS_SPEECH){
+  refreshVoices();
+  window.speechSynthesis.onvoiceschanged = refreshVoices;
+  [300, 900, 2000].forEach(function(ms){ setTimeout(refreshVoices, ms); });
+} else {
+  populateVoiceSelect();
+}
+
+function splitSentences(text){
+  if(!text) return [];
+  var parts = text.match(/[^.!?]+[.!?]+(\s+|$)/g);
+  if(!parts) return [text];
+  return parts.map(function(s){ return s.trim(); }).filter(Boolean);
+}
+
+function speakQueue(sentences, onSentence, onDone){
+  var myToken = ++state.speechToken;
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if(!('speechSynthesis' in window) || !sentences.length){
+    onDone && onDone();
+    return;
+  }
+  var i = 0;
+  function step(){
+    if(myToken !== state.speechToken) return;
+    if(i >= sentences.length){ onDone && onDone(); return; }
+    onSentence && onSentence(i);
+    var u = new SpeechSynthesisUtterance(sentences[i]);
+    u.lang = 'pt-BR';
+    var v = pickVoice();
+    if(v) u.voice = v;
+    u.rate = state.rate;
+    u.pitch = 1;
+    u.onend = function(){ if(myToken===state.speechToken){ i++; step(); } };
+    u.onerror = function(){ if(myToken===state.speechToken){ i++; step(); } };
+    window.speechSynthesis.speak(u);
+  }
+  step();
+}
+function cancelSpeech(){
+  state.speechToken++;
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  state.playing = false;
+  updatePlayBtn();
+}
+
+/* ================= RENDER: SIDEBAR ================= */
+var sidebarEl = document.getElementById('sidebar');
+function buildSidebar(){
+  var html = '';
+  var counter = 0;
+  MODULES.forEach(function(mod, mi){
+    var startIdx = counter;
+    var rows = mod.cards.map(function(card, ci){
+      var flatIdx = counter++;
+      var typeLabel = card.type==='quiz' ? 'Quiz' : card.type==='open' ? 'Aberta' : card.type==='examresult' ? 'Resultado' : card.type==='summary' ? 'Resumo' : card.type==='intro' ? 'Início' : '';
+      return '<div class="card-row" data-idx="'+flatIdx+'" id="row-'+flatIdx+'"><span class="idx-shape"></span><span class="row-label">'+card.title+'</span>'+(typeLabel?'<span class="row-tag">'+typeLabel+'</span>':'')+'</div>';
+    }).join('');
+    html += '<div class="mod-group" id="mgroup-'+mi+'">'+
+      '<div class="mod-head" data-mi="'+mi+'">'+
+        '<span class="mod-dot" style="background:var('+mod.colorVar+')"></span>'+
+        '<span class="mod-title">'+mod.title+'<span class="mod-sub">'+mod.sub+'</span></span>'+
+        '<span class="mod-count" id="mcount-'+mi+'">0/'+mod.cards.length+'</span>'+
+        chevronSVG('down').replace('class="chev"','class="chev mod-caret"')+
+      '</div>'+
+      '<div class="mod-cards">'+rows+'</div>'+
+    '</div>';
+  });
+  sidebarEl.innerHTML = html;
+
+  sidebarEl.querySelectorAll('.card-row').forEach(function(row){
+    row.addEventListener('click', function(){
+      goTo(parseInt(row.getAttribute('data-idx'),10));
+      closeSidebarMobile();
+    });
+  });
+  sidebarEl.querySelectorAll('.mod-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var mi = head.getAttribute('data-mi');
+      document.getElementById('mgroup-'+mi).classList.toggle('collapsed');
+    });
+  });
+}
+function updateSidebarActiveAndProgress(){
+  sidebarEl.querySelectorAll('.card-row').forEach(function(row){
+    var idx = parseInt(row.getAttribute('data-idx'),10);
+    row.classList.toggle('active', idx===state.flatIndex);
+    row.classList.toggle('visited', !!state.visited[idx]);
+  });
+  var counter = 0;
+  MODULES.forEach(function(mod, mi){
+    var visitedCount = 0;
+    mod.cards.forEach(function(){ if(state.visited[counter]) visitedCount++; counter++; });
+    var el = document.getElementById('mcount-'+mi);
+    if(el) el.textContent = visitedCount+'/'+mod.cards.length;
+  });
+}
+
+/* ================= RENDER: TOP PROGRESS + SCORE ================= */
+function updateTopBar(){
+  var visitedCount = Object.keys(state.visited).length;
+  var pct = Math.round(visitedCount / FLAT.length * 100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressPct').textContent = pct+'%';
+  var correct = 0, answered = 0;
+  Object.keys(state.quizAnswers).forEach(function(k){
+    var f = FLAT[parseInt(k,10)];
+    if(!f || f.card.type!=='quiz' || SELFCHECK_MODULES.indexOf(f.module.id)===-1) return;
+    answered++;
+    if(state.quizAnswers[k] === f.card.quiz.correct) correct++;
+  });
+  document.getElementById('scorePill').textContent = 'Quizzes: '+correct+'/'+TOTAL_QUIZZES;
+}
+
+/* ================= RENDER: STAGE ================= */
+var stageEl = document.getElementById('stage');
+var stageInnerEl = document.getElementById('stageInner');
+
+function renderStage(){
+  var entry = FLAT[state.flatIndex];
+  var card = entry.card, mod = entry.module;
+  var accentVar = 'var('+mod.colorVar+')';
+
+  var examStats = null;
+  if(card.type==='examresult'){
+    examStats = computeExamStats(mod.id);
+    var examLabel = ' a prova';
+    card.narration = buildExamNarration(examStats, examLabel);
+  }
+
+  var visualHtml;
+  if(card.type==='quiz' || card.type==='open'){
+    visualHtml = '';
+  } else if(card.type==='examresult'){
+    visualHtml = '<div class="visual-box">'+renderScoreVisual(examStats)+'</div>';
+  } else {
+    visualHtml = '<div class="visual-box">'+visualHTML(card.visual)+'</div>';
+  }
+
+  var leftPanel;
+  if(card.type==='quiz'){
+    leftPanel = '<div class="panel"><h3>Sua resposta</h3><div id="quizPanel"></div></div>';
+  } else if(card.type==='open'){
+    leftPanel = '<div class="panel"><h3>Sua resposta</h3><div id="openPanel"></div></div>';
+  } else if(card.type==='examresult'){
+    leftPanel = '<div class="panel"><h3>Questão por questão</h3><div id="examBreakdown"></div></div>';
+  } else {
+    leftPanel = '<div class="panel"><h3>Pontos-chave</h3><ul class="bullets">'+card.bullets.map(function(b){return '<li>'+b+'</li>';}).join('')+'</ul></div>';
+  }
+  var rightPanel = '<div class="panel"><h3>O que o professor está dizendo</h3><div class="transcript" id="transcript"></div>'+
+    (('speechSynthesis' in window) ? '' : '<div class="no-voice-note">Seu navegador não suporta narração por voz — mas você pode ler a transcrição acima.</div>')+
+    '</div>';
+
+  stageInnerEl.style.setProperty('--card-accent', accentVar);
+  stageInnerEl.innerHTML =
+    '<div class="kicker-row"><span class="mod-badge">'+mod.code+'</span><span class="kicker-text">'+card.kicker+'</span></div>'+
+    '<h1 class="card-title">'+card.title+'</h1>'+
+    visualHtml+
+    '<div class="content-grid">'+leftPanel+rightPanel+'</div>';
+
+  stageInnerEl.classList.remove('anim');
+  void stageInnerEl.offsetWidth;
+  stageInnerEl.classList.add('anim');
+
+  if(card.type==='quiz') renderQuizPanel(card, state.flatIndex);
+  if(card.type==='open') renderOpenPanel(card, state.flatIndex);
+  if(card.type==='examresult') renderExamBreakdown(document.getElementById('examBreakdown'), mod.id);
+
+  state.sentences = splitSentences(card.narration);
+  renderTranscript();
+  stageEl.scrollTop = 0;
+}
+
+function renderTranscript(){
+  var t = document.getElementById('transcript');
+  if(!t) return;
+  t.innerHTML = state.sentences.map(function(s,i){
+    return '<span class="sen" data-i="'+i+'">'+s+' </span>';
+  }).join('');
+}
+function highlightSentence(i){
+  var t = document.getElementById('transcript');
+  if(!t) return;
+  t.querySelectorAll('.sen').forEach(function(el){
+    el.classList.toggle('active', parseInt(el.getAttribute('data-i'),10)===i);
+  });
+}
+
+function computeExamStats(moduleId){
+  var items = [];
+  FLAT.forEach(function(f, idx){ if(f.module.id===moduleId && (f.card.type==='quiz' || f.card.type==='open')) items.push({f:f, idx:idx}); });
+  var total = items.length, answered = 0, correct = 0, weightTotal = 0, weightScore = 0;
+  var wrongNums = [], pendingNums = [];
+  items.forEach(function(it, i){
+    if(it.f.card.type==='quiz'){
+      var w = it.f.card.quiz.weight || 1;
+      weightTotal += w;
+      var ans = state.quizAnswers[it.idx];
+      if(ans === undefined){ pendingNums.push(i+1); return; }
+      answered++;
+      if(ans === it.f.card.quiz.correct){ correct++; weightScore += w; }
+      else wrongNums.push(i+1);
+    } else {
+      var ow = it.f.card.open.weight || 2;
+      weightTotal += ow;
+      var rec = state.openAnswers[it.idx];
+      if(!rec || rec.score===null || rec.score===undefined){ pendingNums.push(i+1); return; }
+      answered++;
+      weightScore += rec.score;
+      if(rec.score >= ow) correct++;
+      else wrongNums.push(i+1);
+    }
+  });
+  return {total:total, answered:answered, correct:correct, weightTotal:weightTotal, weightScore:weightScore, wrongNums:wrongNums, pendingNums:pendingNums};
+}
+function fmtPts(n){
+  var r = Math.round(n*10)/10;
+  return (r % 1 === 0 ? r.toFixed(0) : r.toFixed(1)).replace('.', ',');
+}
+function buildExamNarration(stats, examLabel){
+  if(stats.pendingNums.length){
+    return 'Você ainda não respondeu todas as questões d'+examLabel+'. Faltam '+stats.pendingNums.length+' questões: número '+stats.pendingNums.join(', ')+'. Volte e responda antes de ver o resultado final.';
+  }
+  var txt = 'Você concluiu '+examLabel+'! Acertou '+stats.correct+' de '+stats.total+' questões, o que dá uma nota estimada de '+fmtPts(stats.weightScore)+' de '+fmtPts(stats.weightTotal)+' pontos.';
+  if(stats.wrongNums.length){
+    txt += ' Vale a pena revisar as questões número '+stats.wrongNums.join(', ')+'.';
+  } else {
+    txt += ' Você gabaritou! Excelente.';
+  }
+  return txt;
+}
+function renderScoreVisual(stats){
+  var pct = stats.total ? Math.round(stats.correct/stats.total*100) : 0;
+  var pendingNote = stats.pendingNums.length ? '<div class="score-pending">'+stats.pendingNums.length+' questão(ões) ainda sem resposta</div>' : '';
+  return '<div class="viz-score"><div class="score-ring" style="--pct:'+pct+'"><span class="score-num">'+stats.correct+'/'+stats.total+'</span></div>'+
+    '<div class="score-detail">Nota estimada: <strong>'+fmtPts(stats.weightScore)+' / '+fmtPts(stats.weightTotal)+'</strong> pontos</div>'+pendingNote+'</div>';
+}
+function renderExamBreakdown(container, moduleId){
+  var items = [];
+  FLAT.forEach(function(f, idx){ if(f.module.id===moduleId && (f.card.type==='quiz' || f.card.type==='open')) items.push({f:f, idx:idx}); });
+  container.innerHTML = items.map(function(it, i){
+    if(it.f.card.type==='quiz'){
+      var ans = state.quizAnswers[it.idx];
+      var status = ans===undefined ? 'pending' : (ans===it.f.card.quiz.correct ? 'ok' : 'bad');
+      var label = ans===undefined ? 'Não respondida — clique para responder'
+        : (status==='ok' ? 'Correta' : ('Sua resposta: '+String.fromCharCode(65+ans)+' — correta: '+String.fromCharCode(65+it.f.card.quiz.correct)));
+      return '<button class="breakdown-row '+status+'" data-flat="'+it.idx+'"><span class="bd-num">Q'+(i+1)+'</span><span class="bd-label">'+label+'</span></button>';
+    } else {
+      var ow = it.f.card.open.weight || 2;
+      var rec = state.openAnswers[it.idx];
+      var ostatus = (!rec || rec.score==null) ? 'pending' : (rec.score>=ow ? 'ok' : 'bad');
+      var olabel = (!rec || rec.score==null) ? 'Não autoavaliada — clique para responder' : ('Autoavaliação: '+rec.score+' / '+ow+' pontos');
+      return '<button class="breakdown-row '+ostatus+'" data-flat="'+it.idx+'"><span class="bd-num">Q'+(i+1)+'</span><span class="bd-label">'+olabel+'</span></button>';
+    }
+  }).join('');
+  container.querySelectorAll('.breakdown-row').forEach(function(btn){
+    btn.addEventListener('click', function(){ goTo(parseInt(btn.getAttribute('data-flat'),10)); });
+  });
+}
+function renderQuizPanel(card, flatIdx){
+  var panel = document.getElementById('quizPanel');
+  if(!panel) return;
+  var answered = state.quizAnswers[flatIdx];
+  var opts = card.quiz.options.map(function(opt, i){
+    var cls = 'quiz-opt';
+    var dis = '';
+    if(answered !== undefined){
+      cls += ' disabled';
+      dis = 'disabled';
+      if(i === card.quiz.correct) cls += ' correct';
+      else if(i === answered) cls += ' wrong';
+    }
+    return '<button class="'+cls+'" data-i="'+i+'" '+dis+'>'+String.fromCharCode(65+i)+'. '+opt+'</button>';
+  }).join('');
+  var explain = '';
+  if(answered !== undefined){
+    var ok = answered === card.quiz.correct;
+    explain = '<div class="quiz-explain '+(ok?'ok':'bad')+'">'+(ok ? 'Certo! ' : 'Quase — a correta é a '+String.fromCharCode(65+card.quiz.correct)+'. ')+card.quiz.explain+'</div>';
+  }
+  panel.innerHTML = '<div class="quiz-question">'+card.quiz.question+'</div><div class="quiz-options">'+opts+'</div>'+explain;
+
+  if(answered === undefined){
+    panel.querySelectorAll('.quiz-opt').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        selectQuizOption(flatIdx, parseInt(btn.getAttribute('data-i'),10));
+      });
+    });
+  }
+}
+
+function renderOpenPanel(card, flatIdx){
+  var panel = document.getElementById('openPanel');
+  if(!panel) return;
+  var rec = state.openAnswers[flatIdx] || {draft:'', score:null, revealed:false};
+  var w = (card.open && card.open.weight) || 2;
+  panel.innerHTML =
+    '<div class="open-case"><strong>'+card.open.caseTitle+'</strong><br><br>'+card.open.caseText+'</div>'+
+    '<ul class="open-questions">'+card.open.questions.map(function(q){ return '<li>'+q+'</li>'; }).join('')+'</ul>'+
+    '<textarea class="open-textarea" id="openDraft" placeholder="Escreva sua resposta aqui para praticar...">'+(rec.draft||'')+'</textarea>'+
+    '<button class="open-reveal-btn" id="openRevealBtn" type="button">'+(rec.revealed ? 'Ocultar resposta modelo' : 'Ver resposta modelo')+'</button>'+
+    (rec.revealed ? (
+      '<div class="open-model"><h4>Resposta modelo</h4>'+card.open.modelAnswer+'</div>'+
+      '<div class="open-score-row"><span class="open-score-label">Autoavalie sua resposta:</span>'+
+      [0,1,2].map(function(v){ return '<button class="open-score-btn'+(rec.score===v?' active':'')+'" data-v="'+v+'" type="button">'+v+' / '+w+'</button>'; }).join('')+
+      '</div>'
+    ) : '');
+  var ta = document.getElementById('openDraft');
+  ta.addEventListener('input', function(){
+    var r = state.openAnswers[flatIdx] || {draft:'', score:null, revealed:false};
+    r.draft = this.value;
+    state.openAnswers[flatIdx] = r;
+  });
+  ta.addEventListener('blur', saveProgress);
+  document.getElementById('openRevealBtn').addEventListener('click', function(){
+    var r = state.openAnswers[flatIdx] || {draft:'', score:null, revealed:false};
+    r.revealed = !r.revealed;
+    state.openAnswers[flatIdx] = r;
+    saveProgress();
+    renderOpenPanel(card, flatIdx);
+  });
+  panel.querySelectorAll('.open-score-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var r = state.openAnswers[flatIdx] || {draft:'', score:null, revealed:false};
+      r.score = parseInt(btn.getAttribute('data-v'),10);
+      state.openAnswers[flatIdx] = r;
+      saveProgress();
+      updateTopBar();
+      renderOpenPanel(card, flatIdx);
+    });
+  });
+}
+
+function selectQuizOption(flatIdx, i){
+  if(flatIdx !== state.flatIndex) return;
+  state.quizAnswers[flatIdx] = i;
+  saveProgress();
+  updateTopBar();
+  var card = FLAT[flatIdx].card;
+  renderQuizPanel(card, flatIdx);
+
+  var ok = i === card.quiz.correct;
+  var feedback = [ok ? 'Isso mesmo!' : ('Quase. A correta é a '+String.fromCharCode(65+card.quiz.correct)+'.'), card.quiz.explain];
+  state.playing = true; updatePlayBtn();
+  speakQueue(feedback, null, function(){
+    state.playing = false; updatePlayBtn();
+    if(state.autoAdvance) scheduleAutoAdvance();
+  });
+}
+
+/* ================= NAV & PLAYBACK ================= */
+function goTo(idx, opts){
+  opts = opts || {};
+  idx = Math.max(0, Math.min(FLAT.length-1, idx));
+  cancelSpeech();
+  state.flatIndex = idx;
+  state.visited[idx] = true;
+  saveProgress();
+  renderStage();
+  updateSidebarActiveAndProgress();
+  updateTopBar();
+  updateTransport();
+  if(opts.autoplay !== false && state.autoplayNarration && userStarted){
+    setTimeout(function(){ playNarration(); }, 220);
+  }
+}
+function next(){ if(state.flatIndex < FLAT.length-1) goTo(state.flatIndex+1); }
+function prev(){ if(state.flatIndex > 0) goTo(state.flatIndex-1); }
+
+function playNarration(){
+  var card = FLAT[state.flatIndex].card;
+  state.playing = true;
+  updatePlayBtn();
+  speakQueue(state.sentences, function(i){ highlightSentence(i); }, function(){
+    state.playing = false;
+    updatePlayBtn();
+    highlightSentence(-1);
+    if(card.type === 'quiz' || card.type === 'open'){
+      return; // wait for the user to answer
+    }
+    if(state.autoAdvance) scheduleAutoAdvance();
+  });
+}
+function toggleNarration(){
+  if(state.playing){ cancelSpeech(); }
+  else { playNarration(); }
+}
+function scheduleAutoAdvance(){
+  if(state.flatIndex >= FLAT.length-1) return;
+  setTimeout(function(){
+    if(!state.playing) next();
+  }, 1000);
+}
+
+function updatePlayBtn(){
+  var icon = document.getElementById('playIcon');
+  icon.innerHTML = state.playing
+    ? '<rect x="6" y="5" width="4.5" height="14" rx="1" fill="currentColor"/><rect x="13.5" y="5" width="4.5" height="14" rx="1" fill="currentColor"/>'
+    : '<path d="M8 5l12 7-12 7V5z" fill="currentColor"/>';
+}
+function updateTransport(){
+  document.getElementById('tCount').textContent = 'Card '+(state.flatIndex+1)+' de '+FLAT.length;
+  document.getElementById('prevBtn').disabled = state.flatIndex===0;
+  document.getElementById('nextBtn').disabled = state.flatIndex===FLAT.length-1;
+}
+
+/* ================= SIDEBAR MOBILE ================= */
+var sidebarBackdrop = document.getElementById('sidebarBackdrop');
+function openSidebarMobile(){
+  document.getElementById('sidebar').classList.add('open');
+  sidebarBackdrop.classList.add('open');
+}
+function closeSidebarMobile(){
+  document.getElementById('sidebar').classList.remove('open');
+  sidebarBackdrop.classList.remove('open');
+}
+document.getElementById('menuBtn').addEventListener('click', openSidebarMobile);
+sidebarBackdrop.addEventListener('click', closeSidebarMobile);
+
+/* ================= SETTINGS POPOVER ================= */
+var settingsBtn = document.getElementById('settingsBtn');
+var settingsPop = document.getElementById('settingsPop');
+settingsBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  settingsPop.classList.toggle('open');
+});
+document.addEventListener('click', function(e){
+  if(!settingsPop.contains(e.target) && e.target !== settingsBtn){
+    settingsPop.classList.remove('open');
+  }
+});
+var RATES = [0.85, 1, 1.15];
+document.getElementById('rateBtn').addEventListener('click', function(){
+  var i = RATES.indexOf(state.rate);
+  state.rate = RATES[(i+1) % RATES.length];
+  this.textContent = state.rate.toFixed(2).replace(/0$/,'') + 'x';
+  saveProgress();
+});
+document.querySelectorAll('.voice-select').forEach(function(sel){
+  sel.addEventListener('change', onVoiceSelectChange);
+});
+document.querySelectorAll('.voice-test-btn').forEach(function(btn){
+  btn.addEventListener('click', testVoice);
+});
+document.getElementById('autoplayToggle').addEventListener('change', function(){
+  state.autoplayNarration = this.checked;
+  saveProgress();
+});
+document.getElementById('autoadvanceToggle').addEventListener('change', function(){
+  state.autoAdvance = this.checked;
+  saveProgress();
+});
+document.getElementById('resetBtn').addEventListener('click', function(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  state.visited = {}; state.quizAnswers = {};
+  updateSidebarActiveAndProgress();
+  updateTopBar();
+  renderStage();
+});
+
+/* ================= TRANSPORT BUTTONS ================= */
+document.getElementById('prevBtn').addEventListener('click', prev);
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('playBtn').addEventListener('click', toggleNarration);
+
+/* ================= KEYBOARD ================= */
+document.addEventListener('keydown', function(e){
+  if(document.activeElement && document.activeElement !== document.body) return;
+  if(e.code === 'Space'){ e.preventDefault(); toggleNarration(); }
+  else if(e.key === 'ArrowRight'){ next(); }
+  else if(e.key === 'ArrowLeft'){ prev(); }
+});
+
+/* ================= START OVERLAY ================= */
+var userStarted = false;
+var startOverlay = document.getElementById('startOverlay');
+var startBtn = document.getElementById('startBtn');
+var startFreshBtn = document.getElementById('startFreshBtn');
+var resumeIndex = 0;
+if(saved && typeof saved.lastIndex === 'number' && saved.lastIndex > 0){
+  resumeIndex = saved.lastIndex;
+  startBtn.textContent = 'Continuar (Card '+(resumeIndex+1)+')';
+  startFreshBtn.style.display = 'inline-block';
+}
+document.getElementById('rateBtn').textContent = state.rate.toFixed(2).replace(/0$/,'') + 'x';
+document.getElementById('autoplayToggle').checked = state.autoplayNarration;
+document.getElementById('autoadvanceToggle').checked = state.autoAdvance;
+
+function launch(idx){
+  userStarted = true;
+  startOverlay.style.display = 'none';
+  goTo(idx);
+}
+startBtn.addEventListener('click', function(){ launch(resumeIndex); });
+startFreshBtn.addEventListener('click', function(){ launch(0); });
+
+/* ================= INIT ================= */
+buildSidebar();
+state.flatIndex = resumeIndex;
+renderStage();
+updateSidebarActiveAndProgress();
+updateTopBar();
+updateTransport();
+updateVoiceLabel();
+
+})();
+</script>

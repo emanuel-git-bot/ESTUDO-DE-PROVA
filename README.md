@@ -4,5 +4,6 @@ Aulas narradas e interativas (pt-BR), com diagramas, legendas sincronizadas com 
 
 - **Dev Mobile** (`index.html`): UI/UX, Eventos & Scroll, APIs & Webhooks e Material Design 3.
 - **Engenharia de Software** (`engenharia-software.html`): Ferramentas CASE, Padrões de Projeto e Arquitetura em Camadas/MVC.
+- **Sistemas de Informações Gerenciais** (`sig.html`): Fundamentos de SI, Empresa Digital e SI/Organizações/Estratégia, com prova de 6 objetivas + 1 questão dissertativa (estudo de caso, com resposta modelo e autoavaliação).
 
 Publicado via GitHub Pages. Abra o link no navegador (celular ou desktop) e clique em "Começar a aula".
